@@ -139,8 +139,20 @@ public class Feel {
 	public static float torchRange = 17f;
 
 	/** Distance at which the falloff starts. Nearer than this is full
-	 *  strength. */
-	public static float torchNear = 5f;
+	 *  strength -- which is why this has to stay small. At 5 the light was
+	 *  flat for the first 1.7 cells, so the wall you are standing against
+	 *  had no gradient at all: its centre, 1.5 away, and its corners, 3
+	 *  away, came out the same colour, and a face that fills the screen
+	 *  with one colour is not a surface, it is a rectangle. Starting the
+	 *  falloff almost at the eye gives a near wall the radial shading a
+	 *  torch would actually cast. */
+	public static float torchNear = 0.5f;
+
+	/** How sharply the light dies with distance. 1 is a straight ramp and
+	 *  looks like fog on a plain; a torch is nearer to inverse-square. This
+	 *  is what gives a wall in front of your face a gradient instead of one
+	 *  flat tone. */
+	public static float torchFalloff = 2.6f;
 
 	/** How far the reach wanders as the flame gutters. 0 for a steady lamp. */
 	public static float torchFlicker = 1.3f;
@@ -160,6 +172,18 @@ public class Feel {
 
 	/** Wall brightness. Eased back so walls stop out-glowing the floor. */
 	public static float wallBrightness = 0.82f;
+
+	/** How much darker an east-west wall is than a north-south one, as a
+	 *  fraction. This is the whole reason a corner reads as a corner: with
+	 *  one brightness for every wall, two perpendicular faces are the same
+	 *  colour and a wall up close is a flat rectangle. 1.0 turns it off. */
+	public static float wallSideContrast = 0.75f;
+
+	/** Horizontal field of view in degrees, read as vertical in landscape.
+	 *  Narrower feels like a corridor and makes a near wall swallow the
+	 *  screen; wider fish-eyes the tiles. Camera3D holds the portrait
+	 *  correction, this is the number worth turning. */
+	public static float fieldOfView = 50f;
 
 	/** Ceiling brightness. It is drawn with the wall tile, so at the
 	 *  floor's setting it clips to flat white and lights the corridor like
@@ -248,6 +272,9 @@ public class Feel {
 		FirstPerson.groundBrightness  = floorMultiply;
 		FirstPerson.groundLift        = floorAdd;
 		FirstPerson.wallBrightness    = wallBrightness;
+		FirstPerson.wallSideContrast  = wallSideContrast;
+		FirstPerson.torchFalloff      = torchFalloff;
+		FirstPerson.fieldOfView       = fieldOfView;
 		FirstPerson.ceilingBrightness = ceilingBrightness;
 		FirstPerson.waterR            = waterR;
 		FirstPerson.waterG            = waterG;

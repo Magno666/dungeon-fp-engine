@@ -51,6 +51,9 @@ public class Mesh3D extends Visual {
 	public static float fogR = 0.035f, fogG = 0.032f, fogB = 0.045f;
 	public static float fogNear = 5f, fogFar = 17f;
 
+	/** Curve of the light falloff. See NoosaScript3D.fog. */
+	public static float fogFalloff = 2.6f;
+
 	/** Per-mesh: false draws it through everything in front of it. */
 	public boolean depthTest = true;
 
@@ -93,8 +96,17 @@ public class Mesh3D extends Visual {
 
 		texture.bind();
 
-		script.fog( fogR, fogG, fogB, fogNear, fogFar );
-		script.camera( camera() );
+		script.fog( fogR, fogG, fogB, fogNear, fogFar, fogFalloff );
+
+		// The fog is radial now, so the shader needs the eye itself; the
+		// camera matrix alone cannot give it back without an inverse.
+		Camera cam = camera();
+		if (cam instanceof Camera3D) {
+			Camera3D c3 = (Camera3D)cam;
+			script.eye( c3.eyeX, c3.eyeY, c3.eyeZ );
+		}
+
+		script.camera( cam );
 		script.uModel.valueM4( matrix );
 		script.lighting( rm, gm, bm, am, ra, ga, ba, aa );
 

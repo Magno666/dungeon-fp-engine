@@ -68,6 +68,9 @@ public class FirstPerson {
 	/** Where the falloff starts. Below this the light is at full strength. */
 	public static float torchNear = 5f;
 
+	/** Curve of the light falloff; Feel owns the value. */
+	public static float torchFalloff = 2.6f;
+
 	/** How far the reach wanders as the flame gutters, in world units. Set
 	 *  to 0 for a steady lamp. */
 	public static float torchFlicker = 1.3f;
@@ -165,7 +168,8 @@ public class FirstPerson {
 	public static float stepSeconds = 0.18f;
 
 	private static Camera3D camera;
-	private static DungeonTilemap3D mesh;      // walls
+	private static DungeonTilemap3D mesh;      // walls facing north/south
+	private static DungeonTilemap3D wallsEW;   // walls facing east/west
 	private static DungeonTilemap3D ground;    // floors
 	private static DungeonTilemap3D roof;      // ceilings
 	private static DungeonTilemap3D water;     // pools
@@ -187,6 +191,16 @@ public class FirstPerson {
 	 *  tile while a 0.62 decoration lands at 0.96 instead of clipping. */
 	public static float groundLift = 0.18f;
 	public static float wallBrightness = 0.82f;
+
+	/** Brightness of east-west walls as a fraction of the north-south ones.
+	 *  A dungeon has no sun, but an eye with no shading cannot tell two
+	 *  perpendicular walls apart, and a wall seen up close stops being a
+	 *  surface and becomes a rectangle of colour. Minecraft uses 0.8 and
+	 *  0.6 for its two vertical orientations -- the same 0.75 ratio. */
+	public static float wallSideContrast = 0.75f;
+
+	/** Field of view in degrees, pushed into the camera on install. */
+	public static float fieldOfView = 50f;
 
 	/** The ceiling is drawn with the WALL tile, so at the floor's
 	 *  brightness it clipped to flat white and lit the corridor like an
@@ -222,6 +236,7 @@ public class FirstPerson {
 		Feel.apply();
 
 		camera = new Camera3D( Game.width, Game.height );
+		camera.fov = fieldOfView;
 		// The game shakes Camera.main at every dramatic beat; mirror it.
 		camera.shakeSource = Camera.main;
 		Camera.add( camera );
@@ -229,7 +244,8 @@ public class FirstPerson {
 		SmartTexture tex = TextureCache.get( Dungeon.level.tilesTex() );
 
 		ground = DungeonTilemap3D.current( tex, GridMesh.GROUND );
-		mesh = DungeonTilemap3D.current( tex, GridMesh.WALLS );
+		mesh = DungeonTilemap3D.current( tex, GridMesh.WALLS_NS );
+		wallsEW = DungeonTilemap3D.current( tex, GridMesh.WALLS_EW );
 		roof = DungeonTilemap3D.current( tex, GridMesh.CEILING );
 		water = DungeonTilemap3D.current( tex, GridMesh.WATER );
 		applyBrightness();
@@ -238,6 +254,7 @@ public class FirstPerson {
 		// putting these in terrain keeps them behind every UI layer.
 		ground.camera = camera;
 		mesh.camera = camera;
+		wallsEW.camera = camera;
 		roof.camera = camera;
 		water.camera = camera;
 		meshParent = terrain;
@@ -245,6 +262,7 @@ public class FirstPerson {
 		terrain.add( roof );
 		terrain.add( water );
 		terrain.add( mesh );
+		terrain.add( wallsEW );
 
 		Billboards.install( terrain );
 		Billboards.installTerrain( camera );
@@ -327,6 +345,7 @@ public class FirstPerson {
 		float flick = (float)(Math.sin( flickerPhase * 7.3f )
 			+ 0.6f * Math.sin( flickerPhase * 17.1f )) / 1.6f;
 		Mesh3D.fogNear = torchNear;
+		Mesh3D.fogFalloff = torchFalloff;
 		Mesh3D.fogFar  = torchRange + flick * torchFlicker;
 
 		bobPhase += travel * headBobCycles * Game.elapsed * 12f;
@@ -694,24 +713,28 @@ public class FirstPerson {
 
 		Camera cam = mesh.camera;
 		DungeonTilemap3D oldWalls = mesh;
+		DungeonTilemap3D oldWallsEW = wallsEW;
 		DungeonTilemap3D oldGround = ground;
 		DungeonTilemap3D oldRoof = roof;
 		DungeonTilemap3D oldWater = water;
 		SmartTexture tex = TextureCache.get( Dungeon.level.tilesTex() );
 
 		ground = DungeonTilemap3D.current( tex, GridMesh.GROUND );
-		mesh = DungeonTilemap3D.current( tex, GridMesh.WALLS );
+		mesh = DungeonTilemap3D.current( tex, GridMesh.WALLS_NS );
+		wallsEW = DungeonTilemap3D.current( tex, GridMesh.WALLS_EW );
 		roof = DungeonTilemap3D.current( tex, GridMesh.CEILING );
 		water = DungeonTilemap3D.current( tex, GridMesh.WATER );
 		applyBrightness();
 		ground.camera = cam;
 		mesh.camera = cam;
+		wallsEW.camera = cam;
 		roof.camera = cam;
 		water.camera = cam;
 		meshParent.add( ground );
 		meshParent.add( roof );
 		meshParent.add( water );
 		meshParent.add( mesh );
+		meshParent.add( wallsEW );
 
 		// Order matters: Gizmo.destroy() nulls the parent link and
 		// killAndErase() only erases when there is one, so destroying first
@@ -721,6 +744,7 @@ public class FirstPerson {
 		oldRoof.killAndErase();   oldRoof.destroy();
 		oldWater.killAndErase();  oldWater.destroy();
 		oldWalls.killAndErase();  oldWalls.destroy();
+		oldWallsEW.killAndErase(); oldWallsEW.destroy();
 
 		// A burnt barricade or a dug wall can add or remove an upright prop,
 		// and the mesh no longer draws those cells flat, so a stale prop
@@ -735,6 +759,10 @@ public class FirstPerson {
 		}
 		if (mesh != null) {
 			mesh.rm = mesh.gm = mesh.bm = wallBrightness;
+		}
+		if (wallsEW != null) {
+			float side = wallBrightness * wallSideContrast;
+			wallsEW.rm = wallsEW.gm = wallsEW.bm = side;
 		}
 		if (roof != null) {
 			roof.rm = roof.gm = roof.bm = ceilingBrightness;
@@ -751,6 +779,7 @@ public class FirstPerson {
 		}
 		camera = null;
 		mesh = null;
+		wallsEW = null;
 		ground = null;
 		roof = null;
 		water = null;

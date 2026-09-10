@@ -66,7 +66,15 @@ public class GridMesh {
 	 *  against a 61% wall, which reads fine at 16px from above and reads as
 	 *  a glowing wall over a black void in first person. */
 	public static final int GROUND = 1;
-	public static final int WALLS = 2;
+
+	/** Wall faces that look north or south. Split from the east-west ones
+	 *  so the two can be lit apart: every face in this mesh shares one
+	 *  brightness, and with a single WALLS mesh a corner had none. Two
+	 *  perpendicular walls came out the same colour, so up close a wall
+	 *  filled the screen as a flat rectangle with no shape to read. This
+	 *  is Minecraft's trick -- a fixed multiplier per face orientation --
+	 *  and it costs one extra draw call, not a shader. */
+	public static final int WALLS_NS = 2;
 
 	/** The ceiling is its own face for the same reason, one step further:
 	 *  it is drawn with the WALL tile, and at the floor's brightness that
@@ -81,6 +89,12 @@ public class GridMesh {
 	 *  holes in the floor -- roughly a hundred per level. Split out, they
 	 *  can be given a solid tile and their own colour. */
 	public static final int WATER = 8;
+
+	/** Wall faces that look east or west. See {@link #WALLS_NS}. */
+	public static final int WALLS_EW = 16;
+
+	/** Both wall orientations. Callers that do not care keep working. */
+	public static final int WALLS = WALLS_NS | WALLS_EW;
 
 	public static final int ALL = GROUND | WALLS | CEILING | WATER;
 
@@ -109,7 +123,7 @@ public class GridMesh {
 			for (int col = 0; col < width; col++) {
 				if (wall[row * width + col]) {
 					if ((faces & WALLS) != 0) {
-						count += exposedFaces( wall, width, rows, col, row );
+						count += exposedFaces( wall, width, rows, col, row, faces );
 					}
 				} else {
 					int floorFace = water != null && water[row * width + col]
@@ -172,19 +186,23 @@ public class GridMesh {
 				// Only the sides of a wall that face open space are drawn.
 				// Everything inside a block of rock is never visible, and
 				// skipping it is most of the reason this stays cheap.
-				if (open( wall, width, rows, col, row - 1 )) {      // north face
+				if ((faces & WALLS_NS) != 0
+						&& open( wall, width, rows, col, row - 1 )) {  // north
 					m.quad( cx - h, height, cz - h,  cx + h, height, cz - h,
 							cx + h, 0f,     cz - h,  cx - h, 0f,     cz - h );
 				}
-				if (open( wall, width, rows, col, row + 1 )) {      // south face
+				if ((faces & WALLS_NS) != 0
+						&& open( wall, width, rows, col, row + 1 )) {  // south
 					m.quad( cx + h, height, cz + h,  cx - h, height, cz + h,
 							cx - h, 0f,     cz + h,  cx + h, 0f,     cz + h );
 				}
-				if (open( wall, width, rows, col - 1, row )) {      // west face
+				if ((faces & WALLS_EW) != 0
+						&& open( wall, width, rows, col - 1, row )) {  // west
 					m.quad( cx - h, height, cz + h,  cx - h, height, cz - h,
 							cx - h, 0f,     cz - h,  cx - h, 0f,     cz + h );
 				}
-				if (open( wall, width, rows, col + 1, row )) {      // east face
+				if ((faces & WALLS_EW) != 0
+						&& open( wall, width, rows, col + 1, row )) {  // east
 					m.quad( cx + h, height, cz - h,  cx + h, height, cz + h,
 							cx + h, 0f,     cz + h,  cx + h, 0f,     cz - h );
 				}
@@ -201,12 +219,19 @@ public class GridMesh {
 		return !wall[row * width + col];
 	}
 
-	private static int exposedFaces( boolean[] wall, int width, int rows, int col, int row ) {
+	/** Counts only the orientations {@code faces} asks for, so the arrays
+	 *  are still allocated exactly once when walls are built in two passes. */
+	private static int exposedFaces( boolean[] wall, int width, int rows, int col,
+			int row, int faces ) {
 		int n = 0;
-		if (open( wall, width, rows, col, row - 1 )) n++;
-		if (open( wall, width, rows, col, row + 1 )) n++;
-		if (open( wall, width, rows, col - 1, row )) n++;
-		if (open( wall, width, rows, col + 1, row )) n++;
+		if ((faces & WALLS_NS) != 0) {
+			if (open( wall, width, rows, col, row - 1 )) n++;
+			if (open( wall, width, rows, col, row + 1 )) n++;
+		}
+		if ((faces & WALLS_EW) != 0) {
+			if (open( wall, width, rows, col - 1, row )) n++;
+			if (open( wall, width, rows, col + 1, row )) n++;
+		}
 		return n;
 	}
 
