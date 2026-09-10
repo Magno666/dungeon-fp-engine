@@ -60,6 +60,11 @@ public class ShatteredPixelDungeon extends Game {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Load the translation before any scene builds, so the title screen
+		// is already in the phone's language. Falls back to the game's own
+		// English if there is no dictionary for it.
+		Lang.useSystemLanguage();
+
 		/*
 		 * if (android.os.Build.VERSION.SDK_INT >= 19) {
 		 * getWindow().getDecorView().setSystemUiVisibility(
@@ -76,8 +81,14 @@ public class ShatteredPixelDungeon extends Game {
 		instance.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		boolean landscape = metrics.widthPixels > metrics.heightPixels;
 
-		if (Preferences.INSTANCE.getBoolean(Preferences.KEY_LANDSCAPE, false) != landscape) {
-			landscape(!landscape);
+		// The first person view wants landscape: upright, a phone is a tall
+		// slot and the horizontal field of view collapses. This preference
+		// is applied at startup and overrides the manifest, which is why
+		// setting screenOrientation there alone did nothing.
+		boolean wantLandscape = Preferences.INSTANCE.getBoolean(
+			Preferences.KEY_LANDSCAPE, FirstPerson.enabled);
+		if (wantLandscape != landscape) {
+			landscape(wantLandscape);
 		}
 
 		Music.INSTANCE.enable(music());

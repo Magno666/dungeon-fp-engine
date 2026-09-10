@@ -24,7 +24,9 @@ import com.github.dachhack.sprout.Statistics;
 import com.github.dachhack.sprout.actors.buffs.Blindness;
 import com.github.dachhack.sprout.actors.buffs.Buff;
 import com.github.dachhack.sprout.actors.buffs.Invisibility;
+import com.github.dachhack.sprout.actors.buffs.MindVision;
 import com.github.dachhack.sprout.actors.buffs.Paralysis;
+import com.github.dachhack.sprout.actors.buffs.Strength;
 import com.github.dachhack.sprout.actors.mobs.Mob;
 import com.github.dachhack.sprout.levels.Level;
 import com.github.dachhack.sprout.scenes.GameScene;
@@ -38,7 +40,7 @@ public class ScrollOfPsionicBlast extends Scroll {
 	{
 		name = "Scroll of Psionic Blast";
 		consumedValue = 10;
-        MP_COST = 10;
+
 		bones = true;
 	}
 

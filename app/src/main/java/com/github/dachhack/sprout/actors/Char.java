@@ -85,8 +85,6 @@ public abstract class Char extends Actor {
 
 	public int HT;
 	public int HP;
-	public int MP;
-	public int MT;
 
 	protected float baseSpeed = 1;
 
@@ -108,8 +106,6 @@ public abstract class Char extends Actor {
 	private static final String POS = "pos";
 	private static final String TAG_HP = "HP";
 	private static final String TAG_HT = "HT";
-	private static final String TAG_MP = "MP";
-	private static final String TAG_MT = "MT";
 	private static final String BUFFS = "buffs";
 
 	@Override
@@ -120,8 +116,6 @@ public abstract class Char extends Actor {
 		bundle.put(POS, pos);
 		bundle.put(TAG_HP, HP);
 		bundle.put(TAG_HT, HT);
-		bundle.put(TAG_MP, MP);
-		bundle.put(TAG_MT, MT);
 		bundle.put(BUFFS, buffs);
 	}
 
@@ -133,8 +127,6 @@ public abstract class Char extends Actor {
 		pos = bundle.getInt(POS);
 		HP = bundle.getInt(TAG_HP);
 		HT = bundle.getInt(TAG_HT);
-		MP = bundle.getInt(TAG_MP);
-		MT = bundle.getInt(TAG_MT);
 
 		for (Bundlable b : bundle.getCollection(BUFFS)) {
 			if (b != null) {

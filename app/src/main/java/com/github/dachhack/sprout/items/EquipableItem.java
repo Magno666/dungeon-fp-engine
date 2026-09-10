@@ -105,61 +105,6 @@ public abstract class EquipableItem extends Item {
 		return true;
 	}
 
-
-	public String TierCheck(int level){
-		String TIER="Normal";
-
-		if (level>0) {
-			TIER = "Enforced";
-		}
-		if (level>4) {
-			TIER = "Strong";
-		}
-		if (level>9) {
-			TIER = "Powerful";
-		}
-		if (level>15) {
-			TIER = "Heroic";
-		}
-		if (level>30) {
-			TIER = "Legendary";
-		}
-		if (level>50) {
-			TIER = "Godly";
-		}
-		if (level>100) {
-			TIER = "Celestial";
-		}
-
-		return TIER;
-	}
-	public int TierBonus(int level){
-		int bonus=0;
-
-		if (level>0) {
-			bonus = 1;
-		}
-		if (level>4) {
-			bonus = 2;
-		}
-		if (level>9) {
-			bonus = 3;
-		}
-		if (level>15) {
-			bonus = 4;
-		}
-		if (level>30) {
-			bonus = 5;
-		}
-		if (level>50) {
-			bonus = 6;
-		}
-		if (level>100) {
-			bonus = 7;
-		}
-
-		return bonus;
-	}
 	final public boolean doUnequip(Hero hero, boolean collect) {
 		return doUnequip(hero, collect, true);
 	}

@@ -93,7 +93,87 @@ public class Matrix {
 		m[13] += m[1] * x + m[5] * y;
 	}
 	
+	/** result = left * right. Column-major, like the rest of this class. */
 	public static void multiply( float[] left, float right[], float[] result ) {
-		android.opengl.Matrix.multiplyMM( result, 0, left, 0, right, 0 );
+		for (int c = 0; c < 4; c++) {
+			for (int r = 0; r < 4; r++) {
+				float sum = 0f;
+				for (int k = 0; k < 4; k++) {
+					sum += left[k * 4 + r] * right[c * 4 + k];
+				}
+				result[c * 4 + r] = sum;
+			}
+		}
+	}
+
+	// ------------------------------------------------------------------
+	//  3D additions.
+	//
+	//  Noosa only ever needed 2D, but its shader already runs a full
+	//  mat4 pipeline (gl_Position = uCamera * uModel * aXYZW), so a
+	//  perspective camera needs no new shader -- only these operations
+	//  and vertices that carry a Z. Nothing above this line changes.
+	//
+	//  Written in plain Java rather than delegating to android.opengl.Matrix
+	//  so the camera maths can be unit tested off-device.
+	// ------------------------------------------------------------------
+
+	public static void perspective( float[] m, float fovYDegrees, float aspect,
+			float near, float far ) {
+		float f = (float)(1.0 / Math.tan( fovYDegrees * G2RAD / 2.0 ));
+		for (int i = 0; i < 16; i++) {
+			m[i] = 0f;
+		}
+		m[0] = f / aspect;
+		m[5] = f;
+		m[10] = (far + near) / (near - far);
+		m[11] = -1f;
+		m[14] = (2f * far * near) / (near - far);
+	}
+
+	/** m = m * R, rotating aDegrees around the given axis. */
+	public static void rotate3( float[] m, float aDegrees, float x, float y, float z ) {
+		float len = (float)Math.sqrt( x * x + y * y + z * z );
+		if (len == 0f) {
+			return;
+		}
+		x /= len; y /= len; z /= len;
+
+		float a = aDegrees * G2RAD;
+		float c = (float)Math.cos( a );
+		float s = (float)Math.sin( a );
+		float t = 1f - c;
+
+		float[] r = new float[16];
+		r[0] = t * x * x + c;
+		r[1] = t * x * y + s * z;
+		r[2] = t * x * z - s * y;
+		r[4] = t * x * y - s * z;
+		r[5] = t * y * y + c;
+		r[6] = t * y * z + s * x;
+		r[8] = t * x * z + s * y;
+		r[9] = t * y * z - s * x;
+		r[10] = t * z * z + c;
+		r[15] = 1f;
+
+		float[] out = new float[16];
+		multiply( m, r, out );
+		copy( out, m );
+	}
+
+	/** m = m * T. */
+	public static void translate3( float[] m, float x, float y, float z ) {
+		for (int i = 0; i < 4; i++) {
+			m[12 + i] += m[i] * x + m[4 + i] * y + m[8 + i] * z;
+		}
+	}
+
+	/** m = m * S. */
+	public static void scale3( float[] m, float x, float y, float z ) {
+		for (int i = 0; i < 4; i++) {
+			m[i] *= x;
+			m[4 + i] *= y;
+			m[8 + i] *= z;
+		}
 	}
 }

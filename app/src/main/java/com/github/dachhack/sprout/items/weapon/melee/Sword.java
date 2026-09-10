@@ -27,7 +27,7 @@ public class Sword extends MeleeWeapon {
 	}
 
 	public Sword() {
-		super(3, 16, 1f, 1.2f, 2, 6);
+		super(3, 1f, 1f);
 	}
 
 	@Override

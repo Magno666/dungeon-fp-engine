@@ -78,11 +78,7 @@ public class LaboratoryPainter extends Painter {
 
 		Item prize = level.findPrizeItem(Potion.class);
 		if (prize == null)
-			if (Dungeon.getMonth()==3) {
-				prize = Generator.random(Generator.Category.POTION2);
-			} else {
-				prize = Generator.random(Generator.Category.POTION);
-			}
+			prize = Generator.random(Generator.Category.POTION);
 
 		return prize;
 	}

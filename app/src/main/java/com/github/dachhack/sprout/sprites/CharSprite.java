@@ -41,6 +41,9 @@ import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.github.dachhack.sprout.FirstPerson;
+import com.github.dachhack.sprout.Billboards;
+import com.github.dachhack.sprout.Dungeon;
 
 public class CharSprite extends MovieClip implements Tweener.Listener,
 		MovieClip.Listener {
@@ -122,7 +125,16 @@ public class CharSprite extends MovieClip implements Tweener.Listener,
 			if (args.length > 0) {
 				text = Utils.format(text, args);
 			}
-			if (ch != null) {
+			if (FirstPerson.enabled && ch != null) {
+				// Flat map coordinates put this wherever the hidden 2D
+				// sprite is, which is not where the creature appears.
+				PointF p =
+					FirstPerson.projectToUi(
+						ch.pos, Billboards.height );
+				if (p != null) {
+					FloatingText.show(p.x, p.y, ch.pos, text, color);
+				}
+			} else if (ch != null) {
 				FloatingText.show(x + width * 0.5f, y, ch.pos, text, color);
 			} else {
 				FloatingText.show(x + width * 0.5f, y, text, color);
@@ -249,6 +261,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener,
 	public void flash() {
 		ra = ba = ga = 1f;
 		flashTime = FLASH_INTERVAL;
+
+		// Being hit is normally shown by your own sprite flashing white --
+		// which in first person is the one sprite you can never see. So a
+		// hit on the hero is felt through the camera instead.
+		if (ch != null && ch == Dungeon.hero) {
+			FirstPerson.hurt();
+		}
 	}
 
 	public void add(State state) {

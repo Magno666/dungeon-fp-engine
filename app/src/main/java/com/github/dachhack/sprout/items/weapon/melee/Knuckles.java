@@ -27,7 +27,7 @@ public class Knuckles extends MeleeWeapon {
 	}
 
 	public Knuckles() {
-		super(1, 10, 1f, 0.5f, 1, 4);
+		super(1, 1f, 0.5f);
 	}
 
 	@Override

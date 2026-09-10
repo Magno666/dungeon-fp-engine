@@ -17,6 +17,8 @@
  */
 package com.github.dachhack.sprout.windows;
 
+import java.util.Locale;
+
 import com.github.dachhack.sprout.Assets;
 import com.github.dachhack.sprout.Dungeon;
 import com.github.dachhack.sprout.Statistics;
@@ -63,8 +65,6 @@ import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
 
-import java.util.Locale;
-
 public class WndHero extends WndTabbed {
 
 	private static final String TXT_STATS = "Stats";
@@ -76,9 +76,6 @@ public class WndHero extends WndTabbed {
 	
 	private static final String TXT_EXP = "Experience";
 	private static final String TXT_STR = "Strength";
-	private static final String TXT_SPEED = "Speed";
-	private static final String TXT_MAGIC = "Mana";
-	private static final String TXT_MAGICLVL = "Magic Level";
 	private static final String TXT_KILLS = "Kills";
 	private static final String TXT_BREATH = "Breath Weapon";
 	private static final String TXT_SPIN = "Spinneretes";
@@ -242,10 +239,7 @@ public class WndHero extends WndTabbed {
 			pos = btnCatalogus.bottom() + GAP;
 
 			statSlot(TXT_STR, hero.STR());
-			statSlot(TXT_SPEED, hero.speedLevel);
 			statSlot(TXT_HEALTH, hero.HP + "/" + hero.HT);
-			statSlot(TXT_MAGIC, hero.MP + "/" + hero.MT);
-			statSlot(TXT_MAGICLVL, hero.magicLevel);
 			statSlot(TXT_EXP, hero.exp + "/" + hero.maxExp());
 
 			pos += GAP;
@@ -534,7 +528,7 @@ public class WndHero extends WndTabbed {
 			} else if (heropet.type==10 || heropet.type==11){
 				statSlot(TXT_SPARKLE, heropet.cooldown==0 ? "Sparkling" : heropet.cooldown + " Turns");
 			} else if (heropet.type==9){
-				statSlot(TXT_FANGS, heropet.cooldown==0 ? "Bared" : heropet.cooldown + " Turns");
+				statSlot(TXT_FANGS, heropet.cooldown==0 ? "Fangs" : heropet.cooldown + " Turns");
 			}
 			
 			pos += GAP;

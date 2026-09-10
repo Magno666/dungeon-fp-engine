@@ -17,6 +17,8 @@
  */
 package com.github.dachhack.sprout.actors.mobs.npcs;
 
+import java.util.Collection;
+
 import com.github.dachhack.sprout.Assets;
 import com.github.dachhack.sprout.Badges;
 import com.github.dachhack.sprout.Dungeon;
@@ -44,8 +46,6 @@ import com.github.dachhack.sprout.windows.WndQuest;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
-
-import java.util.Collection;
 
 public class Blacksmith extends NPC {
 

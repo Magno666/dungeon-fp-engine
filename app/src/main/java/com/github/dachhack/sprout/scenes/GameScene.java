@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import com.github.dachhack.sprout.Assets;
 import com.github.dachhack.sprout.Badges;
 import com.github.dachhack.sprout.Dungeon;
+import com.github.dachhack.sprout.FirstPerson;
 import com.github.dachhack.sprout.DungeonTilemap;
 import com.github.dachhack.sprout.FogOfWar;
 import com.github.dachhack.sprout.ShatteredPixelDungeon;
@@ -81,6 +82,12 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Random;
+import com.github.dachhack.sprout.FirstPersonControls;
+import com.github.dachhack.sprout.Minimap;
+import com.github.dachhack.sprout.Targeting;
+import com.github.dachhack.sprout.Billboards;
+import com.github.dachhack.sprout.Feel;
+import com.watabou.noosa.Gizmo;
 
 public class GameScene extends PixelScene {
 
@@ -98,6 +105,7 @@ public class GameScene extends PixelScene {
 	private SkinnedBlock water;
 	private DungeonTilemap tiles;
 	private FogOfWar fog;
+	private boolean firstPersonHidesFlatWorld = false;
 	private HeroSprite hero;
 
 	private GameLog log;
@@ -151,6 +159,21 @@ public class GameScene extends PixelScene {
 		tiles = new DungeonTilemap();
 		terrain.add(tiles);
 
+		// First person view. Off unless FirstPerson.enabled, in which case
+		// the flat tilemap and the water sheet are hidden and the same
+		// Dungeon.level.map is drawn as geometry instead.
+		FirstPerson.install(terrain);
+		if (FirstPerson.enabled) {
+			FirstPersonControls.install(this, uiCamera);
+			Targeting.install(terrain, this,
+				FirstPerson.camera(), uiCamera);
+		}
+		if (FirstPerson.enabled) {
+			tiles.visible = false;
+			water.visible = false;
+		}
+		firstPersonHidesFlatWorld = FirstPerson.enabled;
+
 		Dungeon.level.addVisuals(this);
 
 		plants = new Group();
@@ -199,6 +222,34 @@ public class GameScene extends PixelScene {
 				Dungeon.level.mapped);
 		add(fog);
 
+		// Every remaining world layer is drawn flat with the 2D camera and
+		// would sit on top of the 3D view. The fog alone would black out
+		// most of the screen. The UI is untouched -- it has its own camera.
+		if (firstPersonHidesFlatWorld) {
+			// The flat view WAS the map; first person took it away. Put it
+			// back as a corner window before hiding the full-screen one.
+			Minimap.install(this);
+			fog.visible = false;
+			ripples.visible = false;
+			// Blobs now get world-space marks from Billboards, so the flat
+			// gas layer can go: drawn in map coordinates it put fire and
+			// Goo's attack warning somewhere unrelated to the danger, which
+			// is worse than not drawing them at all.
+			gases.visible = false;
+			plants.visible = false;
+			heaps.visible = false;
+			mobs.visible = false;
+			// These are positioned in 2D tile-world coordinates and drawn
+			// through Camera.main, which now follows a hidden map. Left
+			// visible, a damage number for a monster four tiles east floats
+			// far off to the side of where its billboard actually is --
+			// worse than absent, because it points at nothing.
+			// `statuses` and `spells` do not exist yet; they are hidden
+			// right after they are built, below.
+			emoicons.visible = false;
+			effects.visible = false;
+		}
+
 		brightness(ShatteredPixelDungeon.brightness());
 
 		spells = new Group();
@@ -206,6 +257,14 @@ public class GameScene extends PixelScene {
 
 		statuses = new Group();
 		add(statuses);
+
+		if (firstPersonHidesFlatWorld) {
+			spells.visible = false;
+			// Damage numbers come back, but as screen text: CharSprite now
+			// projects the creature's cell through the 3D camera, so they
+			// belong to the UI camera rather than the hidden map camera.
+			statuses.camera = uiCamera;
+		}
 
 		add(emoicons);
 
@@ -217,6 +276,12 @@ public class GameScene extends PixelScene {
 		add(new HealthIndicator());
 
 		add(cellSelector = new CellSelector(tiles));
+		// TouchArea.onSignal cancels the touch signal for anyone downstream,
+		// and cellSelector covers the whole screen. Leaving it live would
+		// swallow every stick push and look drag before the first person
+		// controls saw them. select() still works, so spell targeting is
+		// unaffected -- taps reach it through GameScene.handleCell.
+		cellSelector.active = !FirstPerson.enabled;
 
 		StatusPane sb = new StatusPane();
 		sb.camera = uiCamera;
@@ -225,8 +290,21 @@ public class GameScene extends PixelScene {
 
 		toolbar = new Toolbar();
 		toolbar.camera = uiCamera;
-		toolbar.setRect(0, uiCamera.height - toolbar.height(), uiCamera.width,
-				toolbar.height());
+		// Toolbar.layout anchors wait/search/info to the LEFT edge of its
+		// rect and the quickslots to the RIGHT edge. Given the full width of
+		// a landscape phone that leaves a two-thousand-pixel hole between
+		// them, which is why only the backpack looked like it was there.
+		// In first person the bar gets just the width its buttons need and
+		// sits on the right, clear of the thumbstick.
+		if (FirstPerson.enabled) {
+			float w = Math.min(FirstPersonControls
+				.toolbarWidthUi, uiCamera.width);
+			toolbar.setRect(uiCamera.width - w,
+					uiCamera.height - toolbar.height(), w, toolbar.height());
+		} else {
+			toolbar.setRect(0, uiCamera.height - toolbar.height(), uiCamera.width,
+					toolbar.height());
+		}
 		add(toolbar);
 
 		attack = new AttackIndicator();
@@ -249,6 +327,14 @@ public class GameScene extends PixelScene {
 		log.camera = uiCamera;
 		log.setRect(0, toolbar.top(), attack.left(), 0);
 		add(log);
+
+		// GLog is a Signal with GameLog as its only listener, so anything
+		// logged before this point is dispatched to nobody and lost. The
+		// build marker has to be announced here, not up where the first
+		// person view is installed.
+		if (FirstPerson.enabled) {
+			GLog.i(FirstPerson.BUILD);
+		}
 
 		if (Dungeon.depth < Statistics.deepestFloor)
 			GLog.i(TXT_WELCOME_BACK, Dungeon.depth);
@@ -366,6 +452,14 @@ public class GameScene extends PixelScene {
 	@Override
 	public void destroy() {
 
+		// Without this the static billboard map holds every Mob and Heap of
+		// the finished level, and through Char.sprite a chain of textures,
+		// for as long as the process lives.
+		FirstPerson.reset();
+		FirstPersonControls.uninstall();
+		Minimap.clear();
+		Targeting.clear();
+
 		freezeEmitters = false;
 
 		scene = null;
@@ -391,6 +485,13 @@ public class GameScene extends PixelScene {
 		}
 
 		super.update();
+
+		// Keep the first person camera on the hero's cell. No-op when off.
+		FirstPerson.update();
+		FirstPersonControls.update();
+		Minimap.update();
+		Targeting.update(
+			FirstPerson.yaw);
 
 		if (!freezeEmitters)
 			water.offset(0, -5 * Game.elapsed);
@@ -605,12 +706,14 @@ public class GameScene extends PixelScene {
 	}
 
 	public static void updateMap() {
+		FirstPerson.terrainChanged();
 		if (scene != null) {
 			scene.tiles.updated.set(0, 0, Level.getWidth(), Level.HEIGHT);
 		}
 	}
 
 	public static void updateMap(int cell) {
+		FirstPerson.terrainChanged();
 		if (scene != null) {
 			scene.tiles.updated.union(cell % Level.getWidth(), cell / Level.getWidth());
 		}
@@ -627,8 +730,34 @@ public class GameScene extends PixelScene {
 		scene.add(wnd);
 	}
 
+	/** Screen Y where the toolbar starts, so the first person controls can
+	 *  sit above it instead of on top of its buttons. Game.height when
+	 *  there is no toolbar yet -- it is built late in create(), and the
+	 *  stick is laid out every frame, so it corrects itself. */
+	public static float toolbarTopPx() {
+		if (scene == null || scene.toolbar == null || uiCamera == null) {
+			return Game.height;
+		}
+		return scene.toolbar.top() * uiCamera.zoom;
+	}
+
+	/** True while any modal window is up. Lives here because Group.members
+	 *  is protected and only the scene itself can look. */
+	public static boolean windowOpen() {
+		if (scene == null) {
+			return false;
+		}
+		for (Gizmo g : scene.members) {
+			if (g instanceof Window && g.exists) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static void afterObserve() {
 		if (scene != null) {
+			Minimap.refresh();
 			scene.fog.updateVisibility(Dungeon.visible, Dungeon.level.visited,
 					Dungeon.level.mapped);
 
@@ -680,6 +809,14 @@ public class GameScene extends PixelScene {
 	public static void selectCell(CellSelector.Listener listener) {
 		cellSelector.listener = listener;
 		scene.prompt(listener.prompt());
+	}
+
+	/** True while the game is waiting for the player to pick a target --
+	 *  a bow, a wand, a thrown dart. The default listener is the one that
+	 *  just walks and attacks, so anything else means "choose something". */
+	public static boolean targeting() {
+		return cellSelector != null && cellSelector.listener != null
+			&& cellSelector.listener != defaultCellListener;
 	}
 
 	private static boolean cancelCellSelector() {

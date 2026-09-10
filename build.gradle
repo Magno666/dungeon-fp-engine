@@ -1,15 +1,5 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-    }
+// jcenter() shut down in 2021, so the original 2017 build cannot resolve
+// anything. Modernised to AGP 8 / Gradle 8. No game code is touched.
+plugins {
+    id 'com.android.application' version '8.3.2' apply false
 }

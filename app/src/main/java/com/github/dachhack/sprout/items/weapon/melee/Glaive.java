@@ -27,7 +27,7 @@ public class Glaive extends MeleeWeapon {
 	}
 
 	public Glaive() {
-		super(5, 25, 1f, 1.5f, 3, 12);
+		super(5, 1f, 1f);
 	}
 
 	@Override

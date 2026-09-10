@@ -686,11 +686,6 @@ public abstract class Level implements Bundlable {
 				   }
 					
 				}
-
-				if (!Dungeon.hero.haspet && checkpet() != null){
-					PET petCheck = checkpet();
-					if(petCheck!=null){petCheck.destroy();petCheck.sprite.killAndErase();}
-				}
 				
 				spend(PET_TICK);
 				return true;

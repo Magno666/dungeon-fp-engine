@@ -17,6 +17,8 @@
  */
 package com.github.dachhack.sprout.items.weapon.missiles;
 
+import java.util.ArrayList;
+
 import com.github.dachhack.sprout.Dungeon;
 import com.github.dachhack.sprout.actors.Actor;
 import com.github.dachhack.sprout.actors.Char;
@@ -30,8 +32,6 @@ import com.github.dachhack.sprout.items.weapon.Weapon;
 import com.github.dachhack.sprout.scenes.GameScene;
 import com.github.dachhack.sprout.windows.WndOptions;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class MissileWeapon extends Weapon {
 

@@ -67,7 +67,7 @@ public class Gullin extends Mob {
 		maxLvl = 99;
 
 		loot = new StoneOre();
-		lootChance = 0.0f;
+		lootChance = 0.8f;
 	}
 
 	@Override

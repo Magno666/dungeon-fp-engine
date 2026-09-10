@@ -38,7 +38,6 @@ public class ScrollOfRegrowth extends Scroll {
 	{
 		name = "Scroll of Regrowth";
 		consumedValue = 15;
-		MP_COST = 10;
 	}
 
 	@Override

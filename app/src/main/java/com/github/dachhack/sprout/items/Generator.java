@@ -163,8 +163,7 @@ public class Generator {
 
 	public static enum Category {
 		WEAPON(150, Weapon.class), ARMOR(100, Armor.class), POTION(500,
-				Potion.class), POTION2(500, Potion.class),
-			    SCROLL(400, Scroll.class), WAND(40, Wand.class), RING(
+				Potion.class), SCROLL(400, Scroll.class), WAND(40, Wand.class), RING(
 				15, Ring.class), ARTIFACT(20, Artifact.class), SEED(0,
 				Plant.Seed.class), SEED2(0,	Plant.Seed.class), SEEDRICH(0,	Plant.Seed.class),
 				FOOD(0, Food.class), GOLD(500, Gold.class), BERRY(50, Food.class), MUSHROOM(0, Food.class),
@@ -222,18 +221,6 @@ public class Generator {
 				PotionOfOverHealing.class, Egg.class};
 		Category.POTION.probs = new float[] { 10, 4, 15, 10, 15, 10, 0, 20, 12,
 				10, 0, 10, 45, 4, 10};
-
-		Category.POTION2.classes = new Class<?>[] { PotionOfHealing.class,
-				PotionOfExperience.class, PotionOfToxicGas.class,
-				PotionOfParalyticGas.class, PotionOfLiquidFlame.class,
-				PotionOfLevitation.class, PotionOfStrength.class,
-				PotionOfMindVision.class, PotionOfPurity.class,
-				PotionOfInvisibility.class, PotionOfMight.class,
-				PotionOfFrost.class, PotionOfMending.class,
-				PotionOfOverHealing.class, Egg.class, EasterEgg.class};
-		Category.POTION2.probs = new float[] { 10, 4, 15, 10, 15, 10, 0, 20, 12,
-				10, 0, 10, 45, 4, 10, 1};
-
 
 		Category.WAND.classes = new Class<?>[] { WandOfTeleportation.class,
 				WandOfSlowness.class, WandOfFirebolt.class,

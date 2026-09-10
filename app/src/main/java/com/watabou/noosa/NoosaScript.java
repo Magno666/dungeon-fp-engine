@@ -64,6 +64,22 @@ public class NoosaScript extends Script {
 		
 	}
 
+	/**
+	 * Same shader, but vertices carry X,Y,Z (stride 5: x,y,z,u,v) instead of
+	 * X,Y (stride 4). aXYZW is already a vec4, so W falls back to 1 and the
+	 * existing uCamera * uModel * aXYZW line does real 3D unchanged.
+	 */
+	public void drawElements3D( FloatBuffer vertices, ShortBuffer indices, int size ) {
+
+		vertices.position( 0 );
+		aXY.vertexPointer( 3, 5, vertices );
+
+		vertices.position( 3 );
+		aUV.vertexPointer( 2, 5, vertices );
+
+		GLES20.glDrawElements( GLES20.GL_TRIANGLES, size, GLES20.GL_UNSIGNED_SHORT, indices );
+	}
+
 	public void drawElements( FloatBuffer vertices, ShortBuffer indices, int size ) {
 		
 		vertices.position( 0 );

@@ -17,6 +17,8 @@
  */
 package com.github.dachhack.sprout.actors.mobs;
 
+import java.util.HashSet;
+
 import com.github.dachhack.sprout.Assets;
 import com.github.dachhack.sprout.Badges;
 import com.github.dachhack.sprout.Challenges;
@@ -50,8 +52,6 @@ import com.github.dachhack.sprout.utils.Utils;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
-
-import java.util.HashSet;
 
 public abstract class Mob extends Char {
 

@@ -26,7 +26,12 @@ public class Utils {
 	}
 
 	public static String format(String format, Object... args) {
-		return String.format(Locale.ENGLISH, format, args);
+		// Translated BEFORE substitution, so the dictionary holds the
+		// template ("level %d") and not one particular floor number.
+		// Locale stays ENGLISH on purpose: it controls number formatting,
+		// and the game's own parsing expects a dot for decimals.
+		return String.format(Locale.ENGLISH,
+			com.github.dachhack.sprout.Lang.t(format), args);
 	}
 
 	public static String VOWELS = "aoeiu";

@@ -30,7 +30,7 @@ public class ScrollOfIdentify extends InventoryScroll {
 		inventoryTitle = "Select an item to identify";
 		mode = WndBag.Mode.UNIDENTIFED;
 		consumedValue = 10;
-		MP_COST = 5;
+
 		bones = true;
 	}
 

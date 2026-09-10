@@ -17,12 +17,12 @@
  */
 package com.github.dachhack.sprout.items;
 
+import java.util.ArrayList;
+
 import com.github.dachhack.sprout.actors.Char;
 import com.github.dachhack.sprout.actors.hero.Hero;
 import com.github.dachhack.sprout.utils.GLog;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class KindOfWeapon extends EquipableItem {
 
@@ -32,9 +32,6 @@ public class KindOfWeapon extends EquipableItem {
 
 	public int MIN = 0;
 	public int MAX = 1;
-
-	public int DIE = 1;
-	public int SIDES = 4;
 
 	@Override
 	public ArrayList<String> actions(Hero hero) {
@@ -95,7 +92,7 @@ public class KindOfWeapon extends EquipableItem {
 	}
 
 	public int damageRoll(Hero owner) {
-		return Random.Roll(DIE, SIDES);
+		return Random.NormalIntRange(MIN, MAX);
 	}
 
 	public float acuracyFactor(Hero hero) {

@@ -27,7 +27,7 @@ public class Quarterstaff extends MeleeWeapon {
 	}
 
 	public Quarterstaff() {
-		super(2, 12, 1f, 1f, 1, 8);
+		super(2, 1f, 1f);
 	}
 
 	@Override

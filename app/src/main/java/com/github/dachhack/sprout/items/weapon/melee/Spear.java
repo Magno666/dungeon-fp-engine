@@ -27,7 +27,7 @@ public class Spear extends MeleeWeapon {
 	}
 
 	public Spear() {
-		super(2, 18, 1f, 1.5f, 1, 20);
+		super(2, 1f, 1.5f);
 	}
 
 	@Override

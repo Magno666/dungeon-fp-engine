@@ -47,7 +47,6 @@ public class ScrollOfTeleportation extends Scroll {
 	{
 		name = "Scroll of Teleportation";
 		consumedValue = 10;
-		MP_COST = 5;
 	}
 
 	@Override

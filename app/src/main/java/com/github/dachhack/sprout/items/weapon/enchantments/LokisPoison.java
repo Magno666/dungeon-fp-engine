@@ -30,7 +30,7 @@ import com.watabou.utils.Random;
 
 public class LokisPoison extends Weapon.Enchantment {
 
-	private static final String TXT_VENOMOUS = "Pestilent %s";
+	private static final String TXT_VENOMOUS = "Loki's Venomous %s";
 
 	private static ItemSprite.Glowing PURPLE = new ItemSprite.Glowing(0x4400AA);
 

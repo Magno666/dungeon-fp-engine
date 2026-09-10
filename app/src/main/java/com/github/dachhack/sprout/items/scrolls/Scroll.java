@@ -17,11 +17,11 @@
  */
 package com.github.dachhack.sprout.items.scrolls;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import com.github.dachhack.sprout.Badges;
-import com.github.dachhack.sprout.Dungeon;
 import com.github.dachhack.sprout.actors.buffs.Blindness;
-import com.github.dachhack.sprout.actors.buffs.Buff;
-import com.github.dachhack.sprout.actors.buffs.Paralysis;
 import com.github.dachhack.sprout.actors.hero.Hero;
 import com.github.dachhack.sprout.items.Item;
 import com.github.dachhack.sprout.items.ItemStatusHandler;
@@ -29,16 +29,10 @@ import com.github.dachhack.sprout.items.artifacts.UnstableSpellbook;
 import com.github.dachhack.sprout.sprites.ItemSpriteSheet;
 import com.github.dachhack.sprout.utils.GLog;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 public abstract class Scroll extends Item {
 
 	private static final String TXT_BLINDED = "You can't read a scroll while blinded";
-
-	private static final String TXT_LESSMP = "You don't have enough magic power for that";
 
 	private static final String TXT_CURSED = "Your cursed spellbook prevents you from invoking this scroll's magic! "
 			+ "A scroll of remove curse might be strong enough to still work though...";
@@ -46,9 +40,6 @@ public abstract class Scroll extends Item {
 	public static final String AC_READ = "READ";
 
 	protected static final float TIME_TO_READ = 1f;
-
-	public int MP_COST = 1;
-
 
 	private static final Class<?>[] scrolls = { ScrollOfIdentify.class,
 			ScrollOfMagicMapping.class, ScrollOfRecharging.class,
@@ -123,25 +114,9 @@ public abstract class Scroll extends Item {
 							.isCursed()
 					&& !(this instanceof ScrollOfRemoveCurse)) {
 				GLog.n(TXT_CURSED);
-			} else if (hero.MP<MP_COST && isKnown()) {
-				GLog.n(TXT_LESSMP);
-			} else if (hero.MP<MP_COST && !isKnown()) {
-
-				curUser = hero;
-				curItem = detach(hero.belongings.backpack);
-				curUser.damage(Math.max(curUser.HT / 5, curUser.HP / 2), this);
-				Buff.prolong(curUser, Paralysis.class, Random.Int(4, 6));
-				Buff.prolong(curUser, Blindness.class, Random.Int(6, 9));
-				Dungeon.observe();
-
-				setKnown();
-
-				curUser.spendAndNext(TIME_TO_READ);
-
 			} else {
 				curUser = hero;
 				curItem = detach(hero.belongings.backpack);
-				useMP(curUser);
 				doRead();
 			}
 
@@ -151,19 +126,6 @@ public abstract class Scroll extends Item {
 
 		}
 	}
-
-	public boolean useMP(Hero hero){
-		boolean read = false;
-
-		if (hero.MP>=MP_COST){
-			hero.MP-=MP_COST;
-
-			read=true;
-		}
-
-		return read;
-	}
-
 
 	abstract protected void doRead();
 

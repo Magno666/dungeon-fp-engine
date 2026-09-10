@@ -17,19 +17,20 @@
  */
 package com.github.dachhack.sprout.items.scrolls;
 
+import java.util.ArrayList;
+
 import com.github.dachhack.sprout.Assets;
 import com.github.dachhack.sprout.Dungeon;
 import com.github.dachhack.sprout.actors.Actor;
 import com.github.dachhack.sprout.actors.buffs.Invisibility;
 import com.github.dachhack.sprout.actors.mobs.npcs.MirrorImage;
+import com.github.dachhack.sprout.effects.SpellSprite;
 import com.github.dachhack.sprout.items.wands.WandOfBlink;
 import com.github.dachhack.sprout.levels.Level;
 import com.github.dachhack.sprout.scenes.GameScene;
 import com.github.dachhack.sprout.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class ScrollOfMirrorImage extends Scroll {
 
@@ -38,7 +39,6 @@ public class ScrollOfMirrorImage extends Scroll {
 	{
 		name = "Scroll of Mirror Image";
 		consumedValue = 5;
-		MP_COST = 10;
 	}
 	
 	private static final String TXT_PREVENTING = "Something scrambles the illusion magic! ";

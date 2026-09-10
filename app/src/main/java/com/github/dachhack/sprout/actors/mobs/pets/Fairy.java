@@ -45,7 +45,7 @@ public class Fairy extends PET implements Callback{
 		state = HUNTING;
 		level = 1;
 		type = 10;
-		cooldown=999;
+		cooldown=1000;
 	}
 	private static final float TIME_TO_ZAP = 2f;
 	private static final String TXT_LIGHTNING_KILLED = "%s's lightning bolt killed you...";

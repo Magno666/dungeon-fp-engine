@@ -36,7 +36,7 @@ public class Spork extends MeleeWeapon {
 	}
 
 	public Spork() {
-		super(3, 10, 1.2f, 0.25f, 2, 20);
+		super(3, 1.2f, 0.25f);
 	}
 
 

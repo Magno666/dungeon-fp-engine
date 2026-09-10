@@ -30,7 +30,6 @@ public class ScrollOfRecharging extends Scroll {
 	{
 		name = "Scroll of Recharging";
 		consumedValue = 10;
-		MP_COST = 50;
 	}
 
 	@Override

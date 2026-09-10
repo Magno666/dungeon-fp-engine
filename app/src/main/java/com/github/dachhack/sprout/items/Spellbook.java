@@ -17,19 +17,28 @@
  */
 package com.github.dachhack.sprout.items;
 
+import java.util.ArrayList;
+
 import com.github.dachhack.sprout.Assets;
 import com.github.dachhack.sprout.Dungeon;
+import com.github.dachhack.sprout.actors.buffs.Buff;
+import com.github.dachhack.sprout.actors.buffs.Haste;
 import com.github.dachhack.sprout.actors.hero.Hero;
 import com.github.dachhack.sprout.effects.particles.ElmoParticle;
-import com.github.dachhack.sprout.items.misc.Spectacles.MagicSight;
 import com.github.dachhack.sprout.items.spells.Spell;
+import com.github.dachhack.sprout.items.keys.IronKey;
+import com.github.dachhack.sprout.items.misc.Spectacles.MagicSight;
+import com.github.dachhack.sprout.items.rings.RingOfForce;
+import com.github.dachhack.sprout.items.scrolls.Scroll;
+import com.github.dachhack.sprout.scenes.GameScene;
+import com.github.dachhack.sprout.scenes.InterlevelScene;
 import com.github.dachhack.sprout.sprites.ItemSpriteSheet;
 import com.github.dachhack.sprout.utils.GLog;
 import com.github.dachhack.sprout.windows.WndBag;
+import com.github.dachhack.sprout.windows.WndOtiluke;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-
-import java.util.ArrayList;
 
 public class Spellbook extends Item {
 

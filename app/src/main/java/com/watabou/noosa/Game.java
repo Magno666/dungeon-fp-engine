@@ -116,7 +116,11 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 		
 		view = new GLSurfaceView( this );
 		view.setEGLContextClientVersion( 2 );
-		view.setEGLConfigChooser( false );
+		// true asks for a depth buffer. Noosa never needed one -- everything
+		// was drawn back to front in 2D -- but the first person view cannot
+		// sort walls without it. Costs 16 bits per pixel and nothing else:
+		// depth testing stays off until something explicitly turns it on.
+		view.setEGLConfigChooser( true );
 		view.setRenderer( this );
 		view.setOnTouchListener( this );
 		setContentView( view );
@@ -212,7 +216,7 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 
 		NoosaScript.get().resetCamera();
 		GLES20.glScissor( 0, 0, width, height );
-		GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT );
+		GLES20.glClear( GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT );
 		draw();
 	}
 

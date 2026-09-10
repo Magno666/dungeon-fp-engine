@@ -17,6 +17,8 @@
  */
 package com.github.dachhack.sprout.items.weapon.melee;
 
+import java.util.ArrayList;
+
 import com.github.dachhack.sprout.Assets;
 import com.github.dachhack.sprout.Badges;
 import com.github.dachhack.sprout.Dungeon;
@@ -31,8 +33,6 @@ import com.github.dachhack.sprout.utils.GLog;
 import com.github.dachhack.sprout.windows.WndBag;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class ShortSword extends MeleeWeapon {
 
@@ -57,7 +57,7 @@ public class ShortSword extends MeleeWeapon {
 	}
 
 	public ShortSword() {
-		super(1, 12, 1f, 1f, 2, 4);
+		super(1, 1f, 1f);
 
 		STR = 11;
 		MAX = 12;

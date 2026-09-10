@@ -202,7 +202,9 @@ public class BitmapText extends Visual {
 	}
 	
 	public void text( String str ) {
-		text = str;
+		// The other end of the translation layer: anything drawn as text
+		// that did not come through Utils.format arrives here. See Lang.
+		text = com.github.dachhack.sprout.Lang.t( str );
 		dirty = true;
 	}
 	

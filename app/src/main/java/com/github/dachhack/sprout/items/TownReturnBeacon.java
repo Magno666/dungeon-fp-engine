@@ -40,7 +40,7 @@ public class TownReturnBeacon extends Item {
 
 	
 	private static final String TXT_INFO = "Return beacon is an intricate magic device, that allows you to return to a place you have already been.";
-	private static final String TXT_CREATURES = "Psychic aura of neighbouring creatures doesn't allow you to use the beacon at this moment.";
+	private static final String TXT_CREATURES = "Psychic aura of neighbouring creatures doesn't allow you to use the lloyd's beacon at this moment.";
 
 	public static final float TIME_TO_USE = 1;
 

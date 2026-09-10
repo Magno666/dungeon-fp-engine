@@ -107,16 +107,6 @@ public class ItemSpriteSheet {
 	public static final int GLAIVE = ROW3 + 10;
 	public static final int ADAMANT_WEAPON = ROW3 + 11;
 	public static final int CHAINSAW = ROW3 + 12;
-	public static final int AXE = ROW17 + 5;
-	public static final int HANDAXE = ROW3 + 15;
-	public static final int BROADSWORD = ROW17 + 8;
-	public static final int GREATSWORD = ROW17 + 9;
-	public static final int SCIMITAR = ROW3 + 13;
-	public static final int DIRK = ROW3 + 14;
-	public static final int ASSASSINSKNIFE = ROW17 + 7;
-	public static final int FLAIL = ROW17 + 4;
-	public static final int MAGICSTAFF = ROW17 + 10;
-	public static final int SAI = ROW17 + 6;
 
 	// Row Four: Missile weapons and sporks
 	public static final int DART = ROW4 + 0;

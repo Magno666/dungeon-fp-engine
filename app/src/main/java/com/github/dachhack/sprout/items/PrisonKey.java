@@ -17,6 +17,8 @@
  */
 package com.github.dachhack.sprout.items;
 
+import java.util.ArrayList;
+
 import com.github.dachhack.sprout.Dungeon;
 import com.github.dachhack.sprout.Statistics;
 import com.github.dachhack.sprout.actors.Actor;
@@ -34,8 +36,6 @@ import com.github.dachhack.sprout.sprites.ItemSpriteSheet;
 import com.github.dachhack.sprout.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Bundle;
-
-import java.util.ArrayList;
 
 public class PrisonKey extends Item {
 	

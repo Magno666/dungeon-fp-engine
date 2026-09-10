@@ -17,6 +17,8 @@
  */
 package com.github.dachhack.sprout.items.weapon.melee;
 
+import java.util.ArrayList;
+
 import com.github.dachhack.sprout.actors.Char;
 import com.github.dachhack.sprout.actors.hero.Hero;
 import com.github.dachhack.sprout.actors.mobs.Gullin;
@@ -30,8 +32,6 @@ import com.github.dachhack.sprout.sprites.ItemSpriteSheet;
 import com.github.dachhack.sprout.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class Chainsaw extends MeleeWeapon {
 
@@ -106,7 +106,7 @@ public class Chainsaw extends MeleeWeapon {
 	}
 	
 	public Chainsaw() {
-		super(1, 12, 1.2f, .75f, 2, 6);
+		super(1, 1.2f, .75f);
 	}
 
 	@Override

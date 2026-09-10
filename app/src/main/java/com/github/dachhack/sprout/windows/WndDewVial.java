@@ -34,7 +34,7 @@ public class WndDewVial extends Window {
 			                                  +"The deeper you go in the dungeon, the more the dew will upgrade your gear. "
 			                                  +"You can bless your items to +6 or +7 by the time you get to the Goo."; 
 	
-	private static final String TXT_WATER = "Find 100 dew drops!";
+	private static final String TXT_WATER = "Okay! Let's go find 100 dew drops!";
 
 
 	private static final int WIDTH = 120;
@@ -51,7 +51,8 @@ public class WndDewVial extends Window {
 		titlebar.setRect(0, 0, WIDTH, 0);
 		add(titlebar);
 
-		BitmapTextMultiline message = PixelScene.createMultiline(TXT_MESSAGE, 6);
+		BitmapTextMultiline message = PixelScene
+				.createMultiline(TXT_MESSAGE, 6);
 		message.maxWidth = WIDTH;
 		message.measure();
 		message.y = titlebar.bottom() + GAP;

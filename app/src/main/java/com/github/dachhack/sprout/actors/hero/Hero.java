@@ -17,6 +17,10 @@
  */
 package com.github.dachhack.sprout.actors.hero;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+
 import com.github.dachhack.sprout.Assets;
 import com.github.dachhack.sprout.Badges;
 import com.github.dachhack.sprout.Bones;
@@ -39,8 +43,8 @@ import com.github.dachhack.sprout.actors.buffs.Drowsy;
 import com.github.dachhack.sprout.actors.buffs.Fury;
 import com.github.dachhack.sprout.actors.buffs.Hunger;
 import com.github.dachhack.sprout.actors.buffs.Invisibility;
+import com.github.dachhack.sprout.actors.buffs.LichenDrop;
 import com.github.dachhack.sprout.actors.buffs.Light;
-import com.github.dachhack.sprout.actors.buffs.ManaRegen;
 import com.github.dachhack.sprout.actors.buffs.Ooze;
 import com.github.dachhack.sprout.actors.buffs.Paralysis;
 import com.github.dachhack.sprout.actors.buffs.Poison;
@@ -50,6 +54,7 @@ import com.github.dachhack.sprout.actors.buffs.SnipersMark;
 import com.github.dachhack.sprout.actors.buffs.Strength;
 import com.github.dachhack.sprout.actors.buffs.Vertigo;
 import com.github.dachhack.sprout.actors.buffs.Weakness;
+import com.github.dachhack.sprout.actors.mobs.Lichen;
 import com.github.dachhack.sprout.actors.mobs.Mob;
 import com.github.dachhack.sprout.actors.mobs.npcs.NPC;
 import com.github.dachhack.sprout.actors.mobs.pets.PET;
@@ -84,6 +89,7 @@ import com.github.dachhack.sprout.items.potions.Potion;
 import com.github.dachhack.sprout.items.potions.PotionOfHealing;
 import com.github.dachhack.sprout.items.potions.PotionOfMight;
 import com.github.dachhack.sprout.items.potions.PotionOfStrength;
+import com.github.dachhack.sprout.items.quest.DarkGold;
 import com.github.dachhack.sprout.items.rings.RingOfElements;
 import com.github.dachhack.sprout.items.rings.RingOfEvasion;
 import com.github.dachhack.sprout.items.rings.RingOfForce;
@@ -98,6 +104,7 @@ import com.github.dachhack.sprout.items.scrolls.ScrollOfRecharging;
 import com.github.dachhack.sprout.items.scrolls.ScrollOfUpgrade;
 import com.github.dachhack.sprout.items.wands.Wand;
 import com.github.dachhack.sprout.items.weapon.melee.MeleeWeapon;
+import com.github.dachhack.sprout.items.weapon.melee.relic.RelicMeleeWeapon;
 import com.github.dachhack.sprout.items.weapon.missiles.MissileWeapon;
 import com.github.dachhack.sprout.levels.Level;
 import com.github.dachhack.sprout.levels.Terrain;
@@ -118,7 +125,6 @@ import com.github.dachhack.sprout.utils.GLog;
 import com.github.dachhack.sprout.windows.WndAscend;
 import com.github.dachhack.sprout.windows.WndDescend;
 import com.github.dachhack.sprout.windows.WndDewVial;
-import com.github.dachhack.sprout.windows.WndLevelUp;
 import com.github.dachhack.sprout.windows.WndMessage;
 import com.github.dachhack.sprout.windows.WndResurrect;
 import com.github.dachhack.sprout.windows.WndTradeItem;
@@ -127,10 +133,6 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 
 public class Hero extends Char {
 
@@ -161,8 +163,6 @@ public class Hero extends Char {
 
 	private int attackSkill = 10;
 	private int defenseSkill = 5;
-
-	public boolean levelup = false;
 
 	public boolean ready = false;
 	
@@ -199,9 +199,6 @@ public class Hero extends Char {
 	public int lvl = 1;
 	public int exp = 0;
 
-	public int magicLevel = 0;
-	public int speedLevel = 0;
-
 	private ArrayList<Mob> visibleEnemies;
 
 	public Hero() {
@@ -209,10 +206,8 @@ public class Hero extends Char {
 		name = "you";
 
 		HP = HT = 20;
-		MP = MT = 5;
 		STR = STARTING_STR;
 		awareness = 0.1f;
-		speedLevel = 1;
 
 		belongings = new Belongings(this);
 
@@ -236,7 +231,6 @@ public class Hero extends Char {
 	private static final String EXPERIENCE = "exp";
 	private static final String HASPET = "haspet";
 	private static final String PETFOLLOW = "petfollow";
-	private static final String LEVELUP = "levelup";
 	private static final String PETTYPE = "petType";
 	private static final String PETLEVEL = "petLevel";
 	private static final String PETKILLS = "petKills";
@@ -244,8 +238,6 @@ public class Hero extends Char {
 	private static final String PETEXP = "petExperience";
 	private static final String PETCOOLDOWN = "petCooldown";
 	private static final String PETCOUNT = "petCount";
-	private static final String MAGICLEVEL = "magicLevel";
-	private static final String SPEEDLEVEL = "speedLevel";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
@@ -271,9 +263,6 @@ public class Hero extends Char {
 		bundle.put(PETEXP, petExperience);
 		bundle.put(PETCOOLDOWN, petCooldown);
 		bundle.put(PETCOUNT, petCount);
-		bundle.put(MAGICLEVEL, magicLevel);
-		bundle.put(SPEEDLEVEL, speedLevel);
-		bundle.put(LEVELUP, levelup);
 
 		belongings.storeInBundle(bundle);
 	}
@@ -302,10 +291,7 @@ public class Hero extends Char {
 		petExperience = bundle.getInt(PETEXP);
 		petCooldown = bundle.getInt(PETCOOLDOWN);
 		petCount = bundle.getInt(PETCOUNT);
-		magicLevel = bundle.getInt(MAGICLEVEL);
-		speedLevel = bundle.getInt(SPEEDLEVEL);
-		levelup = bundle.getBoolean(LEVELUP);
-
+		
 		belongings.restoreFromBundle(bundle);
 	}
 
@@ -325,7 +311,6 @@ public class Hero extends Char {
 	public void live() {
 		Buff.affect(this, Regeneration.class);
 		Buff.affect(this, Hunger.class);
-		Buff.affect(this, ManaRegen.class);
 	}
 
 	public int tier() {
@@ -505,15 +490,8 @@ public class Hero extends Char {
 	@Override
 	public boolean act() {
 
-		super.act();
-
-/*
-		if(levelup){
-			GameScene.show(new WndLevelUp(this));
-			Dungeon.observe();
-			ready();
-		}
-*/
+		super.act();		
+		
 		Statistics.moves++;
 		
 		if(Dungeon.dewDraw){Dungeon.level.currentmoves++;}
@@ -805,13 +783,6 @@ public class Hero extends Char {
 							GLog.w("Its revival power seems to have faded.");
 							GameScene.show(new WndDewVial(item));
 						}
-                       /*
-						if (item instanceof LevelDewdrop) {
-							GLog.w("You found life drop!");
-							GameScene.show(new WndLevelUp(item));
-
-						}
-						*/
 					}
 
 					if (!heap.isEmpty()) {
@@ -819,9 +790,7 @@ public class Hero extends Char {
 					}
 					curAction = null;
 				} else {
-				/*
 					Dungeon.level.drop(item, pos).sprite.drop();
-					*/
 					ready();
 				}
 			} else {
@@ -965,7 +934,7 @@ public class Hero extends Char {
 					 Dungeon.level.checkdew()>0 
 				     || Dungeon.hero.buff(Dewcharge.class) != null)
 				    ) {
-
+			
 			GameScene.show(new WndDescend());
 			ready();
 			return false;
@@ -1496,7 +1465,7 @@ public class Hero extends Char {
 		return act();
 	}
 
-	public boolean earnExp(int exp) {
+	public void earnExp(int exp) {
 
 		this.exp += exp;
 
@@ -1545,11 +1514,6 @@ public class Hero extends Char {
 			}
 
 			buff(Hunger.class).satisfy(10);
-
-			levelup = true;
-
-			GameScene.show(new WndLevelUp(this));
-
 		}
 
 		if (subClass == HeroSubClass.WARLOCK) {
@@ -1562,8 +1526,6 @@ public class Hero extends Char {
 
 			buff(Hunger.class).satisfy(100);
 		}
-
-		return levelUp;
 	}
 
 	public int maxExp() {
@@ -1781,8 +1743,7 @@ public class Hero extends Char {
 			Dungeon.level.press(pos, this);
 		}
 		
-		//if (buff(LichenDrop.class) != null){Lichen.spawnAroundChance(pos);}
-
+		if (buff(LichenDrop.class) != null){Lichen.spawnAroundChance(pos);}
 	}
 
 	@Override

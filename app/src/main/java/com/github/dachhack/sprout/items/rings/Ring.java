@@ -17,6 +17,8 @@
  */
 package com.github.dachhack.sprout.items.rings;
 
+import java.util.ArrayList;
+
 import com.github.dachhack.sprout.Badges;
 import com.github.dachhack.sprout.Dungeon;
 import com.github.dachhack.sprout.actors.Char;
@@ -30,8 +32,6 @@ import com.github.dachhack.sprout.sprites.ItemSpriteSheet;
 import com.github.dachhack.sprout.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public class Ring extends KindofMisc {
 

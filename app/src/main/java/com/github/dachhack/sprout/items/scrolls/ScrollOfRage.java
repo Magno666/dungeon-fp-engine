@@ -35,7 +35,6 @@ public class ScrollOfRage extends Scroll {
 	{
 		name = "Scroll of Rage";
 		consumedValue = 5;
-		MP_COST = 5;
 	}
 
 	@Override

@@ -26,24 +26,19 @@ import com.watabou.utils.Random;
 public class MeleeWeapon extends Weapon {
 
 	private int tier;
-	private int requiredStr;
 
-	public MeleeWeapon(int tier, int requiredStr, float acu, float dly, int die, int sides) {
+	public MeleeWeapon(int tier, float acu, float dly) {
 		super();
 
 		this.tier = tier;
-		this.requiredStr = requiredStr;
 
 		ACU = acu;
 		DLY = dly;
 
-		STR = requiredSTR();
+		STR = typicalSTR();
 
 		MIN = min();
 		MAX = max();
-
-		this.DIE = die;
-		this.SIDES = sides;
 	}
 
 	private int min() {
@@ -84,10 +79,6 @@ public class MeleeWeapon extends Weapon {
 		return 8 + tier * 2;
 	}
 
-	public int requiredSTR() {
-		return (requiredStr-TierBonus(tier));
-	}
-
 	@Override
 	public String info() {
 
@@ -95,7 +86,7 @@ public class MeleeWeapon extends Weapon {
 
 		StringBuilder info = new StringBuilder(desc());
 
-		String quality = levelKnown && level != 0 ? (level > 0 ? TierCheck(tier)
+		String quality = levelKnown && level != 0 ? (level > 0 ? "upgraded"
 				: "degraded") : "";
 		info.append(p);
 		info.append("This " + name + " is " + Utils.indefinite(quality));
@@ -110,9 +101,9 @@ public class MeleeWeapon extends Weapon {
 		} else {
 			info.append("Its typical average damage is "
 					+ (min() + (max() - min()) / 2) + " points per hit "
-					+ "and usually it requires " + requiredSTR()
+					+ "and usually it requires " + typicalSTR()
 					+ " points of strength. ");
-			if (requiredSTR() > Dungeon.hero.STR()) {
+			if (typicalSTR() > Dungeon.hero.STR()) {
 				info.append("Probably this weapon is too heavy for you. ");
 			}
 		}

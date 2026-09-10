@@ -202,8 +202,6 @@ public class PixelScene extends Scene {
 		scale /= zoom;
 	}
 
-
-
 	public static BitmapText createText(float size) {
 		return createText(null, size);
 	}

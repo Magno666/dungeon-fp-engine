@@ -35,7 +35,7 @@ public class RoyalSpork extends MeleeWeapon {
 	}
 
 	public RoyalSpork() {
-		super(1, 10, 1f, 0.15f, 4, 20);
+		super(1, 1f, 0.15f);
 	}
 
 

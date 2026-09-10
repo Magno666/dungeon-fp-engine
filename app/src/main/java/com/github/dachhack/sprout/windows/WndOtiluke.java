@@ -21,6 +21,7 @@ import com.github.dachhack.sprout.Dungeon;
 import com.github.dachhack.sprout.actors.buffs.Buff;
 import com.github.dachhack.sprout.actors.hero.Hero;
 import com.github.dachhack.sprout.actors.mobs.Mob;
+import com.github.dachhack.sprout.items.Item;
 import com.github.dachhack.sprout.items.OtilukesJournal;
 import com.github.dachhack.sprout.items.artifacts.DriedRose;
 import com.github.dachhack.sprout.items.artifacts.TimekeepersHourglass;

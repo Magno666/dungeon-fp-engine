@@ -185,7 +185,6 @@ public class WndSettings extends Window {
 
 			resize(WIDTH, (int) btnQuickSlot.bottom());
 
-
 		}
 	}
 

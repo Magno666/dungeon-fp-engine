@@ -25,7 +25,6 @@ import com.github.dachhack.sprout.actors.hero.HeroClass;
 import com.github.dachhack.sprout.actors.mobs.npcs.Ghost;
 import com.github.dachhack.sprout.actors.mobs.npcs.Ghost.GnollArcher;
 import com.github.dachhack.sprout.actors.mobs.npcs.Tinkerer1;
-import com.github.dachhack.sprout.actors.mobs.npcs.Guard;
 import com.github.dachhack.sprout.items.Bomb;
 import com.github.dachhack.sprout.items.DewVial;
 import com.github.dachhack.sprout.items.Mushroom;
@@ -145,15 +144,6 @@ public class SewerLevel extends RegularLevel {
 		
 		if (Dungeon.depth == 2){
 			Tinkerer1 npc = new Tinkerer1();
-			do {
-				npc.pos = randomRespawnCell();
-			} while (npc.pos == -1 || heaps.get(npc.pos) != null);
-			mobs.add(npc);
-			Actor.occupyCell(npc);
-		}
-
-		if (Dungeon.depth == 1){
-			Guard npc = new Guard();
 			do {
 				npc.pos = randomRespawnCell();
 			} while (npc.pos == -1 || heaps.get(npc.pos) != null);

@@ -40,6 +40,13 @@ public class DungeonTilemap extends Tilemap {
 	}
 
 	public int screenToTile(int x, int y) {
+		// In first person the flat map is not on screen at all, so the cell
+		// under a tap has to be found by casting into the 3D view. Every
+		// caller above this — CellSelector, handleCell, spell targeting —
+		// is untouched and keeps working.
+		if (FirstPerson.enabled) {
+			return FirstPerson.screenToCell(x, y);
+		}
 		Point p = camera().screenToCamera(x, y).offset(this.point().negate())
 				.invScale(SIZE).floor();
 		return p.x >= 0 && p.x < Level.getWidth() && p.y >= 0 && p.y < Level.HEIGHT ? p.x
