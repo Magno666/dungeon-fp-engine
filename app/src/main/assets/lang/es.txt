@@ -8,6 +8,15 @@
 # Usa \n para un salto de línea. Las líneas que empiezan con # se ignoran.
 # Lo que no esté aquí se muestra en inglés, así que se puede ir llenando
 # poco a poco sin romper nada.
+#
+# Variedad: español de México, neutro para LATAM. "Agarrar", no "coger".
+# "Tú", nunca "vos" ni "vosotros". Los nombres propios del bestiario y de
+# los jefes NO se traducen: Goo, Tengu, Yog-Dzewa, Zot, DM-300, Otiluke.
+#
+# OJO: aquí sólo van cadenas COMPLETAS. El juego arma varias frases
+# pegando trozos ("and ", "is cursed"), y traducir un trozo suelto da un
+# español roto porque el orden de las palabras cambia. Esos se quedan en
+# inglés a propósito hasta que la frase entera pase por un solo sitio.
 
 # ---- pantalla de título y menús ----
 en:Play
@@ -24,26 +33,86 @@ en:Challenges
 tr:Desafíos
 en:Start New Game
 tr:Partida nueva
+en:New Game
+tr:Partida nueva
+en:Load Game
+tr:Cargar partida
 en:Main Menu
 tr:Menú principal
 en:Exit Game
 tr:Salir del juego
 en:Return to Game
 tr:Volver al juego
+en:Erase current game
+tr:Borrar la partida actual
+en:Yes, start new game
+tr:Sí, empezar de nuevo
+en:No, return to main menu
+tr:No, volver al menú
+en:No, I changed my mind
+tr:No, cambié de opinión
+en:Yes, I'm positive
+tr:Sí, estoy seguro
+en:Yes, I know what I'm doing
+tr:Sí, sé lo que hago
+en:No, I give up
+tr:No, me rindo
+en:Yes, I will fight!
+tr:¡Sí, voy a pelear!
+en:No Thanks
+tr:No, gracias
+en:Never mind
+tr:Olvídalo
+en:I'll decide later
+tr:Lo decido después
+en:Okay
+tr:Listo
+en:Top Rankings
+tr:Mejores puntajes
+en:Your Badges
+tr:Tus medallas
+en:Journal
+tr:Diario
+en:Catalogus
+tr:Catálogo
+en:Loading...
+tr:Cargando...
 
-# ---- cambio de piso ----
+# ---- ajustes ----
+en:Music
+tr:Música
+en:Sound FX
+tr:Efectos de sonido
+en:Brightness
+tr:Brillo
+en:Immersive mode
+tr:Pantalla completa
+en:Scale up UI
+tr:Agrandar interfaz
+en:Default Zoom
+tr:Zoom normal
+en:Second QuickSlot
+tr:Segundo acceso rápido
+en:Switch to portrait
+tr:Cambiar a vertical
+en:Switch to landscape
+tr:Cambiar a horizontal
+
+# ---- cambio de piso y transiciones ----
 en:Descending...
 tr:Bajando...
 en:Ascending...
 tr:Subiendo...
-en:Loading...
-tr:Cargando...
 en:Resurrecting...
 tr:Resucitando...
 en:Returning...
 tr:Regresando...
 en:Falling...
 tr:Cayendo...
+en:Descend
+tr:Bajar
+en:Ascend
+tr:Subir
 en:The dead are restless...
 tr:Los muertos no descansan...
 en:A rushing of water...
@@ -52,6 +121,8 @@ en:Screams and chaos...
 tr:Gritos y caos...
 en:Prepare to meet doom...
 tr:Prepárate para la perdición...
+en:War drums and fire...
+tr:Tambores de guerra y fuego...
 en:Entering Tengu hideout...
 tr:Entrando a la guarida de Tengu...
 en:Entering Shadow Den...
@@ -66,11 +137,1255 @@ en:Coins spilling...
 tr:Monedas derramándose...
 en:Let's go fishing...
 tr:Vamos a pescar...
-en:Feed us!
-tr:¡Aliméntanos!
+en:Let's call it a day
+tr:Le paramos por hoy
 
 # ---- mensajes de juego ----
 en:Welcome to the level %d of Pixel Dungeon!
 tr:¡Bienvenido al piso %d de Pixel Dungeon!
 en:Welcome back to the level %d of Pixel Dungeon!
 tr:¡Bienvenido de nuevo al piso %d de Pixel Dungeon!
+en:Depth: %d, level: %d
+tr:Profundidad: %d, nivel: %d
+en:Level %d %s
+tr:Nivel %d %s
+en:level up!
+tr:¡subiste de nivel!
+en:You now have %s
+tr:Ahora tienes %s
+en:There is nothing here.
+tr:Aquí no hay nada.
+en:No enemies in sight
+tr:No hay enemigos a la vista
+en:You noticed something
+tr:Notaste algo
+en:No additional information
+tr:Sin más información
+en:You can't target yourself
+tr:No te puedes apuntar a ti mismo
+en:Your health is too low!
+tr:¡Tu salud está muy baja!
+en:%s hit %s
+tr:%s golpeó a %s
+en:%s defeated %s
+tr:%s derrotó a %s
+en:%d hit combo!
+tr:¡combo de %d golpes!
+en:%s freezes!
+tr:¡%s se congela!
+en:%s burns up!
+tr:¡%s se quema!
+en:%s becomes enraged!
+tr:¡%s se enfurece!
+en:This is a mimic!
+tr:¡Es un mímico!
+en:This is a %s
+tr:Esto es %s
+en:Something scratches back!
+tr:¡Algo rasguña desde adentro!
+en:Something squirms inside!
+tr:¡Algo se retuerce adentro!
+en:Something hatches!
+tr:¡Algo eclosiona!
+en:nothing happened
+tr:no pasó nada
+
+# ---- estado del héroe ----
+en:Health
+tr:Salud
+en:Hunger
+tr:Hambre
+en:Strength
+tr:Fuerza
+en:Experience
+tr:Experiencia
+en:Attack Skill
+tr:Habilidad de ataque
+en:Level
+tr:Nivel
+en:Stats
+tr:Estadísticas
+en:Buffs
+tr:Efectos
+en:Items
+tr:Objetos
+en:Kills
+tr:Bajas
+en:Turns
+tr:Turnos
+en:You are hungry.
+tr:Tienes hambre.
+en:You are starving!
+tr:¡Te estás muriendo de hambre!
+en:You are stuffed.
+tr:Estás bien lleno.
+en:You feel better!
+tr:¡Te sientes mejor!
+en:You feel refreshed.
+tr:Te sientes renovado.
+en:You feel uneasy.
+tr:Te sientes inquieto.
+en:You are not feeling well.
+tr:No te sientes bien.
+en:You are blinded!
+tr:¡Estás ciego!
+en:You are charmed!
+tr:¡Estás hechizado!
+en:You are bleeding!
+tr:¡Estás sangrando!
+en:You are crippled!
+tr:¡Estás lisiado!
+en:You are poisoned!
+tr:¡Estás envenenado!
+en:You are paralysed!
+tr:¡Estás paralizado!
+en:You feel weakened!
+tr:¡Te sientes débil!
+en:You catch fire!
+tr:¡Te prendes en llamas!
+en:You can't move!
+tr:¡No te puedes mover!
+en:You can't feel your legs!
+tr:¡No sientes las piernas!
+en:You float into the air!
+tr:¡Flotas en el aire!
+en:You become furious!
+tr:¡Te pones furioso!
+en:You feel your skin harden!
+tr:¡Sientes que tu piel se endurece!
+en:Your wounds heal some.
+tr:Tus heridas sanan un poco.
+en:Refreshing!
+tr:¡Qué refrescante!
+en:Trippy!
+tr:¡Qué viaje!
+en:Oh it's hot!
+tr:¡Ay, está bien caliente!
+en:Harmful potion!
+tr:¡Poción dañina!
+en:Beneficial potion
+tr:Poción benéfica
+en:Alert!
+tr:¡Alerta!
+en:Blast!
+tr:¡Estallido!
+en:%+dHP
+tr:%+dPV
+en:%+dEXP
+tr:%+dEXP
+en:HP Overfilled by %s
+tr:PV rebasados en %s
+en:Your HP overfills by %s!
+tr:¡Tus PV se rebasan en %s!
+
+# ---- muertes ----
+en:%s killed you...
+tr:%s te mató...
+en:You bled to death...
+tr:Te desangraste...
+en:You fell to death...
+tr:Moriste por la caída...
+en:You burned to death...
+tr:Moriste quemado...
+en:You starved to death...
+tr:Moriste de hambre...
+en:You died from poison...
+tr:Moriste envenenado...
+
+# ---- estados de enemigos ----
+en:This %s is sleeping
+tr:Este %s está dormido
+en:This %s is hunting
+tr:Este %s te está cazando
+en:This %s is fleeing
+tr:Este %s está huyendo
+en:This %s is passive
+tr:Este %s está pasivo
+en:This %s is wandering
+tr:Este %s anda merodeando
+
+# ---- oro, tienda y robo ----
+en:One gold coin.
+tr:Una moneda de oro.
+en:A pile of %d gold coins.
+tr:Un montón de %d monedas de oro.
+en:Gold Collected
+tr:Oro recolectado
+en:Buy for %dg
+tr:Comprar por %do
+en:Sell for %dg
+tr:Vender por %do
+en:Sell 1 for %dg
+tr:Vender 1 por %do
+en:Sell all for %dg
+tr:Vender todo por %do
+en:FOR SALE: %s - %dg
+tr:EN VENTA: %s - %do
+en:You've bought %s for %dg
+tr:Compraste %s por %do
+en:You've stolen the %s
+tr:Te robaste %s
+en:%s stole %s from you!
+tr:¡%s te robó %s!
+en:%s stole %s gold from you!
+tr:¡%s te robó %s de oro!
+en:Thief, Thief!
+tr:¡Al ladrón, al ladrón!
+en:Steal with %d%% chance
+tr:Robar con %d%% de probabilidad
+en:I'm busy. Get lost!
+tr:Ando ocupado. ¡Piérdete!
+en:What are you doing here?!
+tr:¿¡Qué haces aquí!?
+
+# ---- pociones ----
+en:Potion of Healing
+tr:Poción de Curación
+en:Potion of Strength
+tr:Poción de Fuerza
+en:Potion of Mending
+tr:Poción de Restauración
+en:Potion of Frost
+tr:Poción de Escarcha
+en:Potion of Haste
+tr:Poción de Rapidez
+en:Potion of Might
+tr:Poción de Poderío
+en:Potion of Life
+tr:Poción de Vida
+en:Potion of Experience
+tr:Poción de Experiencia
+en:Potion of Toxic Gas
+tr:Poción de Gas Tóxico
+en:Potion of Paralytic Gas
+tr:Poción de Gas Paralizante
+en:Potion of Liquid Flame
+tr:Poción de Llama Líquida
+en:Potion of Invisibility
+tr:Poción de Invisibilidad
+en:Potion of Levitation
+tr:Poción de Levitación
+en:Potion of Mind Vision
+tr:Poción de Visión Mental
+en:Potion of Purification
+tr:Poción de Purificación
+en:Potions
+tr:Pociones
+en:Potions Cooked
+tr:Pociones preparadas
+en:Brew a Potion
+tr:Preparar una poción
+
+# ---- pergaminos ----
+en:Scroll of Upgrade
+tr:Pergamino de Mejora
+en:Scroll of Identify
+tr:Pergamino de Identificación
+en:Scroll of Remove Curse
+tr:Pergamino de Quitar Maldición
+en:Scroll of Magic Mapping
+tr:Pergamino de Cartografía Mágica
+en:Scroll of Teleportation
+tr:Pergamino de Teletransporte
+en:Scroll of Terror
+tr:Pergamino de Terror
+en:Scroll of Lullaby
+tr:Pergamino de Arrullo
+en:Scroll of Rage
+tr:Pergamino de Furia
+en:Scroll of Recharging
+tr:Pergamino de Recarga
+en:Scroll of Mirror Image
+tr:Pergamino de Imagen Espejo
+en:Scroll of Psionic Blast
+tr:Pergamino de Estallido Psiónico
+en:Scroll of Regrowth
+tr:Pergamino de Rebrote
+en:Scroll of Magical Infusion
+tr:Pergamino de Infusión Mágica
+en:Scroll of Multi Upgrade
+tr:Pergamino de Mejora Múltiple
+en:Scrolls
+tr:Pergaminos
+
+# ---- anillos ----
+en:Ring of Force
+tr:Anillo de Fuerza Bruta
+en:Ring of Frost
+tr:Anillo de Escarcha
+en:Ring of Furor
+tr:Anillo de Furor
+en:Ring of Haste
+tr:Anillo de Rapidez
+en:Ring of Magic
+tr:Anillo de Magia
+en:Ring of Might
+tr:Anillo de Poderío
+en:Ring of Wealth
+tr:Anillo de Riqueza
+en:Ring of Evasion
+tr:Anillo de Evasión
+en:Ring of Accuracy
+tr:Anillo de Precisión
+en:Ring of Elements
+tr:Anillo de Elementos
+en:Ring of Tenacity
+tr:Anillo de Tenacidad
+en:Ring of Sharpshooting
+tr:Anillo de Puntería
+en:Ring of Disintegration
+tr:Anillo de Desintegración
+en:Take the ring
+tr:Tomar el anillo
+
+# ---- varitas ----
+en:Wand of Amok
+tr:Varita de Locura
+en:Wand of Blink
+tr:Varita de Parpadeo
+en:Wand of Flock
+tr:Varita de Rebaño
+en:Wand of Poison
+tr:Varita de Veneno
+en:Wand of Firebolt
+tr:Varita de Bola de Fuego
+en:Wand of Regrowth
+tr:Varita de Rebrote
+en:Wand of Slowness
+tr:Varita de Lentitud
+en:Wand of Lightning
+tr:Varita de Relámpago
+en:Wand of Avalanche
+tr:Varita de Avalancha
+en:Wand of Telekinesis
+tr:Varita de Telequinesis
+en:Wand of Magic Missile
+tr:Varita de Misil Mágico
+en:Wand of Teleportation
+tr:Varita de Teletransporte
+en:Wand of Disintegration
+tr:Varita de Desintegración
+en:Battle wand
+tr:Varita de combate
+en:Non-battle wand
+tr:Varita fuera de combate
+en:Wand Attack
+tr:Ataque con varita
+en:Select a wand to upgrade
+tr:Elige una varita para mejorar
+
+# ---- artefactos y objetos únicos ----
+en:Amulet of Yendor
+tr:Amuleto de Yendor
+en:Orb Of Zot
+tr:Orbe de Zot
+en:orb of zot
+tr:orbe de zot
+en:Cloak of Shadows
+tr:Capa de Sombras
+en:Cape of Thorns
+tr:Capa de Espinas
+en:Horn of Plenty
+tr:Cuerno de la Abundancia
+en:Chalice of Blood
+tr:Cáliz de Sangre
+en:Talisman of Foresight
+tr:Talismán de Presagio
+en:Timekeeper's Hourglass
+tr:Reloj de Arena del Guardián
+en:Master Thieves' Armband
+tr:Brazalete del Maestro Ladrón
+en:Dried Rose
+tr:Rosa Seca
+en:Sandals of Nature
+tr:Sandalias de la Naturaleza
+en:Unstable Spellbook
+tr:Grimorio Inestable
+en:Alchemists Toolkit
+tr:Estuche de Alquimista
+en:Tome of Mastery
+tr:Tomo de Maestría
+en:Ankh
+tr:Ankh
+en:Ankhs Used
+tr:Ankhs usados
+en:Spellbook
+tr:Grimorio
+en:Spell Page
+tr:Página de hechizo
+en:spell page
+tr:página de hechizo
+en:Journal Page
+tr:Página de diario
+en:journal page
+tr:página de diario
+
+# ---- armas ----
+en:short sword
+tr:espada corta
+en:longsword
+tr:espada larga
+en:sword
+tr:espada
+en:dagger
+tr:daga
+en:mace
+tr:maza
+en:spear
+tr:lanza
+en:glaive
+tr:guja
+en:war hammer
+tr:martillo de guerra
+en:battle axe
+tr:hacha de batalla
+en:quarterstaff
+tr:bastón
+en:knuckleduster
+tr:manopla
+en:dart
+tr:dardo
+en:incendiary dart
+tr:dardo incendiario
+en:curare dart
+tr:dardo de curare
+en:forest dart
+tr:dardo del bosque
+en:javelin
+tr:jabalina
+en:shuriken
+tr:shuriken
+en:curare shuriken
+tr:shuriken de curare
+en:incendiary shuriken
+tr:shuriken incendiario
+en:tomahawk
+tr:tomahawk
+en:boomerang
+tr:bumerán
+en:spork
+tr:tenedor-cuchara
+en:royal spork
+tr:tenedor-cuchara real
+en:bomb
+tr:bomba
+en:two bombs
+tr:dos bombas
+en:cluster bomb
+tr:bomba de racimo
+en:seeking bomb
+tr:bomba buscadora
+en:seeking cluster bomb
+tr:bomba de racimo buscadora
+en:dizzy bomb
+tr:bomba aturdidora
+en:smart bomb
+tr:bomba inteligente
+en:dumpling bomb
+tr:bomba de empanada
+en:holy hand grenade
+tr:santa granada de mano
+en:Missile weapon
+tr:Arma arrojadiza
+en:Select a weapon to upgrade
+tr:Elige un arma para mejorar
+en:Select a weapon to balance
+tr:Elige un arma para equilibrar
+
+# ---- armaduras ----
+en:cloth armor
+tr:armadura de tela
+en:leather armor
+tr:armadura de cuero
+en:mail armor
+tr:cota de malla
+en:scale armor
+tr:armadura de escamas
+en:plate armor
+tr:armadura de placas
+en:rogue garb
+tr:atuendo de pícaro
+en:huntress cloak
+tr:capa de cazadora
+en:mage robe
+tr:túnica de mago
+en:warrior suit of armor
+tr:armadura de guerrero
+en:armor kit
+tr:kit de armadura
+en:Select an armor to upgrade
+tr:Elige una armadura para mejorar
+en:Herbal armor (%d)
+tr:Armadura herbal (%d)
+
+# ---- comida y consumibles ----
+en:ration of food
+tr:ración de comida
+en:overpriced food ration
+tr:ración de comida carísima
+en:pasty
+tr:empanada
+en:mystery meat
+tr:carne misteriosa
+en:monster meat
+tr:carne de monstruo
+en:chargrilled meat
+tr:carne asada
+en:frozen carpaccio
+tr:carpaccio congelado
+en:rice dumpling
+tr:tamalito de arroz
+en:grain of magic rice
+tr:grano de arroz mágico
+en:pudding cup
+tr:vasito de flan
+en:honeypot
+tr:tarro de miel
+en:steel honeypot
+tr:tarro de miel de acero
+en:shattered honeypot
+tr:tarro de miel roto
+en:shattered steel honeypot
+tr:tarro de miel de acero roto
+en:Honey
+tr:Miel
+en:Food Eaten
+tr:Comida consumida
+en:Oh boy! A pudding cup!
+tr:¡Órale! ¡Un vasito de flan!
+en:You eat from the horn.
+tr:Comes del cuerno.
+en:Your horn is full of food!
+tr:¡Tu cuerno está lleno de comida!
+
+# ---- frutas (Sprouted) ----
+en:Blandfruit
+tr:Frutasosa
+en:Icefruit
+tr:Frutahielo
+en:Firefruit
+tr:Frutafuego
+en:Sunfruit
+tr:Frutasol
+en:Starfruit
+tr:Frutaestrella
+en:Fadefruit
+tr:Frutaocaso
+en:Blindfruit
+tr:Frutaciega
+en:Dreamfruit
+tr:Frutasueño
+en:Earthfruit
+tr:Frutatierra
+en:Heartfruit
+tr:Frutacorazón
+en:Powerfruit
+tr:Frutapoder
+en:Stormfruit
+tr:Frutatormenta
+en:Sorrowfruit
+tr:Frutapesar
+en:Mightyfruit
+tr:Frutapoderío
+en:Cook a Blandfruit
+tr:Cocinar una frutasosa
+
+# ---- rocío y frascos ----
+en:dewdrop
+tr:gota de rocío
+en:red dewdrop
+tr:gota de rocío roja
+en:violet dewdrop
+tr:gota de rocío violeta
+en:yellow dewdrop
+tr:gota de rocío amarilla
+en:dew vial
+tr:frasco de rocío
+en:Dew Waters
+tr:Aguas de rocío
+en:Dew Charge Moves
+tr:Movimientos por carga de rocío
+en:Draw Out Dew
+tr:Extraer el rocío
+en:Water with Dew
+tr:Regar con rocío
+en:Your dew vial is full!
+tr:¡Tu frasco de rocío está lleno!
+en:Your dew vial is empty!
+tr:¡Tu frasco de rocío está vacío!
+en:Upgrade my Vial!
+tr:¡Mejora mi frasco!
+
+# ---- llaves y contenedores ----
+en:iron key
+tr:llave de hierro
+en:golden key
+tr:llave dorada
+en:skeleton key
+tr:llave maestra
+en:golden skeleton key
+tr:llave maestra dorada
+en:hideout key
+tr:llave de la guarida
+en:end boss key
+tr:llave del jefe final
+en:ancient city key
+tr:llave de la ciudad antigua
+en:ancient caves key
+tr:llave de las cuevas antiguas
+en:ancient prison key
+tr:llave de la prisión antigua
+en:ancient sewers key
+tr:llave de las alcantarillas antiguas
+en:key ring
+tr:llavero
+en:iron key from depth %d
+tr:llave de hierro de la profundidad %d
+en:backpack
+tr:mochila
+en:seed pouch
+tr:bolsa de semillas
+en:scroll holder
+tr:portapergaminos
+en:wand holster
+tr:funda de varitas
+en:potion bandolier
+tr:bandolera de pociones
+en:But to open it you need a golden key.
+tr:Pero para abrirla necesitas una llave dorada.
+
+# ---- bestiario ----
+en:grey rat
+tr:rata gris
+en:marsupial rat
+tr:rata marsupial
+en:albino rat
+tr:rata albina
+en:fetid rat
+tr:rata fétida
+en:spectral rat
+tr:rata espectral
+en:giant rat skull
+tr:cráneo de rata gigante
+en:rat boss
+tr:rata jefa
+en:rat king
+tr:rey rata
+en:Rat pack apears!
+tr:¡Aparece una manada de ratas!
+en:sewer crab
+tr:cangrejo de alcantarilla
+en:great crab
+tr:cangrejo gigante
+en:hermit crab
+tr:cangrejo ermitaño
+en:Crab King
+tr:Rey Cangrejo
+en:gnoll scout
+tr:explorador gnoll
+en:gnoll brute
+tr:bruto gnoll
+en:shielded brute
+tr:bruto con escudo
+en:gnoll shaman
+tr:chamán gnoll
+en:gnoll archer
+tr:arquero gnoll
+en:gnoll trickster
+tr:gnoll embaucador
+en:crazy thief
+tr:ladrón loco
+en:crazy bandit
+tr:bandido loco
+en:crazy gold thief
+tr:ladrón de oro loco
+en:shadow bandit
+tr:bandido sombrío
+en:thief king
+tr:rey de los ladrones
+en:skeleton
+tr:esqueleto
+en:skeleton hand
+tr:mano de esqueleto
+en:skeleton king
+tr:rey esqueleto
+en:fossil skeleton
+tr:esqueleto fósil
+en:moss covered skeleton
+tr:esqueleto cubierto de musgo
+en:vampire bat
+tr:murciélago vampiro
+en:brown bat
+tr:murciélago café
+en:cave spinner
+tr:tejedora de cueva
+en:spider
+tr:araña
+en:Spinneretes
+tr:Hileras
+en:dwarf monk
+tr:monje enano
+en:senior monk
+tr:monje mayor
+en:dwarf warlock
+tr:brujo enano
+en:dwarf lich
+tr:liche enano
+en:undead dwarf
+tr:enano no muerto
+en:dwarf token
+tr:ficha enana
+en:dwarf king tomb
+tr:tumba del rey enano
+en:King of Dwarves
+tr:Rey de los Enanos
+en:golden bee
+tr:abeja dorada
+en:steel bee
+tr:abeja de acero
+en:swarm of flies
+tr:enjambre de moscas
+en:animated statue
+tr:estatua animada
+en:succubus
+tr:súcubo
+en:evil eye
+tr:ojo maligno
+en:enchanted evil eye
+tr:ojo maligno encantado
+en:scorpion
+tr:escorpión
+en:scorpio
+tr:escorpión
+en:acidic scorpio
+tr:escorpión ácido
+en:giant piranha
+tr:piraña gigante
+en:albino giant piranha
+tr:piraña gigante albina
+en:mimic
+tr:mímico
+en:golem
+tr:gólem
+en:lichen
+tr:liquen
+en:wraith
+tr:espectro
+en:red wraith
+tr:espectro rojo
+en:blue wraith
+tr:espectro azul
+en:jupiter's wraith
+tr:espectro de Júpiter
+en:fire elemental
+tr:elemental de fuego
+en:burning fist
+tr:puño ardiente
+en:rotting fist
+tr:puño putrefacto
+en:pinning fist
+tr:puño inmovilizador
+en:infecting fist
+tr:puño infeccioso
+en:god's larva
+tr:larva del dios
+en:demon goo
+tr:goo demoníaco
+en:red dragon
+tr:dragón rojo
+en:blue dragon
+tr:dragón azul
+en:green dragon
+tr:dragón verde
+en:purple dragon
+tr:dragón morado
+en:Purple Dragon
+tr:Dragón Morado
+en:violet dragon
+tr:dragón violeta
+en:shadow dragon
+tr:dragón sombrío
+en:shadow dragon egg
+tr:huevo de dragón sombrío
+en:Dragon Cave
+tr:Cueva del Dragón
+en:sugarplum fairy
+tr:hada de azúcar
+en:fairy
+tr:hada
+en:bunny
+tr:conejo
+en:sheep
+tr:oveja
+en:blue cat
+tr:gato azul
+en:grey oni
+tr:oni gris
+en:kupua
+tr:kupua
+en:gullin
+tr:gullin
+en:velocirooster
+tr:velocigallo
+en:broken robot
+tr:robot descompuesto
+en:robot printer
+tr:impresora de robots
+en:mr destructo
+tr:señor destructo
+en:mr destructo 2.0
+tr:señor destructo 2.0
+en:inactive mr destructo
+tr:señor destructo inactivo
+en:inactive mr destructo 2.0
+tr:señor destructo 2.0 inactivo
+en:chainsaw hand
+tr:mano de motosierra
+en:flying protector
+tr:protector volador
+en:guardian
+tr:guardián
+en:mirror image
+tr:imagen espejo
+en:monster box
+tr:caja de monstruos
+en:we are legion
+tr:somos legión
+en:Mobs Killed
+tr:Monstruos eliminados
+en:Shadow Yogs Killed
+tr:Yogs sombríos eliminados
+
+# ---- jefes ----
+en:Goo squeezes!
+tr:¡Goo se contrae!
+en:Goo is pumping itself up!
+tr:¡Goo se está inflando!
+en:Goo creates mini goo!
+tr:¡Goo crea un mini goo!
+en:Mini Goo divides!
+tr:¡El mini goo se divide!
+en:Demon Goo divides!
+tr:¡El goo demoníaco se divide!
+en:DM-300 repairs itself!
+tr:¡DM-300 se repara solo!
+en:Yog vanishes!
+tr:¡Yog desaparece!
+en:Shadow Yog vanishes!
+tr:¡El Yog sombrío desaparece!
+en:Shadow Yog-Dzewa
+tr:Yog-Dzewa sombrío
+en:Release the Liches!
+tr:¡Suelten a los liches!
+en:Unleash the waters!
+tr:¡Suelten las aguas!
+en:Unleash the wraith!
+tr:¡Suelten al espectro!
+
+# ---- NPCs ----
+en:shopkeeper
+tr:tendero
+en:tinkerer
+tr:hojalatero
+en:villager
+tr:aldeano
+en:ambitious imp
+tr:diablillo ambicioso
+en:old wandmaker
+tr:viejo fabricante de varitas
+en:sad ghost
+tr:fantasma triste
+en:Ghost's armor
+tr:armadura del fantasma
+en:Ghost's weapon
+tr:arma del fantasma
+en:troll blacksmith named Bip
+tr:herrero trol llamado Bip
+en:troll blacksmith named Bop
+tr:herrero trol llamado Bop
+en:Reforge them
+tr:Refórjalas
+en:Great! Let's reinforce it!
+tr:¡Órale! ¡Vamos a reforzarla!
+en:Okay! Thanks for that!
+tr:¡Va! ¡Gracias por eso!
+en:Oh yes! You are my hero!\n
+tr:¡Claro que sí! ¡Eres mi héroe!\n
+en:The rose is completed!
+tr:¡La rosa está completa!
+en:Which way will you follow?
+tr:¿Qué camino vas a seguir?
+en:I'm not done yet
+tr:Todavía no acabo
+en:See you, %s!
+tr:¡Nos vemos, %s!
+en:Psst, %s!
+tr:¡Pssst, %s!
+
+# ---- mascotas ----
+en:Pet
+tr:Mascota
+en:Check Pet
+tr:Ver mascota
+en:Check Pet 2
+tr:Ver mascota 2
+en:Call
+tr:Llamar
+en:Stay
+tr:Quédate
+en:Feed
+tr:Alimentar
+en:Haste my Pet
+tr:Apurar a mi mascota
+en:Pets Lost
+tr:Mascotas perdidas
+en:I see pet
+tr:Veo a la mascota
+en:Your pet arrives!
+tr:¡Llegó tu mascota!
+en:Your pet %s dies.
+tr:Tu mascota %s muere.
+en:Your pet %s gains a level!
+tr:¡Tu mascota %s subió de nivel!
+en:Your pet eats the %s.
+tr:Tu mascota se come %s.
+en:Your pet rejects the %s.
+tr:Tu mascota rechaza %s.
+en:Your pet is too far away!
+tr:¡Tu mascota está muy lejos!
+
+# ---- objetos varios ----
+en:gold
+tr:oro
+en:torch
+tr:antorcha
+en:towel
+tr:toalla
+en:You apply the towel.
+tr:Usas la toalla.
+en:Your towel disintegrates.
+tr:Tu toalla se desintegra.
+en:weightstone
+tr:piedra de afilar
+en:arcane stylus
+tr:estilete arcano
+en:greater arcane stylus
+tr:estilete arcano mayor
+en:spectacles
+tr:anteojos
+en:Spectacles \n\n
+tr:Anteojos \n\n
+en:conch shell
+tr:caracol de mar
+en:whistle
+tr:silbato
+en:Tweeeet!
+tr:¡Fiuuuu!
+en:palantir
+tr:palantir
+en:You break the palatir...
+tr:Rompes el palantir...
+en:norn stone
+tr:piedra norna
+en:corpse dust
+tr:polvo de cadáver
+en:dried petal
+tr:pétalo seco
+en:inscribed bone
+tr:hueso grabado
+en:ancient coin
+tr:moneda antigua
+en:dungeon nut
+tr:nuez de mazmorra
+en:golden dungeon nut
+tr:nuez de mazmorra dorada
+en:toasted dungeon nut
+tr:nuez de mazmorra tostada
+en:stone ore
+tr:mena de piedra
+en:dark gold ore
+tr:mena de oro oscuro
+en:bag of magic sand
+tr:bolsa de arena mágica
+en:book of the dead
+tr:libro de los muertos
+en:book of the living
+tr:libro de los vivos
+en:book of the heavens
+tr:libro de los cielos
+en:return beacon
+tr:baliza de regreso
+en:lloyd's beacon
+tr:baliza de Lloyd
+en:dolyahaven return beacon
+tr:baliza de regreso a Dolyahaven
+en:auto potion
+tr:poción automática
+en:AutoPotion Triggered!
+tr:¡Poción automática activada!
+en:pickaxe
+tr:pico
+en:Alchemy Pot
+tr:Olla de alquimia
+en:Chasm
+tr:Abismo
+en:Vault
+tr:Bóveda
+en:skull
+tr:cráneo
+en:Fangs
+tr:Colmillos
+en:Feathers
+tr:Plumas
+
+# ---- hongos y bayas (Sprouted) ----
+en:blue milk mushroom
+tr:hongo de leche azul
+en:death cap mushroom
+tr:hongo de la muerte
+en:earthstar mushroom
+tr:hongo estrella de tierra
+en:toadstool mushroom
+tr:hongo venenoso
+en:golden jelly mushroom
+tr:hongo de jalea dorada
+en:jack o lantern mushroom
+tr:hongo calabaza
+en:pixie parasol mushroom
+tr:hongo parasol de duende
+en:dungeon blue berry
+tr:baya azul de mazmorra
+en:dungeon moon berry
+tr:baya lunar de mazmorra
+en:dungeon black berry
+tr:zarzamora de mazmorra
+en:dungeon cloud berry
+tr:baya nube de mazmorra
+en:dungeon full moon berry
+tr:baya de luna llena de mazmorra
+
+# ---- trampas y peligros ----
+en:lightning trap
+tr:trampa de relámpago
+en:fleecing trap
+tr:trampa de despojo
+en:sheep change trap
+tr:trampa de oveja
+en:heap gen trap
+tr:trampa generadora
+en:activate portal trap
+tr:trampa de portal
+en:lightning shell
+tr:caparazón eléctrico
+en:lightning tower
+tr:torre eléctrica
+en:Portal Deactivated!
+tr:¡Portal desactivado!
+en:Sokoban Portals
+tr:Portales de Sokoban
+en:Sokoban Puzzles
+tr:Acertijos de Sokoban
+en:Sokoban Practice
+tr:Práctica de Sokoban
+en:Sokoban Castle
+tr:Castillo de Sokoban
+en:SAFE SPOT
+tr:LUGAR SEGURO
+en:safe spot
+tr:lugar seguro
+
+# ---- estadísticas y récords ----
+en:Games Played:
+tr:Partidas jugadas:
+en:Game Moves
+tr:Movimientos de partida
+en:Floor Moves
+tr:Movimientos en el piso
+en:Floor Move Goal
+tr:Meta de movimientos del piso
+en:Prev Under Goal
+tr:Anterior bajo la meta
+en:Game Duration
+tr:Duración de la partida
+en:Maximum Depth
+tr:Profundidad máxima
+en:Gold Thief Kill Count: %s
+tr:Ladrones de oro eliminados: %s
+en:ERROR
+tr:ERROR
+
+# ---- selección y acciones ----
+en:Select a seed to throw
+tr:Elige una semilla para lanzar
+en:Select an item to upgrade
+tr:Elige un objeto para mejorar
+en:Select an item to enhance.
+tr:Elige un objeto para potenciar.
+en:Select your adamantite.
+tr:Elige tu adamantita.
+en:Release
+tr:Soltar
+en:search
+tr:buscar
+en:Freeze time around me
+tr:Congelar el tiempo a mi alrededor
+en:Put myself in stasis
+tr:Ponerme en estasis
+en:Flipping pages...
+tr:Pasando las páginas...
+en:Just some sloshing around.
+tr:Nomás se oye chapotear.
+en:Chainsaw is out of fuel!
+tr:¡La motosierra se quedó sin combustible!
+en:The chainsaw sputters out.
+tr:La motosierra se apaga tosiendo.
+en:You stop the fishing bomb.
+tr:Detienes la bomba de pesca.
+en:You missed a fish!
+tr:¡Se te fue un pez!
+en:Malfunction!
+tr:¡Falla!
+en:Click!
+tr:¡Clic!
+en:You are ejected...
+tr:Sales expulsado...
+en:Your cloak grows stronger!
+tr:¡Tu capa se hace más fuerte!
+en:Your Cape grows stronger!
+tr:¡Tu capa se hace más fuerte!
+en:Your dragon gathers power!
+tr:¡Tu dragón acumula poder!
+en:Upgrade my Mr Destructo
+tr:Mejorar a mi señor destructo
+en:Recharge my Mr Desructo
+tr:Recargar a mi señor destructo
+en:Playtest Activated
+tr:Modo de prueba activado
+
+# ---- encantamientos y maldiciones (el %s es el nombre del arma) ----
+en:Blazing %s
+tr:%s llameante
+en:Chilling %s
+tr:%s gélido
+en:Shocking %s
+tr:%s eléctrico
+en:Grand Shocking %s
+tr:%s ultraeléctrico
+en:Slashing %s
+tr:%s cortante
+en:Stunning %s
+tr:%s aturdidor
+en:Unstable %s
+tr:%s inestable
+en:Vampiric %s
+tr:%s vampírico
+en:Venomous %s
+tr:%s venenoso
+en:Loki's Venomous %s
+tr:%s venenoso de Loki
+en:Eldritch %s
+tr:%s sobrenatural
+en:Horrifying %s
+tr:%s horripilante
+en:Bloodlust %s
+tr:%s sanguinario
+en:Grim %s
+tr:%s siniestro
+en:%s of bounce
+tr:%s de rebote
+en:%s of stench
+tr:%s de hedor
+en:%s of affection
+tr:%s de afecto
+en:%s of potential
+tr:%s de potencial
+en:%s of viscosity
+tr:%s de viscosidad
+en:%s of metabolism
+tr:%s de metabolismo
+en:%s of anti-entropy
+tr:%s de antientropía
+en:%s of displacement
+tr:%s de desplazamiento
+en:%s of entanglement
+tr:%s de enredo
+en:%s of multiplicity
+tr:%s de multiplicidad
+
+# ---- Sprouted: objetos propios ----
+en:Ares Sword
+tr:Espada de Ares
+en:Crom Cruach Axe
+tr:Hacha de Crom Cruach
+en:Neptunus Trident
+tr:Tridente de Neptuno
+en:Loki's Flail
+tr:Mangual de Loki
+en:SanChikarah of Life
+tr:SanChikarah de la Vida
+en:SanChikarah of Death
+tr:SanChikarah de la Muerte
+en:Forged SanChikarah
+tr:SanChikarah forjada
+en:adamantite ring
+tr:anillo de adamantita
+en:adamantite wand
+tr:varita de adamantita
+en:adamantite armor
+tr:armadura de adamantita
+en:adamantite weapon
+tr:arma de adamantita
+en:red upgrade goo
+tr:goo de mejora rojo
+en:violet upgrade goo
+tr:goo de mejora violeta
+en:yellow upgrade goo
+tr:goo de mejora amarillo
+en:Dolyahaven
+tr:Dolyahaven
+en:journal page Dolyahaven
+tr:página de diario de Dolyahaven
+en:journal page dragon cave
+tr:página de diario de la cueva del dragón
+en:journal page vault
+tr:página de diario de la bóveda
+en:Otiluke's journal
+tr:diario de Otiluke
+en:stone golem Otiluke
+tr:gólem de piedra Otiluke
+en:Breath Weapon
+tr:Arma de aliento
+en:Defered damage (%d)
+tr:Daño diferido (%d)
+en:Herbal Healing (%d)
+tr:Curación herbal (%d)
+
+# ---- clases de héroe ----
+# Nota: estos textos también son la clave interna de la clase, pero Lang
+# sólo traduce en el punto de dibujado, así que el guardado no se toca.
+en:warrior
+tr:guerrero
+en:mage
+tr:mago
+en:rogue
+tr:pícaro
+en:huntress
+tr:cazadora
+en:gladiator
+tr:gladiador
+en:berserker
+tr:berserker
+en:warlock
+tr:brujo
+en:battlemage
+tr:mago de batalla
+en:assassin
+tr:asesino
+en:freerunner
+tr:corredor libre
+en:sniper
+tr:francotiradora
+en:warden
+tr:guardabosques
+en:Mastery
+tr:Maestría

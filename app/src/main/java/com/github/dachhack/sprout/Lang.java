@@ -53,6 +53,27 @@ public class Lang {
 	/** Where the dictionaries live, under assets. */
 	private static final String DIR = "lang/";
 
+	/**
+	 * Accented characters the bitmap font cannot draw, and what to use
+	 * instead.
+	 *
+	 * Watabou's font atlas is BitmapText.Font.LATIN_FULL: space through
+	 * , plain ASCII. There is no glyph for a, e, i, o, u with an
+	 * accent, none for n-tilde, and none for the opening marks Spanish
+	 * puts at the start of a question or an exclamation. Font.get returns
+	 * null for anything outside that set, and BitmapText.measure walks
+	 * straight into it -- which took the title screen down mid-build the
+	 * first time the dictionary said "Clasificacion" with an accent.
+	 *
+	 * Folding is a stopgap and it costs correct spelling: the game reads
+	 * "Clasificacion" and "Estas ciego!" rather than the proper forms.
+	 * The real fix is drawing the missing glyphs into the five font
+	 * atlases, which is pixel art in five sizes and belongs to Fase 3.
+	 * Until then, unspelled Spanish beats a crash.
+	 */
+	private static final String CON_ACENTO = "áéíóúüñÁÉÍÓÚÜÑ¡¿ªº°";
+	private static final String SIN_ACENTO = "aeiouunAEIOUUN!?ao ";
+
 	/** Two-letter code of the language in use, or null for the original. */
 	private static String current;
 
@@ -89,7 +110,7 @@ public class Lang {
 				if (line.startsWith( "en:" )) {
 					source = unescape( line.substring( 3 ) );
 				} else if (line.startsWith( "tr:" ) && source != null) {
-					dict.put( source, unescape( line.substring( 3 ) ) );
+					dict.put( source, fold( unescape( line.substring( 3 ) ) ) );
 					source = null;
 				}
 			}
@@ -101,6 +122,38 @@ public class Lang {
 			// it just means everything stays in English.
 			android.util.Log.i( "Lang", "no dictionary for " + code );
 		}
+	}
+
+	/**
+	 * Swaps every character the font cannot draw for one it can. Applied
+	 * when the dictionary loads, so it costs nothing per frame and the
+	 * .txt on disk keeps its proper spelling for whoever edits it.
+	 */
+	public static String fold( String s ) {
+
+		if (s == null) {
+			return null;
+		}
+
+		StringBuilder out = null;
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt( i );
+			int at = CON_ACENTO.indexOf( c );
+			if (at < 0 && c < 128) {
+				if (out != null) {
+					out.append( c );
+				}
+				continue;
+			}
+			if (out == null) {
+				out = new StringBuilder( s.length() );
+				out.append( s, 0, i );
+			}
+			// Anything else non-ASCII would be a null glyph too, so it is
+			// dropped rather than trusted.
+			out.append( at >= 0 ? SIN_ACENTO.charAt( at ) : '?' );
+		}
+		return out == null ? s : out.toString();
 	}
 
 	/** The language in use, or null when running untranslated. */

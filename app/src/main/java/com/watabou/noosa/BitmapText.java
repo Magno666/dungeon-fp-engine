@@ -328,7 +328,13 @@ public class BitmapText extends Visual {
 		}
 		
 		public RectF get( char ch ) {
-			return super.get( autoUppercase ? Character.toUpperCase( ch ) : ch );
+			RectF r = super.get( autoUppercase ? Character.toUpperCase( ch ) : ch );
+			// A character outside the atlas used to come back null and take
+			// down whatever was building the text -- a whole scene left half
+			// constructed, buttons stacked at the origin, by one accent in a
+			// translated string. Fall back to the space, which every Latin
+			// font here has, so a missing glyph costs a gap and nothing else.
+			return r != null ? r : super.get( ' ' );
 		}
 	}
 }
