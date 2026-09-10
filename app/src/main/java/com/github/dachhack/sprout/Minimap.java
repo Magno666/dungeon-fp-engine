@@ -42,7 +42,11 @@ public class Minimap {
 	public static float sizeFraction = 0.34f;
 
 	/** Distance from the right edge and from what sits above, in pixels. */
-	public static float marginPx = 14f;
+	public static float marginDp = 5.33f;
+
+	public static float marginPx() {
+		return marginDp * Math.max( 1f, Game.density );
+	}
 
 	/** Height of StatusPane, in UI units. The menu button lives in its
 	 *  top-right corner, which is exactly where a corner minimap wants to
@@ -75,7 +79,7 @@ public class Minimap {
 		}
 
 		int side = (int)(Math.min( Game.width, Game.height ) * sizeFraction);
-		int m = (int)marginPx;
+		int m = (int)marginPx();
 
 		float uiZoom = PixelScene.uiCamera != null
 			? PixelScene.uiCamera.zoom : 1f;

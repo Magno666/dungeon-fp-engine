@@ -240,7 +240,9 @@ public class Feel {
 	 *  tiles fit across it, and its margin in pixels. */
 	public static float mapSizeFraction = 0.34f;
 	public static float mapTilesAcross = 15f;
-	public static float mapMarginPx = 14f;
+	/** Gap between the minimap and the screen edge, in DP so it is the same
+	 *  amount of glass on every phone rather than the same pixel count. */
+	public static float mapMarginDp = 5.33f;
 
 	/** Size of the heading arrow on the map, in map tiles. */
 	public static float mapMarkerTiles = 1.5f;
@@ -313,7 +315,7 @@ public class Feel {
 
 		Minimap.sizeFraction = mapSizeFraction;
 		Minimap.tilesAcross  = mapTilesAcross;
-		Minimap.marginPx     = mapMarginPx;
+		Minimap.marginDp     = mapMarginDp;
 		Minimap.markerTiles  = mapMarkerTiles;
 
 		Targeting.ringSize = targetRingSize;

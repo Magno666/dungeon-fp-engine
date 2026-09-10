@@ -200,7 +200,12 @@ public class ShatteredPixelDungeon extends Game {
 
 	public static boolean immersed() {
 		return Preferences.INSTANCE
-				.getBoolean(Preferences.KEY_IMMERSIVE, false);
+				// Defaults ON. The theme already hides the status bar, but the
+				// navigation bar stayed and ate the bottom of the screen --
+				// on a 1280x720 phone that strip is where the toolbar's
+				// quickslots live, so the player was handed a row of items
+				// sliced in half. A first person crawler wants the glass.
+				.getBoolean(Preferences.KEY_IMMERSIVE, true);
 	}
 
 	// *****************************

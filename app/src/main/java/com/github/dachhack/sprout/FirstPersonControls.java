@@ -145,8 +145,16 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 	 *  only forward/back/left/right. */
 	public static boolean eightWay = true;
 
-	/** Clearance kept between the ring and the toolbar above which it sits. */
-	public static float toolbarGapPx = 24f;
+	/** Clearance kept between the ring and the toolbar above which it sits,
+	 *  in DP. It used to be 24 raw pixels, which is a different amount of
+	 *  finger on every phone: on a 420dpi screen that is 9dp of gap, on a
+	 *  160dpi tablet it is 24dp, and on a 560dpi flagship barely 7. Screen
+	 *  space is the one thing that must not be measured in device pixels. */
+	public static float toolbarGapDp = 9.14f;
+
+	public static float toolbarGapPx() {
+		return toolbarGapDp * Math.max( 1f, Game.density );
+	}
 
 	/** How far outside the ring a thumb can land and still grab the stick.
 	 *  A fixed stick you have to hit exactly is worse than no stick. */
@@ -297,7 +305,7 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 		// Above the toolbar, not on it. The wait/search/info buttons sit in
 		// the bottom-left corner -- exactly where a thumbstick wants to go --
 		// and a ring drawn over them eats every tap meant for them.
-		float overToolbar = GameScene.toolbarTopPx() - ringRadiusPx() - toolbarGapPx;
+		float overToolbar = GameScene.toolbarTopPx() - ringRadiusPx() - toolbarGapPx();
 		return Math.min( Game.height - baseMarginPx(), overToolbar );
 	}
 
