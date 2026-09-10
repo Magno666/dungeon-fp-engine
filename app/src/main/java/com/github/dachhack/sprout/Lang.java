@@ -183,6 +183,19 @@ public class Lang {
 		if (hit != null) {
 			return hit;
 		}
+
+		// The game capitalises a name when it starts a sentence, so "Grey
+		// rat golpeo a you" came out half translated: the format string
+		// was in the dictionary under "%s hit %s" and the name was not,
+		// because the dictionary holds "grey rat" and the game asked for
+		// "Grey rat". Retry in lower case and put the capital back.
+		if (str.length() > 1 && Character.isUpperCase( str.charAt( 0 ) )) {
+			String lower = Character.toLowerCase( str.charAt( 0 ) ) + str.substring( 1 );
+			hit = dict.get( lower );
+			if (hit != null && hit.length() > 0) {
+				return Character.toUpperCase( hit.charAt( 0 ) ) + hit.substring( 1 );
+			}
+		}
 		if (collectMissing) {
 			missing.put( str, Boolean.TRUE );
 		}

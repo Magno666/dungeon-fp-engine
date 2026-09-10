@@ -19,6 +19,7 @@ package com.github.dachhack.sprout.ui;
 
 import com.github.dachhack.sprout.actors.Char;
 import com.github.dachhack.sprout.sprites.CharSprite;
+import com.github.dachhack.sprout.FirstPerson;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
@@ -54,6 +55,19 @@ public class HealthIndicator extends Component {
 	@Override
 	public void update() {
 		super.update();
+
+		// In first person the flat CharSprite is not what gets drawn -- the
+		// mob is a billboard -- but the sprite keeps its top-down map
+		// coordinates, and this bar is positioned from them against
+		// Camera.main, which is now the 3D camera. The result was a green
+		// bar hanging in the middle of a wall, tracking a rat on the other
+		// side of it. The enemy portrait in the corner already carries the
+		// same health, so the floating bar is dropped rather than
+		// reprojected onto the billboard.
+		if (FirstPerson.enabled) {
+			visible = false;
+			return;
+		}
 
 		if (target != null && target.isAlive() && target.sprite.visible) {
 			CharSprite sprite = target.sprite;

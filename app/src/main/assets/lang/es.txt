@@ -1389,3 +1389,21 @@ en:warden
 tr:guardabosques
 en:Mastery
 tr:Maestría
+
+# ---- combate ----
+# El juego pega estas frases con el nombre del atacante y "you", asi que
+# "you" tiene que estar aqui o la frase sale a medias.
+en:you
+tr:ti
+en:You
+tr:Tú
+en:%s hit %s
+tr:%s golpeó a %s
+en:%s missed %s
+tr:%s falló contra %s
+en:You dodged %s's attack.
+tr:Esquivaste el ataque de %s.
+en:%s parried %s's attack
+tr:%s paró el ataque de %s
+en:%s blocked %s's attack
+tr:%s bloqueó el ataque de %s
