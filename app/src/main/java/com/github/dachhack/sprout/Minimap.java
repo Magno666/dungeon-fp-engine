@@ -115,12 +115,17 @@ public class Minimap {
 	/** Swap between corner and full screen. Rebuilds, because the camera's
 	 *  size and zoom are set when it is made. */
 	public static void toggle() {
-		if (lastParent == null) {
-			return;
-		}
-		expanded = !expanded;
-		install( lastParent );
+		// Deferred on purpose. install() tears the group out of the scene
+		// graph and builds a new one, and doing that from inside the touch
+		// handler -- which is itself walking the scene -- left the old
+		// expanded map on screen with nothing listening to it: the map
+		// opened and then could not be closed, which makes the game
+		// unplayable from the first time you look at it. The flag is read
+		// on the next update(), between frames, where rebuilding is safe.
+		pendingToggle = true;
 	}
+
+	private static boolean pendingToggle;
 
 	/** Whoever installed us last, so a tap can rebuild without being
 	 *  handed the scene graph from the input layer. */
@@ -237,6 +242,15 @@ public class Minimap {
 	}
 
 	public static void update() {
+
+		if (pendingToggle) {
+			pendingToggle = false;
+			if (lastParent != null) {
+				expanded = !expanded;
+				install( lastParent );
+			}
+			return;
+		}
 
 		if (cam == null || Dungeon.hero == null) {
 			return;
