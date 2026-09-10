@@ -24,6 +24,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.github.dachhack.sprout.scenes.PixelScene;
 import com.watabou.noosa.Image;
+import com.watabou.utils.PointF;
 
 /**
  * The top-down map, back as a corner window.
@@ -61,6 +62,70 @@ public class Minimap {
 
 	public static boolean visible = true;
 
+	/** Tap the map to swap between the corner window and a full-screen
+	 *  one. A corner map shows fifteen tiles, which is enough to know
+	 *  which way the corridor bends and nowhere near enough to find the
+	 *  stairs -- and the stairs are the one thing a first person crawler
+	 *  cannot show you from where you stand. */
+	public static boolean expanded = false;
+
+	/** Fraction of the screen the expanded map takes. */
+	public static float expandedFraction = 0.92f;
+
+	/** Where the window ended up, in screen pixels, for hit testing. */
+	private static float winX, winY, winSide;
+
+	/** True if a screen point falls inside the map window. */
+	public static boolean hit( float x, float y ) {
+		return visible && cam != null
+			&& x >= winX && x <= winX + winSide
+			&& y >= winY && y <= winY + winSide;
+	}
+
+	/**
+	 * The dungeon cell under a screen point, or -1 if that point is not on
+	 * a cell the hero has seen.
+	 *
+	 * Only explored cells count. Handing back an unseen one would let the
+	 * map walk the hero into rooms he has no business knowing about, and
+	 * the mask already blanks them, so the player would be tapping black.
+	 */
+	public static int cellAt( float sx, float sy ) {
+
+		if (cam == null || Dungeon.level == null || !hit( sx, sy )) {
+			return -1;
+		}
+
+		PointF p = cam.screenToCamera( (int)sx, (int)sy );
+		int col = (int)Math.floor( p.x / DungeonTilemap.SIZE );
+		int row = (int)Math.floor( p.y / DungeonTilemap.SIZE );
+
+		int width = Level.getWidth();
+		int rows = Dungeon.level.map.length / width;
+		if (col < 0 || col >= width || row < 0 || row >= rows) {
+			return -1;
+		}
+
+		int cell = row * width + col;
+		boolean seen = (Dungeon.level.visited != null && Dungeon.level.visited[cell])
+			|| (Dungeon.level.mapped != null && Dungeon.level.mapped[cell]);
+		return seen ? cell : -1;
+	}
+
+	/** Swap between corner and full screen. Rebuilds, because the camera's
+	 *  size and zoom are set when it is made. */
+	public static void toggle() {
+		if (lastParent == null) {
+			return;
+		}
+		expanded = !expanded;
+		install( lastParent );
+	}
+
+	/** Whoever installed us last, so a tap can rebuild without being
+	 *  handed the scene graph from the input layer. */
+	private static Group lastParent;
+
 	private static Camera cam;
 	private static Group group;
 	private static DungeonTilemap tiles;
@@ -72,23 +137,42 @@ public class Minimap {
 
 	public static void install( Group parent ) {
 
+		lastParent = parent;
 		clear();
 
 		if (!visible || !FirstPerson.enabled || Dungeon.level == null) {
 			return;
 		}
 
-		int side = (int)(Math.min( Game.width, Game.height ) * sizeFraction);
 		int m = (int)marginPx();
-
 		float uiZoom = PixelScene.uiCamera != null
 			? PixelScene.uiCamera.zoom : 1f;
-		int top = (int)(statusBarUi * uiZoom) + m;
 
-		// zoom so tilesAcross tiles span the window
-		float zoom = side / (tilesAcross * DungeonTilemap.SIZE);
+		int side;
+		int left, top;
+		float zoom;
 
-		cam = new Camera( Game.width - side - m, top,
+		if (expanded) {
+			// Big enough to hold the whole floor. Sprouted's levels run
+			// large, so the zoom comes from the level's own width rather
+			// than a fixed tile count -- a 48 wide map and an 80 wide one
+			// both have to fit.
+			side = (int)(Math.min( Game.width, Game.height ) * expandedFraction);
+			int rows = Dungeon.level.map.length / Level.getWidth();
+			int span = Math.max( Level.getWidth(), rows );
+			zoom = side / (float)(span * DungeonTilemap.SIZE);
+			left = (Game.width - side) / 2;
+			top = (Game.height - side) / 2;
+		} else {
+			side = (int)(Math.min( Game.width, Game.height ) * sizeFraction);
+			zoom = side / (tilesAcross * DungeonTilemap.SIZE);
+			left = Game.width - side - m;
+			top = (int)(statusBarUi * uiZoom) + m;
+		}
+
+		winX = left; winY = top; winSide = side;
+
+		cam = new Camera( left, top,
 			(int)(side / zoom), (int)(side / zoom), zoom );
 		Camera.add( cam );
 
@@ -149,7 +233,16 @@ public class Minimap {
 		float x = DungeonTilemap.tileToWorld( Dungeon.hero.pos ).x;
 		float y = DungeonTilemap.tileToWorld( Dungeon.hero.pos ).y;
 
-		cam.focusOn( x + DungeonTilemap.SIZE / 2f, y + DungeonTilemap.SIZE / 2f );
+		if (expanded) {
+			// Hold the whole floor still. Following the hero here would put
+			// him in the middle of a window that is already showing every
+			// room, and push half the level off the edge for no reason.
+			int rows = Dungeon.level.map.length / Level.getWidth();
+			cam.focusOn( Level.getWidth() * DungeonTilemap.SIZE / 2f,
+			             rows * DungeonTilemap.SIZE / 2f );
+		} else {
+			cam.focusOn( x + DungeonTilemap.SIZE / 2f, y + DungeonTilemap.SIZE / 2f );
+		}
 
 		marker.x = x + DungeonTilemap.SIZE / 2f - marker.texture.width / 2f;
 		marker.y = y + DungeonTilemap.SIZE / 2f - marker.texture.height / 2f;

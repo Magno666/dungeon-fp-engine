@@ -416,6 +416,23 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 		// wherever the thumb landed. Everywhere else on the screen is look,
 		// including the left side -- which is what makes turning around
 		// while walking work.
+		// The map window eats the touch before anything else, so opening
+		// it never doubles as a look-drag and closing it never walks you
+		// into a wall.
+		if (Minimap.hit( touch.current.x, touch.current.y )) {
+			// On the big map a tap on a room you have seen walks you there:
+			// the same handleCell the world view calls, so pathfinding,
+			// doors and interruptions behave exactly as they always have.
+			// Anywhere else on the window just closes it.
+			int cell = Minimap.expanded
+				? Minimap.cellAt( touch.current.x, touch.current.y ) : -1;
+			Minimap.toggle();
+			if (cell >= 0) {
+				GameScene.handleCell( cell );
+			}
+			return;
+		}
+
 		float dx = touch.current.x - baseX();
 		float dy = touch.current.y - baseY();
 		boolean onStick = dx * dx + dy * dy
