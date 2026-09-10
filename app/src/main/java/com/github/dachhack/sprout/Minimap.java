@@ -131,6 +131,13 @@ public class Minimap {
 	private static DungeonTilemap tiles;
 	private static Image marker;
 
+	/** Stair markers, drawn only on the expanded map. Without them the
+	 *  stairs are one tile among thousands and the map answers "where am
+	 *  I" but not "where do I go", which is the question you opened it
+	 *  for. Only shown once the cell is known, same rule as everything
+	 *  else on this map. */
+	private static Image downMark, upMark;
+
 	/** A copy of the level map with everything unexplored blanked out. */
 	private static int[] masked;
 	private static boolean uploaded;
@@ -221,6 +228,11 @@ public class Minimap {
 		marker.hardlight( 1f, 0.87f, 0.27f );
 		group.add( marker );
 
+		if (expanded) {
+			downMark = stairMark( Dungeon.level.exit,     0.40f, 1f, 0.45f );
+			upMark   = stairMark( Dungeon.level.entrance, 0.55f, 0.70f, 1f );
+		}
+
 		update();
 	}
 
@@ -251,6 +263,31 @@ public class Minimap {
 		// Noosa's rotation is clockwise on screen while yaw counts the other
 		// way -- yaw 0 is north, -90 is east. Hence the negation.
 		marker.angle = -FirstPerson.yaw;
+	}
+
+	/** A dot on one cell, or null if the hero has not seen that cell yet. */
+	private static Image stairMark( int cell, float r, float g, float b ) {
+
+		if (cell < 0 || cell >= Dungeon.level.map.length) {
+			return null;
+		}
+		boolean seen = (Dungeon.level.visited != null && Dungeon.level.visited[cell])
+			|| (Dungeon.level.mapped != null && Dungeon.level.mapped[cell]);
+		if (!seen) {
+			return null;
+		}
+
+		Image dot = new Image( HudTextures.disc() );
+		dot.camera = cam;
+		float size = DungeonTilemap.SIZE * 3f;
+		float sc = size / dot.texture.width;
+		dot.scale.set( sc, sc );
+		PointF at = DungeonTilemap.tileToWorld( cell );
+		dot.x = at.x + DungeonTilemap.SIZE / 2f - size / 2f;
+		dot.y = at.y + DungeonTilemap.SIZE / 2f - size / 2f;
+		dot.hardlight( r, g, b );
+		group.add( dot );
+		return dot;
 	}
 
 	/** Called when the terrain or what the hero can see changes. */
@@ -289,6 +326,10 @@ public class Minimap {
 	}
 
 	public static void clear() {
+
+		downMark = null;
+		upMark = null;
+
 		if (cam != null) {
 			Camera.remove( cam );
 			cam = null;
