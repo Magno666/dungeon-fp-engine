@@ -133,7 +133,15 @@ public class NoosaScript3D extends NoosaScript {
 
 		"//\n" +
 
-		"precision mediump float;" +
+		// highp where the GPU has it. mediump is fp16 on Mali (max ~65504)
+		// and distance() below squares world coordinates, so on a big
+		// level the torch falloff would break up on Mali and only there.
+		// Preprocessor lines must end in a newline, hence the explicit ones.
+		"#ifdef GL_FRAGMENT_PRECISION_HIGH\n" +
+		"precision highp float;\n" +
+		"#else\n" +
+		"precision mediump float;\n" +
+		"#endif\n" +
 		"varying vec2 vUV;" +
 		"varying vec3 vWorld;" +
 		"uniform vec4 uEye;" +
