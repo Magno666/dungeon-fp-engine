@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base theme. See values-v35 for why it exists at all. -->
+    <style name="SproutedTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      targetSdk 35 turns on Android 15 edge-to-edge enforcement: the app
+      draws BEHIND the system bars whether it asked to or not. In landscape
+      with three-button navigation that bar sits on the right edge, which is
+      exactly where the toolbar quickslots and the minimap live. The player
+      got a toolbar with no quickslots and a minimap cut in half.
+      Immersive mode hides the bar most of the time, but not when a phone
+      ignores it, when the setting is off, or while the bar is swiped in.
+      Opting out keeps the game inside the space the system bars leave.
+    -->
+    <style name="SproutedTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+    </style>
+</resources>
