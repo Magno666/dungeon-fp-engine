@@ -397,6 +397,9 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 			if (Math.abs( look.current.x - look.start.x )
 					+ Math.abs( look.current.y - look.start.y ) > tapSlopPx()) {
 				lookMoved = true;
+				// El pulgar manda: si el jugador mira, se corta el giro
+				// automático hacia el objetivo.
+				FirstPerson.cancelAim();
 			}
 
 			// Looking never costs a turn and is never blocked. Yaw runs all

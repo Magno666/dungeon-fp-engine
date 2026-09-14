@@ -5,14 +5,21 @@ android {
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.github.dachhack.sprout"
+        // La identidad de la app es MIA; el paquete del codigo sigue siendo
+        // el de dachhack a proposito. Renombrar com.github.dachhack.sprout
+        // en 953 archivos romperia las partidas guardadas (el sistema de
+        // Bundle guarda nombres de clase) y ademas destrozaria el diff
+        // contra el upstream. Gradle separa las dos cosas justo para esto.
+        //
+        // Es PERMANENTE en cuanto se publique en Play: no se puede cambiar.
+        applicationId "com.jaliscomundial.pixeldoomgeon"
         minSdk 21          // was 8; AGP 8 will not go below 21
         targetSdk 35
         // Every first person build gets its own code, or Android decides
         // the install is "already up to date" and silently keeps the old
         // one. Eight builds shipped with 190 before this was spotted.
-        versionCode 230
-        versionName "0.4.2-fp30"
+        versionCode 232
+        versionName "0.4.2-fp32"
     }
 
     compileOptions {

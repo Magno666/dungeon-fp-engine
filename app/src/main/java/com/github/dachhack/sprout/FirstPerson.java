@@ -124,6 +124,46 @@ public class FirstPerson {
 		return ui.screenToCamera( sx, sy );
 	}
 
+	// ---- turning to face something ------------------------------------
+
+	/** Degrees per second the view swings when the hero acts on a target. */
+	public static float aimTurnSpeed = 480f;
+
+	private static float aimYaw;
+	private static boolean aiming;
+
+	/**
+	 * Swing the view to look at a cell.
+	 *
+	 * Hooked into CharSprite.turnTo, which the game already calls whenever
+	 * the hero attacks, throws or zaps. The heading otherwise only follows
+	 * MOVEMENT, and attacking does not move you -- so fighting with the
+	 * attack button left the camera pointing wherever you last walked.
+	 * Verified on Goo in the emulator: fourteen attacks facing a wall, Goo
+	 * charged its area attack, and not one of the red warning tiles was on
+	 * screen. The telegraph existed only in the log.
+	 */
+	public static void faceCell( int cell ) {
+
+		if (!enabled || Dungeon.hero == null || Dungeon.level == null
+				|| cell < 0 || cell >= Dungeon.level.map.length) {
+			return;
+		}
+		int width = Level.getWidth();
+		int dx = (cell % width) - (Dungeon.hero.pos % width);
+		int dz = (cell / width) - (Dungeon.hero.pos / width);
+		if (dx == 0 && dz == 0) {
+			return;
+		}
+		aimYaw = (float)Math.toDegrees( Math.atan2( -dx, -dz ) );
+		aiming = true;
+	}
+
+	/** Let go the moment the player looks around: their thumb wins. */
+	public static void cancelAim() {
+		aiming = false;
+	}
+
 	/** Called from CharSprite.flash when the hero takes a hit. */
 	public static void hurt() {
 		if (!enabled || Camera.main == null) {
@@ -136,7 +176,7 @@ public class FirstPerson {
 
 	/** Build marker, printed to the game log so a screenshot says which
 	 *  version it came from. */
-	public static final String BUILD = "FP build v30";
+	public static final String BUILD = "FP build v32";
 
 	/** Degrees. 0 looks north (-Z), increasing turns west. */
 	public static float yaw = 0f;
@@ -296,6 +336,16 @@ public class FirstPerson {
 			}
 			yaw = approach( yaw, targetYaw, turnSpeed * Game.elapsed );
 		}
+		if (aiming) {
+			yaw = approach( yaw, aimYaw, aimTurnSpeed * Game.elapsed );
+			float left = aimYaw - yaw;
+			while (left > 180f) left -= 360f;
+			while (left < -180f) left += 360f;
+			if (Math.abs( left ) < 1f) {
+				aiming = false;
+			}
+		}
+
 		int previous = lastPos;
 		lastPos = pos;
 

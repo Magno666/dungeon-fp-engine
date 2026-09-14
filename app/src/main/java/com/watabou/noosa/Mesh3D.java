@@ -57,6 +57,17 @@ public class Mesh3D extends Visual {
 	/** Per-mesh: false draws it through everything in front of it. */
 	public boolean depthTest = true;
 
+	/**
+	 * Per-mesh: true keeps this at full brightness whatever the distance.
+	 *
+	 * For marks that WARN. Measured on Goo's charged attack in the
+	 * emulator, the red tile reads 127/36/29 one cell away but 28/10/11 at
+	 * three or four -- the edge of the danger area, which is exactly the
+	 * part you need to see to step out of it, was the part the torch ate.
+	 * A warning that fades with distance is not a warning.
+	 */
+	public boolean ignoreFog = false;
+
 	protected FloatBuffer verticesBuffer;
 	protected ShortBuffer indicesBuffer;
 	protected int indexCount;

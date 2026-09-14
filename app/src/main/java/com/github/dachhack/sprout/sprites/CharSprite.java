@@ -192,6 +192,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener,
 	}
 
 	public void turnTo(int from, int to) {
+		// The flat game only flips the sprite here. In first person this is
+		// also the moment the camera should look at what you are acting on:
+		// attacking never moves you, so without this you fight facing
+		// whichever way you last walked.
+		if (ch != null && ch == Dungeon.hero) {
+			FirstPerson.faceCell(to);
+		}
 		int fx = from % Level.getWidth();
 		int tx = to % Level.getWidth();
 		if (tx > fx) {

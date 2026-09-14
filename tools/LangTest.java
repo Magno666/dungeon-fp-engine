@@ -129,10 +129,23 @@ public class LangTest {
 		return '"' + s.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ) + '"';
 	}
 
+	/**
+	 * The format markers in a string, ignoring escaped percent signs.
+	 *
+	 * `%%` is a literal percent, not a marker. Without consuming it first,
+	 * "Steal with %d%% chance" reads as %d plus a bogus "% c" from the
+	 * second percent and the following space and letter -- and then any
+	 * honest translation looks like a crash waiting to happen. This lint
+	 * reported exactly that on a line that was perfectly fine.
+	 */
 	private static List<String> markers( String s ) {
 		List<String> out = new ArrayList<String>();
-		Matcher m = Pattern.compile( "%[-+ 0#,]*\\d*(?:\\.\\d+)?[a-zA-Z]" ).matcher( s );
-		while (m.find()) out.add( m.group() );
+		Matcher m = Pattern.compile( "%%|%[-+ 0#,]*\\d*(?:\\.\\d+)?[a-zA-Z]" ).matcher( s );
+		while (m.find()) {
+			if (!m.group().equals( "%%" )) {
+				out.add( m.group() );
+			}
+		}
 		return out;
 	}
 

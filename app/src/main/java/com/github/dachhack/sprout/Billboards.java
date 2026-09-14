@@ -333,6 +333,23 @@ public class Billboards {
 		return true;
 	}
 
+	/**
+	 * Blobs whose mark is a WARNING, not scenery.
+	 *
+	 * These ignore the torch: GooWarn is the one turn you get to step out
+	 * of Goo's charged attack, and a warning you cannot see at the edge of
+	 * the area is no warning at all. Web is deliberately NOT here -- the
+	 * minigoo leave it all over the fight and at full brightness it would
+	 * compete with the thing that actually matters.
+	 */
+	private static boolean avisa( Blob blob ) {
+		return blob instanceof GooWarn
+			|| blob instanceof Fire
+			|| blob instanceof ToxicGas
+			|| blob instanceof ParalyticGas
+			|| blob instanceof CorruptGas;
+	}
+
 	/** Which blobs are worth marking, and in what colour. Anything not
 	 *  listed is scenery -- water, foliage, wells -- and is left alone. */
 	private static int blobColour( Blob blob ) {
@@ -361,6 +378,7 @@ public class Billboards {
 			if (colour == 0) {
 				continue;
 			}
+			boolean urgente = avisa( blob );
 
 			for (int cell = 0; cell < blob.cur.length && used < maxBlobMarks; cell++) {
 
@@ -383,6 +401,7 @@ public class Billboards {
 				b.visible = true;
 				b.hardlight( colour );
 				b.am = 0.75f;
+				b.ignoreFog = urgente;
 				b.sizeX = b.sizeY = blobMarkHeight;
 				b.worldX = DungeonTilemap3D.worldX( cell, width );
 				b.worldZ = DungeonTilemap3D.worldZ( cell, width );
