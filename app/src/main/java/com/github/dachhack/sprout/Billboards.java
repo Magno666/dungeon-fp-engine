@@ -181,7 +181,12 @@ public class Billboards {
 				continue;
 			}
 			float tall = uprightHeight( map[cell] );
-			Billboard b = new Billboard( tex );
+			// El pasto alto va en cruz: dos planos fijos en angulo recto.
+			// Un solo plano que gira para encarar la camara se lee como un
+			// carton dando vueltas, que es justo como se veia. Un letrero
+			// si conviene que encare -- para eso esta escrito.
+			boolean cruz = map[cell] == Terrain.HIGH_GRASS;
+			Billboard b = new Billboard( tex, cruz );
 			b.uv( r );
 			b.camera = camera;
 			b.sizeY = tall;

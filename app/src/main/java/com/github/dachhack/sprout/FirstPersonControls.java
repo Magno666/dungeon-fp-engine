@@ -394,8 +394,14 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 			lookLastX = look.current.x;
 			lookLastY = look.current.y;
 
-			if (Math.abs( look.current.x - look.start.x )
-					+ Math.abs( look.current.y - look.start.y ) > tapSlopPx()) {
+			// Distancia de verdad, no |dx|+|dy|. La suma de los dos ejes se
+			// pasa del limite hasta un 41% antes en diagonal, que es justo
+			// como se mueve un pulgar al tocar: el toque se tomaba como
+			// mirada y el paso no se daba. Leonel: "el tap hacia adelante a
+			// veces no lo da".
+			float sx = look.current.x - look.start.x;
+			float sy = look.current.y - look.start.y;
+			if (Math.sqrt( sx * sx + sy * sy ) > tapSlopPx()) {
 				lookMoved = true;
 				// El pulgar manda: si el jugador mira, se corta el giro
 				// automático hacia el objetivo.
