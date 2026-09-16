@@ -761,8 +761,22 @@ public class GameScene extends PixelScene {
 			scene.fog.updateVisibility(Dungeon.visible, Dungeon.level.visited,
 					Dungeon.level.mapped);
 
-			for (Mob mob : Dungeon.level.mobs) {
-				mob.sprite.visible = Dungeon.visible[mob.pos];
+			// Copia y guarda de nulos. En Android esto nunca corre a media
+			// transicion de piso: switchScene destruye la GameScene antes,
+			// destroy() pone scene = null y el bucle se salta entero. En el
+			// navegador el hilo de la transicion corre ANTES de que el
+			// cambio de escena se procese, asi que scene sigue vivo y aqui
+			// desfilan los bichos del nivel recien generado, que todavia no
+			// tienen sprite -- el sprite se crea cuando la escena se arma.
+			// Sin esto: null.visible, o ConcurrentModificationException
+			// cuando la lista cambia debajo, y en los dos casos la pantalla
+			// se queda congelada en "Descending..." / "Falling..." para
+			// siempre. Leonel: "me cai a un chasm a proposito y nomas
+			// decia falling".
+			for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+				if (mob.sprite != null) {
+					mob.sprite.visible = Dungeon.visible[mob.pos];
+				}
 			}
 		}
 	}

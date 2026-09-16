@@ -99,7 +99,14 @@ public class InterlevelScene extends PixelScene {
 	private BitmapText message;
 
 	private Thread thread;
-	private Exception error = null;
+	// Throwable, no Exception. Lo que se lanza aqui adentro corre en un
+	// hilo aparte: si escapa del catch, el hilo muere en silencio, `error`
+	// se queda en null, la fase se queda en STATIC y la pantalla se queda
+	// en "Falling..."/"Descending..." PARA SIEMPRE, sin un solo mensaje.
+	// Con Exception, cualquier Error -- y TeaVM lanza Errors cuando le
+	// falta metadata de una clase -- hacia justo eso. Leonel: "me cai a un
+	// chasm a proposito y nomas decia falling".
+	private Throwable error = null;
 
 	@Override
 	public void create() {
@@ -269,7 +276,7 @@ public class InterlevelScene extends PixelScene {
 						Sample.INSTANCE.load(Assets.SND_BOSS);
 					}
 
-				} catch (Exception e) {
+				} catch (Throwable e) {
 
 					error = e;
 
