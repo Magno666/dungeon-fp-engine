@@ -180,6 +180,16 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 	private float lookLastX, lookLastY;
 	private boolean lookMoved;
 
+	/** Teclas de movimiento sostenidas: 0 adelante, 1 derecha, 2 atras,
+	 *  3 izquierda. Van por el MISMO camino que el stick -- misma cadencia,
+	 *  misma carrera al sostener, mismo bloqueo con una ventana abierta --
+	 *  porque un segundo camino a `step` es un segundo sitio donde se
+	 *  desincroniza. */
+	private final boolean[] teclas = new boolean[4];
+	private int dirTeclaPrevia = -1;
+	/** -1 girar a la izquierda, +1 a la derecha, 0 quieto. */
+	private int giroTecla = 0;
+
 	private Group hud;
 	private Image ring;
 	private Image knob;
@@ -220,6 +230,7 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 
 	public static void uninstall() {
 		if (instance != null) {
+			soltarTeclas();
 			Touchscreen.event.remove( instance );
 			if (instance.hud != null) {
 				instance.hud.killAndErase();
@@ -227,6 +238,104 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 			}
 			instance = null;
 		}
+	}
+
+	/** Solo para el diagnostico: que teclas cree el juego que estan abajo. */
+	public static String estadoTeclas() {
+		if (instance == null) {
+			return "sin instancia";
+		}
+		StringBuilder sb = new StringBuilder("teclas=");
+		for (boolean b : instance.teclas) {
+			sb.append( b ? '1' : '0' );
+		}
+		sb.append(" giro=").append( instance.giroTecla );
+		sb.append(" prev=").append( instance.dirTeclaPrevia );
+		sb.append(" dir=").append( instance.direccionTeclas() );
+		return sb.toString();
+	}
+
+	/** Codigos que entiende {@link #tecla}. */
+	public static final int TECLA_ADELANTE   = 1;
+	public static final int TECLA_DERECHA    = 2;
+	public static final int TECLA_ATRAS      = 3;
+	public static final int TECLA_IZQUIERDA  = 4;
+	public static final int TECLA_GIRA_IZQ   = 5;
+	public static final int TECLA_GIRA_DER   = 6;
+
+	/**
+	 * Una tecla de movimiento se bajo o se solto. El teclado es la unica
+	 * forma de jugar esto en una computadora: el stick se agarra con el
+	 * raton, pero nadie lo intenta antes de probar las flechas.
+	 */
+	public static void tecla( int codigo, boolean abajo ) {
+		if (instance == null) {
+			return;
+		}
+		switch (codigo) {
+		case TECLA_ADELANTE:  instance.teclas[0] = abajo; break;
+		case TECLA_DERECHA:   instance.teclas[1] = abajo; break;
+		case TECLA_ATRAS:     instance.teclas[2] = abajo; break;
+		case TECLA_IZQUIERDA: instance.teclas[3] = abajo; break;
+		case TECLA_GIRA_IZQ:
+			instance.giroTecla = abajo ? -1
+				: (instance.giroTecla == -1 ? 0 : instance.giroTecla);
+			break;
+		case TECLA_GIRA_DER:
+			instance.giroTecla = abajo ? 1
+				: (instance.giroTecla == 1 ? 0 : instance.giroTecla);
+			break;
+		}
+	}
+
+	/**
+	 * Soltar todo. La ventana pierde el foco con una tecla abajo y el
+	 * navegador nunca manda ese keyup: sin esto el heroe se queda caminando
+	 * solo contra una pared al volver de otra pestana.
+	 */
+	public static void soltarTeclas() {
+		if (instance == null) {
+			return;
+		}
+		for (int i = 0; i < instance.teclas.length; i++) {
+			instance.teclas[i] = false;
+		}
+		instance.giroTecla = 0;
+	}
+
+	/**
+	 * La direccion que piden las teclas, en el mismo dial que el stick:
+	 * 0 adelante, 2 derecha, 4 atras, 6 izquierda, impares las diagonales.
+	 * Dos teclas opuestas se cancelan en vez de que gane una por el orden
+	 * en que se leyeron.
+	 */
+	private int direccionTeclas() {
+
+		boolean ad = teclas[0], de = teclas[1], at = teclas[2], iz = teclas[3];
+		if (ad && at) { ad = false; at = false; }
+		if (de && iz) { de = false; iz = false; }
+
+		if (eightWay) {
+			if (ad && de) return 1;
+			if (de && at) return 3;
+			if (at && iz) return 5;
+			if (iz && ad) return 7;
+		}
+		if (ad) return 0;
+		if (de) return 2;
+		if (at) return 4;
+		if (iz) return 6;
+		return -1;
+	}
+
+	/** Girar con el teclado. Como mirar con el pulgar: nunca gasta turno. */
+	private void giroPorTeclado() {
+		if (giroTecla == 0) {
+			return;
+		}
+		FirstPerson.cancelAim();
+		FirstPerson.yaw -= giroTecla * FirstPerson.turnSpeed * Game.elapsed;
+		FirstPerson.yaw = FirstPerson.normalisedYaw();
 	}
 
 	/** Called once a frame so a held stick keeps stepping. */
@@ -240,8 +349,32 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 
 		reconcile();
 		layoutStick();
+		giroPorTeclado();
 
-		if (stick == null || stickDir < 0) {
+		// El stick manda cuando hay un pulgar encima; si no, mandan las
+		// teclas. Nunca los dos a la vez, para que soltar el pulgar no
+		// deje un paso a medias con la direccion del otro.
+		int dir = (stick != null) ? stickDir : -1;
+		if (dir < 0) {
+			dir = direccionTeclas();
+			if (dir != dirTeclaPrevia) {
+				dirTeclaPrevia = dir;
+				stepsHeld = 0;
+				// Igual que el stick: el primer paso es inmediato, y si el
+				// heroe esta ocupado el acumulador arranca lleno para que
+				// caiga en cuanto se libere.
+				boolean tomado = dir >= 0 && step( dir );
+				repeatAccum = tomado ? 0f : repeatMs;
+				if (tomado) {
+					stepsHeld++;
+					return;
+				}
+			}
+		} else {
+			dirTeclaPrevia = -1;
+		}
+
+		if (dir < 0) {
 			return;
 		}
 		repeatAccum += Game.elapsed * 1000f;
@@ -262,7 +395,7 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 			// Only spend the interval on a step that actually happened.
 			// Dropping it silently when the hero is mid-action turns a held
 			// stick into a stutter instead of a walk.
-			if (step( stickDir )) {
+			if (step( dir )) {
 				// Subtract rather than zero. A turn the dungeon takes longer
 				// to resolve than `interval` used to cost its own time PLUS
 				// a fresh full interval on top, so a crowded room walked
