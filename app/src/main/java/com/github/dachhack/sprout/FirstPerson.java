@@ -176,7 +176,7 @@ public class FirstPerson {
 
 	/** Build marker, printed to the game log so a screenshot says which
 	 *  version it came from. */
-	public static final String BUILD = "FP build v32";
+	public static final String BUILD = "FP build v33";
 
 	/** Degrees. 0 looks north (-Z), increasing turns west. */
 	public static float yaw = 0f;

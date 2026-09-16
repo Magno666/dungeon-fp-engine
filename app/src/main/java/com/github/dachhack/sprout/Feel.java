@@ -218,6 +218,14 @@ public class Feel {
 	 *  actually obscure or hiding in it stops meaning anything. */
 	public static float grassHeight = 1.9f;
 
+	/** Height of the stairs marker. Taller than a sign on purpose: it has
+	 *  to be spotted from across the room. */
+	public static float stairsHeight = 2.1f;
+
+	/** How hard the stairs marker is lit. Above 1 it glows, which is what
+	 *  makes it readable from the far side of a dark room. */
+	public static float stairsGlow = 1.35f;
+
 	/** How solid a monster sensed through a wall by Mind Vision looks. */
 	public static float ghostOpacity = 0.45f;
 
@@ -308,6 +316,8 @@ public class Feel {
 		Billboards.plantHeight    = plantHeight;
 		Billboards.propHeight     = propHeight;
 		Billboards.grassHeight    = grassHeight;
+		Billboards.stairsHeight   = stairsHeight;
+		Billboards.stairsGlow     = stairsGlow;
 		Billboards.ghostOpacity   = ghostOpacity;
 		Billboards.standOnLoot    = standOnLoot;
 		Billboards.blobMarkHeight = blobMarkHeight;

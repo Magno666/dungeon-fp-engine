@@ -114,6 +114,17 @@ public class Billboards {
 		// in the grass, the thing hunting you loses you -- had no visual
 		// meaning at all. Spotted by Normal-Insect-8220 on r/PixelDungeon.
 		Terrain.HIGH_GRASS,
+		// Escaleras. Son PASSABLE, asi que la malla las pintaba planas en
+		// el suelo -- y un dibujo en el suelo, visto de canto desde la
+		// altura de los ojos, no se ve. En vista cenital la escalera era
+		// una figura reconocible al instante; en primera persona
+		// desaparecia, y con ella la unica forma de saber por donde se
+		// baja. Leonel: "estaria bien si estuviera mas claro las escaleras
+		// del inicio y las bajadas". Se dibuja el mismo tile del atlas, de
+		// pie: nada de arte nuevo.
+		Terrain.ENTRANCE,
+		Terrain.EXIT,
+		Terrain.UNLOCKED_EXIT,
 	};
 
 	/** How tall those stand, in world units. */
@@ -122,9 +133,23 @@ public class Billboards {
 	/** High grass stands taller, because it has to actually obscure. */
 	public static float grassHeight = 1.9f;
 
+	/** Stairs stand taller than a sign: you need to spot them from the
+	 *  other side of the room, which is the whole point of marking them. */
+	public static float stairsHeight = 2.1f;
+
+	/** How hard the stairs marker is lit. Above 1 it glows. */
+	public static float stairsGlow = 1.35f;
+
 	/** Height for one upright terrain type. */
 	public static float uprightHeight( int terrain ) {
-		return terrain == Terrain.HIGH_GRASS ? grassHeight : propHeight;
+		if (terrain == Terrain.HIGH_GRASS) {
+			return grassHeight;
+		}
+		if (terrain == Terrain.ENTRANCE || terrain == Terrain.EXIT
+				|| terrain == Terrain.UNLOCKED_EXIT) {
+			return stairsHeight;
+		}
+		return propHeight;
 	}
 
 	public static boolean isUpright( int terrain ) {
@@ -194,6 +219,19 @@ public class Billboards {
 			b.worldX = DungeonTilemap3D.worldX( cell, width );
 			b.worldZ = DungeonTilemap3D.worldZ( cell, width );
 			b.worldY = lift;
+			// Mismo codigo de color que ya usa el minimapa: verde para
+			// bajar, azul para subir. Sin esto el cartel queda tan oscuro
+			// a distancia como el muro de atras, que era justo el problema
+			// que venia a resolver. Los tonos salen de Minimap.stairMark
+			// para que el mapa y el mundo digan lo mismo.
+			int t = map[cell];
+			if (t == Terrain.EXIT || t == Terrain.UNLOCKED_EXIT) {
+				b.hardlight( 0.40f * stairsGlow, 1f * stairsGlow,
+					0.45f * stairsGlow );
+			} else if (t == Terrain.ENTRANCE) {
+				b.hardlight( 0.55f * stairsGlow, 0.70f * stairsGlow,
+					1f * stairsGlow );
+			}
 			group.add( b );
 			props.add( b );
 		}
