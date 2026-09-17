@@ -47,8 +47,8 @@ public class FirstPerson {
 	/** Camera height above the floor, in world units. TILE is 3. */
 	public static float eyeHeight = 1.6f;
 
-	/** Vertical travel of the head while walking, in world units. CLAUDE.md
-	 *  asks for this to start very low: a little sells the walk, a lot is
+	/** Vertical travel of the head while walking, in world units. Starts
+	 *  deliberately very low: a little sells the walk, a lot is
 	 *  what makes people put the phone down. It rides on how far the eye
 	 *  still is from the cell it is heading to, so it settles by itself
 	 *  when you stop instead of needing its own timer. */
