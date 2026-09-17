@@ -88,6 +88,9 @@ public class Billboards {
 	/** How tall a blob mark stands. Low enough to read as ground. */
 	public static float blobMarkHeight = 0.55f;
 
+	/** Cuanto mas grande que un bicho normal se dibuja un jefe. */
+	public static float bossScale = 1.7f;
+
 	/** How tall a dropped item is. Loot you cannot see is loot you cannot
 	 *  pick up, but an item the size of a monster reads as a monster. */
 	public static float itemHeight = 0.9f;
@@ -290,7 +293,17 @@ public class Billboards {
 			if (mob.sprite == null || mob.sprite.texture == null) {
 				continue;
 			}
-			Billboard b = place( mob, mob.sprite, mob.pos, height, width,
+			// Un jefe debe imponer. El tamaño sale de la altura del frame
+			// del sprite, y varios jefes lo tienen tan chaparro como una
+			// rata -- en vista cenital eso daba igual, porque el jefe se
+			// distinguia por la barra de vida y la animacion. De frente no:
+			// Goo a dos casillas ocupaba 3 de 361 puntos de pantalla, lo
+			// mismo que un bicho cualquiera.
+			float alto = height;
+			if (Arena.esJefe( mob )) {
+				alto *= bossScale;
+			}
+			Billboard b = place( mob, mob.sprite, mob.pos, alto, width,
 				cameraYaw, camera );
 
 			// Standing on loot: lift the creature clear of it. A fly farmed

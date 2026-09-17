@@ -134,10 +134,12 @@ public final class Arena {
         // la pantalla: el yaw de arranque es 180, o sea mirando al sur --
         // de espaldas al jefe. Cero de 361 puntos de pantalla daban con
         // el. Se encara SIEMPRE, venga de la rama que venga.
-        // Distancias probadas en orden de cuan bien se lee el jefe: tres
-        // casillas es el punto dulce -- se le ve entero y ocupa pantalla.
-        // A cinco es una figurita, a dos es una textura contra el ojo.
-        final int[] DISTANCIAS = { 3, 4, 2, 5 };
+        // Distancias en orden de cuan bien se lee el jefe. Dos casillas
+        // primero desde que el campo de vision subio a 65: un campo mas
+        // ancho encoge todo, y a tres el jefe paso de ocupar 23 de 361
+        // puntos de pantalla a 4. Con 50 grados a dos casillas era una
+        // textura contra el ojo; a 65 es justo lo que se quiere ver.
+        final int[] DISTANCIAS = { 2, 3, 4, 5 };
 
         for (int i = 0; i < DISTANCIAS.length && elegida < 0; i++) {
             int r = DISTANCIAS[i];

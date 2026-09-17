@@ -52,6 +52,12 @@ public class FirstPerson {
 	 *  what makes people put the phone down. It rides on how far the eye
 	 *  still is from the cell it is heading to, so it settles by itself
 	 *  when you stop instead of needing its own timer. */
+	/** Cuanto se mece la cabeza de lado a lado al caminar, en unidades de
+	 *  mundo. Coto Vedado lo tiene en 0.022 caminando, ya ajustado a mano.
+	 *  Va a media frecuencia del cabeceo vertical, que es lo que convierte
+	 *  dos subidas y bajadas en el ocho de una zancada. */
+	public static float swayAmplitude = 0.022f;
+
 	public static float headBobAmplitude = 0.040f;
 
 	/** Bobs per cell walked. Two is one dip per footfall. */
@@ -462,8 +468,22 @@ public class FirstPerson {
 		bobPhase += travel * headBobCycles * Game.elapsed * 12f;
 		float bob = (float)Math.sin( bobPhase ) * headBobAmplitude * travel;
 
-		camera.eyeX = camX;
-		camera.eyeZ = camZ;
+		// Balanceo lateral, a la MITAD de frecuencia que el vertical: dos
+		// pisadas por vaiven. Eso es lo que dibuja el ocho que hace la
+		// cabeza al andar; sin el, el cabeceo solo se lee como un ascensor.
+		// Sale de Coto Vedado, que es donde estos numeros estan probados a
+		// mano en un telefono: 0.022 caminando.
+		//
+		// Se mueve por la derecha de la vista. La horizontal del frente es
+		// (-sin yaw, -cos yaw), asi que su perpendicular es
+		// (-cos yaw, sin yaw) -- producto punto cero.
+		float sway = (float)Math.sin( bobPhase * 0.5f ) * swayAmplitude * travel;
+		double yr = Math.toRadians( yaw );
+		float rx = -(float)Math.cos( yr );
+		float rz =  (float)Math.sin( yr );
+
+		camera.eyeX = camX + rx * sway;
+		camera.eyeZ = camZ + rz * sway;
 		camera.eyeY = eyeHeight + bob;
 		camera.yaw = yaw;
 		camera.pitch = pitch;

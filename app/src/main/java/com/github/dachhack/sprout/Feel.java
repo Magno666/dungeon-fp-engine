@@ -79,6 +79,11 @@ public class Feel {
 	/** Vertical travel of the head while walking. Coto Vedado walks at
 	 *  0.040. Low on purpose: a lot of this is what makes people put the
 	 *  phone down. */
+	/** Balanceo lateral al caminar. El vertical solo se lee como ascensor;
+	 *  el lateral, a media frecuencia, es el que hace la zancada. 0.022 es
+	 *  el valor de Coto Vedado. */
+	public static float swayAmplitude = 0.022f;
+
 	// 0.040 es el numero de Coto Vedado, ya ajustado a mano en un telefono
 	// real, y las escalas coinciden: alli el cabeceo son 0.040 m y aqui el
 	// ojo esta a 1.6, o sea una unidad por metro.
@@ -193,7 +198,7 @@ public class Feel {
 	 *  Narrower feels like a corridor and makes a near wall swallow the
 	 *  screen; wider fish-eyes the tiles. Camera3D holds the portrait
 	 *  correction, this is the number worth turning. */
-	public static float fieldOfView = 50f;
+	public static float fieldOfView = 65f;
 
 	/** Ceiling brightness. It is drawn with the wall tile, so at the
 	 *  floor's setting it clips to flat white and lights the corridor like
@@ -215,6 +220,11 @@ public class Feel {
 	 *  The_Neto06 en r/PixelDungeon: "los monstruos podrian ser un poco
 	 *  mas grandes (que te lleguen a los ojos sin mirar para abajo)". */
 	public static float mobHeight = 1.5f;
+
+	/** Cuanto mas grande que un bicho normal se dibuja un jefe. Varios
+	 *  tienen el sprite tan chaparro como una rata, y de frente eso los
+	 *  deja sin presencia ninguna. */
+	public static float bossScale = 1.7f;
 
 	/** Sprite height in texture pixels that {@link #mobHeight} describes. */
 	public static float mobReferencePx = 16f;
@@ -347,6 +357,7 @@ public class Feel {
 
 		Billboards.height         = mobHeight;
 		Billboards.referencePx    = mobReferencePx;
+		Billboards.bossScale      = bossScale;
 		Billboards.itemHeight     = itemHeight;
 		Billboards.plantHeight    = plantHeight;
 		Billboards.propHeight     = propHeight;
@@ -354,6 +365,7 @@ public class Feel {
 		Billboards.stairsHeight   = stairsHeight;
 		Billboards.stairsGlow     = stairsGlow;
 		FirstPerson.stepSuave      = stepSuave;
+		FirstPerson.swayAmplitude  = swayAmplitude;
 		FirstPerson.waterWave      = waterWave;
 		FirstPerson.waterWaveSpeed = waterWaveSpeed;
 		Billboards.ghostOpacity   = ghostOpacity;
