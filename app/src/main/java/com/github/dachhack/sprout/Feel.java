@@ -79,7 +79,15 @@ public class Feel {
 	/** Vertical travel of the head while walking. Coto Vedado walks at
 	 *  0.040. Low on purpose: a lot of this is what makes people put the
 	 *  phone down. */
-	public static float headBobAmplitude = 0.040f;
+	// Bajado de 0.040 a 0.010 al cambiar la curva del paso. El cabeceo se
+	// monta sobre lo que le falta al ojo para llegar, y el suavizado
+	// exponencial de antes mataba esa distancia en dos cuadros: el cabeceo
+	// medido era 0.0116 de punta a punta, o sea casi nada, aunque el numero
+	// dijera 0.040. Con la curva suave la distancia dura todo el paso y el
+	// mismo 0.040 daba 0.077 medidos -- seis veces mas movimiento del que
+	// habia. Justo al reves de lo que pedia la retroalimentacion. Con 0.010
+	// vuelve a sentirse como antes; subelo si quieres mas.
+	public static float headBobAmplitude = 0.010f;
 
 	/** Bobs per cell walked. Two is one dip per footfall. */
 	public static float headBobCycles = 2f;
@@ -198,8 +206,13 @@ public class Feel {
 	// ---- creatures and things --------------------------------------------
 
 	/** How tall a creature with a reference-sized sprite stands. Scaled per
-	 *  mob by its own sprite height, so a boss towers over a rat. */
-	public static float mobHeight = 1.15f;
+	 *  mob by its own sprite height, so a boss towers over a rat.
+	 *
+	 *  Subido de 1.15 a 1.5: con el ojo a 1.6 un bicho de 1.15 te llegaba
+	 *  al pecho y habia que bajar la vista para verlo entero.
+	 *  The_Neto06 en r/PixelDungeon: "los monstruos podrian ser un poco
+	 *  mas grandes (que te lleguen a los ojos sin mirar para abajo)". */
+	public static float mobHeight = 1.5f;
 
 	/** Sprite height in texture pixels that {@link #mobHeight} describes. */
 	public static float mobReferencePx = 16f;
@@ -221,6 +234,16 @@ public class Feel {
 	/** Recoger lo que pisas. En false se vuelve al original: hay que tocar
 	 *  el objeto en pantalla. Ver FirstPersonControls.recogerDelSuelo. */
 	public static boolean autoRecoger = true;
+
+	/** Curva del paso. true = arranca y frena suave; false = el suavizado
+	 *  exponencial de antes, que mete medio paso en el primer cuadro. */
+	public static boolean stepSuave = true;
+
+	/** Cuanto sube y baja la lamina de agua y a que ritmo. Sin movimiento
+	 *  el agua se lee como una baldosa azul: la pregunta de un jugador fue
+	 *  literalmente "bug o feature?". */
+	public static float waterWave = 0.025f;
+	public static float waterWaveSpeed = 0.55f;
 
 	/** Height of the stairs marker. Taller than a sign on purpose: it has
 	 *  to be spotted from across the room. */
@@ -323,6 +346,9 @@ public class Feel {
 		Billboards.grassHeight    = grassHeight;
 		Billboards.stairsHeight   = stairsHeight;
 		Billboards.stairsGlow     = stairsGlow;
+		FirstPerson.stepSuave      = stepSuave;
+		FirstPerson.waterWave      = waterWave;
+		FirstPerson.waterWaveSpeed = waterWaveSpeed;
 		Billboards.ghostOpacity   = ghostOpacity;
 		Billboards.standOnLoot    = standOnLoot;
 		Billboards.blobMarkHeight = blobMarkHeight;

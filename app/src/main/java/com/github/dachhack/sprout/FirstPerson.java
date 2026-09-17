@@ -207,6 +207,24 @@ public class FirstPerson {
 	 */
 	public static float stepSeconds = 0.18f;
 
+	/**
+	 * Curva del desplazamiento. En false vuelve al suavizado exponencial
+	 * de antes.
+	 *
+	 * El exponencial arranca de golpe: con el ritmo de cuadro tipico,
+	 * k = 1 - exp(-elapsed / (stepSeconds/3)) mete casi la mitad del paso
+	 * en el PRIMER cuadro y luego se arrastra. Medido cuadro a cuadro: 95,
+	 * 159, 182, 200, 211, 217, 220, 222... Eso no se lee como caminar, se
+	 * lee como un tiron seguido de una frenada. The_Neto06 en
+	 * r/PixelDungeon: "siento que el movimiento se ve un poco raro. Tal vez
+	 * sea por la forma en que salta cada paso".
+	 *
+	 * La curva suave (smoothstep) sale y llega con velocidad cero, asi que
+	 * el paso acelera y frena en vez de saltar. Cuesta un poco de latencia
+	 * al principio del paso -- se paga con gusto.
+	 */
+	public static boolean stepSuave = true;
+
 	private static Camera3D camera;
 	private static DungeonTilemap3D mesh;      // walls facing north/south
 	private static DungeonTilemap3D wallsEW;   // walls facing east/west
@@ -251,11 +269,32 @@ public class FirstPerson {
 	/** Water is drawn with the plain floor tile, tinted. Its own frame in
 	 *  the sheet is transparent, so before this every pool was a hole. */
 	public static float waterR = 0.30f, waterG = 0.55f, waterB = 0.95f;
+
+	/** Cuanto sube y baja la lamina de agua, en unidades de mundo, y a que
+	 *  ritmo en ciclos por segundo.
+	 *
+	 *  Sin esto el agua es una baldosa azul y plana, y se lee como suelo
+	 *  pintado. Pasa porque el juego plano no dibuja el agua con un tile:
+	 *  el de Terrain.WATER es transparente, un hueco para una capa animada
+	 *  que en 3D no existe, asi que estas casillas se rellenaron con un
+	 *  color solido. El color solo no basta -- The_Neto06 en r/PixelDungeon
+	 *  pregunto "por que el piso es azul en algunas partes? bug o feature?".
+	 *
+	 *  Se mueve en vez de hundirse: hundir la lamina abre una rendija en la
+	 *  orilla, porque las casillas de agua no llevan cara de suelo y se
+	 *  veria a traves. Oscilando alrededor de cero la rendija nunca pasa de
+	 *  la amplitud, y el movimiento es lo que de verdad dice "liquido". */
+	public static float waterWave = 0.025f;
+	public static float waterWaveSpeed = 0.55f;
+
+	private static float waterTime = 0f;
 	private static Group meshParent;
 	private static boolean terrainDirty = false;
 	private static int lastPos = -1;
 	private static float targetYaw = 0f;
 	private static float camX, camZ;        // where the eye actually is
+	private static float desdeX, desdeZ;    // donde empezo el paso en curso
+	private static float pasoT = 0f;        // segundos dentro del paso
 	private static boolean placed = false;  // false until the first frame
 
 	public static Camera3D camera() {
@@ -368,12 +407,34 @@ public class FirstPerson {
 			camZ = goalZ;
 			placed = true;
 		} else if (stepSeconds > 0f) {
-			// Ease towards the cell rather than snapping to it. Exponential
-			// smoothing, so a fast frame and a slow frame cover the same
-			// ground -- the step reads the same at 30fps and at 60.
-			float k = 1f - (float)Math.exp( -Game.elapsed / (stepSeconds / 3f) );
-			camX += (goalX - camX) * k;
-			camZ += (goalZ - camZ) * k;
+
+			// Un cambio de casilla empieza un paso nuevo. Se arranca desde
+			// donde este el ojo AHORA, no desde la casilla anterior: si el
+			// paso anterior no habia terminado, seguir desde el punto medio
+			// es lo que hace que caminar sostenido no de tirones.
+			if (pos != previous) {
+				desdeX = camX;
+				desdeZ = camZ;
+				pasoT = 0f;
+			}
+
+			if (stepSuave) {
+				pasoT += Game.elapsed;
+				float u = pasoT / stepSeconds;
+				if (u > 1f) {
+					u = 1f;
+				}
+				// smoothstep: sale y llega con velocidad cero.
+				float e = u * u * (3f - 2f * u);
+				camX = desdeX + (goalX - desdeX) * e;
+				camZ = desdeZ + (goalZ - desdeZ) * e;
+			} else {
+				// Suavizado exponencial: un cuadro rapido y uno lento
+				// cubren el mismo terreno, pero arranca de golpe.
+				float k = 1f - (float)Math.exp( -Game.elapsed / (stepSeconds / 3f) );
+				camX += (goalX - camX) * k;
+				camZ += (goalZ - camZ) * k;
+			}
 		} else {
 			camX = goalX;
 			camZ = goalZ;
@@ -819,6 +880,9 @@ public class FirstPerson {
 		}
 		if (water != null) {
 			water.rm = waterR; water.gm = waterG; water.bm = waterB;
+			waterTime += Game.elapsed;
+			water.y = waterWave * (float)Math.sin(
+				waterTime * waterWaveSpeed * 2.0 * Math.PI );
 		}
 	}
 
