@@ -395,6 +395,11 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 
 	/** Called once a frame so a held stick keeps stepping. */
 	public static void update() {
+		// La arena tiene que encarar al jefe en cuanto existe la camara, y
+		// este es el unico sitio que corre cada cuadro DENTRO del juego. Si
+		// el gancho viviera en la capa del navegador, la arena dejaria de
+		// funcionar en el APK -- y la idea es que viaje con el.
+		Arena.aplicarMirada();
 		if (instance != null) {
 			instance.tick();
 		}
