@@ -2,6 +2,7 @@
 package com.github.dachhack.sprout;
 
 import com.github.dachhack.sprout.actors.Actor;
+import com.github.dachhack.sprout.items.Item;
 import com.github.dachhack.sprout.actors.hero.Hero;
 import com.github.dachhack.sprout.actors.hero.HeroClass;
 import com.github.dachhack.sprout.actors.mobs.Mob;
@@ -35,6 +36,10 @@ public final class Arena {
     /** Celda del jefe a la que hay que encarar, o -1 si ya se hizo. */
     private static int celdaAMirar = -1;
 
+    /** Lo que falta entregar, en cuanto haya escena que lo aguante. */
+    private static String objetosPendientes = "";
+    private static int mejoraPendiente = 0;
+
     /**
      * Monta la pelea y salta a ella.
      *
@@ -43,6 +48,15 @@ public final class Arena {
      * @param roto  true para equipo maximo; false para lo que da la clase
      */
     public static void iniciar(String jefe, String clase, boolean roto) {
+        iniciar(jefe, clase, roto, "", 0);
+    }
+
+    /**
+     * @param objetos claves separadas por coma, tal como las manda la pagina
+     * @param mejora  cuantos niveles subirle a lo que se pueda mejorar
+     */
+    public static void iniciar(String jefe, String clase, boolean roto,
+                               String objetos, int mejora) {
 
         activa = true;
         jefeActual = jefe;
@@ -61,6 +75,12 @@ public final class Arena {
         if (roto) {
             equiparRoto(Dungeon.hero);
         }
+        // NO se entregan aqui. Item.collect() acaba tocando el quickslot,
+        // que es interfaz, y la escena todavia no existe: sale un
+        // null.width y la arena entera se cae antes de empezar. Se dejan
+        // pendientes para cuando haya escena.
+        objetosPendientes = objetos;
+        mejoraPendiente = mejora;
 
         // El jefe se mete en la lista del nivel, no con GameScene.add: la
         // escena no existe todavia y GameScene.add le pide un sprite. Asi
@@ -169,8 +189,20 @@ public final class Arena {
      * porque update() lo vuelve a mover cada cuadro.
      */
     public static void aplicarMirada() {
-        if (celdaAMirar < 0
-                || FirstPerson.camera() == null) {
+
+        if (FirstPerson.camera() == null) {
+            return;
+        }
+
+        if (objetosPendientes.length() > 0) {
+            String lista = objetosPendientes;
+            int m = mejoraPendiente;
+            objetosPendientes = "";
+            mejoraPendiente = 0;
+            darObjetos(Dungeon.hero, lista, m);
+        }
+
+        if (celdaAMirar < 0) {
             return;
         }
         FirstPerson.faceCell(celdaAMirar);
@@ -191,10 +223,19 @@ public final class Arena {
 
     /** La profundidad importa: los jefes y el botin escalan con ella. */
     private static int profundidadDe(String jefe) {
-        if ("tengu".equals(jefe))  return 10;
-        if ("dm300".equals(jefe))  return 15;
-        if ("rey".equals(jefe))    return 20;
-        if ("yog".equals(jefe))    return 25;
+        if ("tengu".equals(jefe))     return 10;
+        if ("dm300".equals(jefe))     return 15;
+        if ("rey".equals(jefe))       return 20;
+        if ("yog".equals(jefe))       return 25;
+        // Los de Sprouted viven mas abajo y se llega a ellos por portal.
+        // Las profundidades salen de Dungeon.newXLevel, para que escalen
+        // igual que si hubieras llegado jugando.
+        if ("shadowyog".equals(jefe)) return 35;
+        if ("tenguden".equals(jefe))  return 36;
+        if ("skeleton".equals(jefe))  return 37;
+        if ("crab".equals(jefe))      return 38;
+        if ("thief".equals(jefe))     return 40;
+        if ("zot".equals(jefe))       return 99;
         return 5;
     }
 
@@ -215,6 +256,29 @@ public final class Arena {
         }
         if ("yog".equals(jefe)) {
             return new com.github.dachhack.sprout.levels.HallsBossLevel();
+        }
+        if ("shadowyog".equals(jefe)) {
+            return new com.github.dachhack.sprout.levels.InfestBossLevel();
+        }
+        if ("tenguden".equals(jefe)) {
+            return new com.github.dachhack.sprout.levels.TenguDenLevel();
+        }
+        if ("skeleton".equals(jefe)) {
+            return new com.github.dachhack.sprout.levels.SkeletonBossLevel();
+        }
+        if ("crab".equals(jefe)) {
+            return new com.github.dachhack.sprout.levels.CrabBossLevel();
+        }
+        if ("thief".equals(jefe)) {
+            return new com.github.dachhack.sprout.levels.ThiefBossLevel();
+        }
+        // "tower" (MinesBossLevel) queda fuera de la pagina: el nivel se
+        // genera en 32ms en la JVM pero en el navegador la pagina no
+        // termina de cargar, y solo con este jefe. Sin causa encontrada
+        // todavia, asi que no se ofrece -- mejor once jefes que funcionan
+        // que doce con uno que cuelga la pestaña.
+        if ("zot".equals(jefe)) {
+            return new com.github.dachhack.sprout.levels.ZotBossLevel();
         }
         return new com.github.dachhack.sprout.levels.SewerBossLevel();
     }
@@ -266,6 +330,24 @@ public final class Arena {
         if ("yog".equals(jefe)) {
             return new com.github.dachhack.sprout.actors.mobs.Yog();
         }
+        if ("shadowyog".equals(jefe)) {
+            return new com.github.dachhack.sprout.actors.mobs.ShadowYog();
+        }
+        if ("tenguden".equals(jefe)) {
+            return new com.github.dachhack.sprout.actors.mobs.TenguDen();
+        }
+        if ("skeleton".equals(jefe)) {
+            return new com.github.dachhack.sprout.actors.mobs.SkeletonKing();
+        }
+        if ("crab".equals(jefe)) {
+            return new com.github.dachhack.sprout.actors.mobs.CrabKing();
+        }
+        if ("thief".equals(jefe)) {
+            return new com.github.dachhack.sprout.actors.mobs.ThiefKing();
+        }
+        if ("zot".equals(jefe)) {
+            return new com.github.dachhack.sprout.actors.mobs.Zot();
+        }
         return new com.github.dachhack.sprout.actors.mobs.Goo();
     }
 
@@ -275,7 +357,68 @@ public final class Arena {
             || m instanceof com.github.dachhack.sprout.actors.mobs.Tengu
             || m instanceof com.github.dachhack.sprout.actors.mobs.DM300
             || m instanceof com.github.dachhack.sprout.actors.mobs.King
-            || m instanceof com.github.dachhack.sprout.actors.mobs.Yog;
+            || m instanceof com.github.dachhack.sprout.actors.mobs.Yog
+            || m instanceof com.github.dachhack.sprout.actors.mobs.ShadowYog
+            || m instanceof com.github.dachhack.sprout.actors.mobs.TenguDen
+            || m instanceof com.github.dachhack.sprout.actors.mobs.SkeletonKing
+            || m instanceof com.github.dachhack.sprout.actors.mobs.CrabKing
+            || m instanceof com.github.dachhack.sprout.actors.mobs.ThiefKing
+            || m instanceof com.github.dachhack.sprout.actors.mobs.Zot;
+    }
+
+    /**
+     * Mete en la mochila lo que se pidio desde la pagina, y equipa lo
+     * primero que sirva de arma y de armadura -- en una arena nadie quiere
+     * abrir el inventario antes de que el jefe le pegue.
+     *
+     * Todo entra identificado: la gracia de escoger una varita concreta se
+     * pierde si te llega sin nombre y hay que probarla a ver que hace.
+     */
+    private static void darObjetos(Hero heroe, String objetos, int mejora) {
+
+        if (objetos == null || objetos.length() == 0) return;
+
+        com.github.dachhack.sprout.items.KindOfWeapon arma = null;
+        com.github.dachhack.sprout.items.armor.Armor armadura = null;
+
+        for (String clave : objetos.split(",")) {
+            clave = clave.trim();
+            if (clave.length() == 0) continue;
+
+            Item it = ArenaObjetos.crear(clave);
+            if (it == null) continue;
+
+            it.identify();
+            for (int i = 0; i < mejora; i++) {
+                try { it.upgrade(); } catch (Throwable t) { break; }
+            }
+            it.collect();
+
+            if (arma == null
+                    && it instanceof com.github.dachhack.sprout.items.KindOfWeapon) {
+                arma = (com.github.dachhack.sprout.items.KindOfWeapon) it;
+            } else if (armadura == null
+                    && it instanceof com.github.dachhack.sprout.items.armor.Armor) {
+                armadura = (com.github.dachhack.sprout.items.armor.Armor) it;
+            }
+        }
+
+        // Lo escogido gana sobre lo que trae la clase. Sin quitar primero
+        // lo de fabrica, doEquip no hace nada -- el guerrero ya nace con
+        // espada corta -- y te vas a pelear con Yog llevando en la mochila
+        // el martillo que pediste.
+        if (arma != null) {
+            if (heroe.belongings.weapon != null) {
+                heroe.belongings.weapon.doUnequip(heroe, true);
+            }
+            arma.doEquip(heroe);
+        }
+        if (armadura != null) {
+            if (heroe.belongings.armor != null) {
+                heroe.belongings.armor.doUnequip(heroe, true);
+            }
+            armadura.doEquip(heroe);
+        }
     }
 
     /** Equipo de "ponerme roto": lo que trae la clase, subido al tope. */
