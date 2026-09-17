@@ -191,6 +191,10 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 	/** -1 girar a la izquierda, +1 a la derecha, 0 quieto. */
 	private int giroTecla = 0;
 
+	/** Milisegundos esperando por si la segunda tecla de una diagonal
+	 *  todavia viene en camino. -1 cuando no se espera nada. */
+	private float graciaDiag = -1f;
+
 	/** Ultima casilla donde se intento recoger solo, y cuantas cosas habia
 	 *  entonces. Sirve para no repetir un intento que no sirvio. */
 	private int celdaAuto = -1;
@@ -253,6 +257,23 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 
 	/** Recoger lo que pisas. Apagalo para volver al original. */
 	public static boolean autoRecoger = true;
+
+	/**
+	 * Cuanto espera una tecla cardinal por si viene su pareja, en
+	 * milisegundos. En 0 se desactiva.
+	 *
+	 * Nadie pulsa dos teclas en el mismo milisegundo. Como el primer paso
+	 * salia en el instante en que cambiaba la direccion, la tecla que
+	 * llegaba uno o dos cuadros despues ya no cambiaba ese paso: pedias
+	 * diagonal y dabas primero uno recto, al sitio equivocado. Medido en
+	 * pruebas -- pedi la casilla 2048 con arriba+derecha y el heroe acabo
+	 * en la 2049.
+	 *
+	 * Solo afecta al teclado y solo al PRIMER paso de una direccion nueva.
+	 * El stick da las diagonales de una y no pasa por aqui, y mientras se
+	 * camina sostenido la repeticion ya tiene la direccion completa.
+	 */
+	public static float graciaDiagonalMs = 70f;
 
 	/**
 	 * Levanta el monton que tienes debajo de los pies.
@@ -461,9 +482,27 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 		int dir = (stick != null) ? stickDir : -1;
 		if (dir < 0) {
 			dir = direccionTeclas();
+
+			// Una cardinal recien pulsada espera un momento por si su
+			// pareja viene detras y la convierte en diagonal.
+			if (dir >= 0 && dirTeclaPrevia < 0 && (dir % 2) == 0
+					&& graciaDiagonalMs > 0f) {
+				if (graciaDiag < 0f) {
+					graciaDiag = 0f;
+				}
+				graciaDiag += Game.elapsed * 1000f;
+				if (graciaDiag < graciaDiagonalMs) {
+					return;              // todavia puede llegar la otra
+				}
+			}
+			if (dir < 0 || (dir % 2) == 1) {
+				graciaDiag = -1f;        // ya es diagonal, o se solto todo
+			}
+
 			if (dir != dirTeclaPrevia) {
 				dirTeclaPrevia = dir;
 				stepsHeld = 0;
+				graciaDiag = -1f;
 				// Igual que el stick: el primer paso es inmediato, y si el
 				// heroe esta ocupado el acumulador arranca lleno para que
 				// caiga en cuanto se libere.

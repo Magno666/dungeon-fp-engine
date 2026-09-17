@@ -79,15 +79,17 @@ public class Feel {
 	/** Vertical travel of the head while walking. Coto Vedado walks at
 	 *  0.040. Low on purpose: a lot of this is what makes people put the
 	 *  phone down. */
-	// Bajado de 0.040 a 0.010 al cambiar la curva del paso. El cabeceo se
-	// monta sobre lo que le falta al ojo para llegar, y el suavizado
-	// exponencial de antes mataba esa distancia en dos cuadros: el cabeceo
-	// medido era 0.0116 de punta a punta, o sea casi nada, aunque el numero
-	// dijera 0.040. Con la curva suave la distancia dura todo el paso y el
-	// mismo 0.040 daba 0.077 medidos -- seis veces mas movimiento del que
-	// habia. Justo al reves de lo que pedia la retroalimentacion. Con 0.010
-	// vuelve a sentirse como antes; subelo si quieres mas.
-	public static float headBobAmplitude = 0.010f;
+	// 0.040 es el numero de Coto Vedado, ya ajustado a mano en un telefono
+	// real, y las escalas coinciden: alli el cabeceo son 0.040 m y aqui el
+	// ojo esta a 1.6, o sea una unidad por metro.
+	//
+	// Lo baje a 0.010 por error. El cabeceo se monta sobre lo que le falta
+	// al ojo para llegar, y el suavizado exponencial mataba esa distancia
+	// en dos cuadros: medido daba 0.0116 de punta a punta aunque el numero
+	// dijera 0.040. Al suavizar la curva empezo a medir 0.077 -- que es
+	// justo 2 x 0.040, o sea el valor haciendo por fin lo que decia. Lo
+	// tome por un exceso y lo "corregi" hacia el valor averiado.
+	public static float headBobAmplitude = 0.040f;
 
 	/** Bobs per cell walked. Two is one dip per footfall. */
 	public static float headBobCycles = 2f;
@@ -235,6 +237,10 @@ public class Feel {
 	 *  el objeto en pantalla. Ver FirstPersonControls.recogerDelSuelo. */
 	public static boolean autoRecoger = true;
 
+	/** Cuanto espera una tecla cardinal por si viene su pareja y la hace
+	 *  diagonal, en milisegundos. En 0 se desactiva. */
+	public static float graciaDiagonalMs = 70f;
+
 	/** Curva del paso. true = arranca y frena suave; false = el suavizado
 	 *  exponencial de antes, que mete medio paso en el primer cuadro. */
 	public static boolean stepSuave = true;
@@ -333,6 +339,7 @@ public class Feel {
 		FirstPersonControls.knobFraction       = stickKnobFraction;
 		FirstPersonControls.deadZoneFraction   = stickDeadZoneFraction;
 		FirstPersonControls.autoRecoger        = autoRecoger;
+		FirstPersonControls.graciaDiagonalMs   = graciaDiagonalMs;
 		FirstPersonControls.activationRadius   = stickActivationRadius;
 		FirstPersonControls.switchMargin       = stickSwitchMargin;
 		FirstPersonControls.restOpacity        = stickRestOpacity;
