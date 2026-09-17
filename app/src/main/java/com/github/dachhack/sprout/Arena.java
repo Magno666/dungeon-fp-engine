@@ -170,7 +170,14 @@ public final class Arena {
         }
 
         if (elegida >= 0) {
+            // Actor.chars es un arreglo por casilla: cambiar hero.pos a
+            // pelo deja al heroe registrado donde estaba, y entonces
+            // Actor.findChar cree que esa casilla sigue ocupada. Cualquiera
+            // que quiera caminar hasta ahi -- el jefe persiguiendote, o tu
+            // mismo -- se encuentra la casilla "llena" y no se mueve.
+            Actor.freeCell(Dungeon.hero.pos);
             Dungeon.hero.pos = elegida;
+            Actor.occupyCell(Dungeon.hero);
         }
         if (Dungeon.hero.sprite != null) {
             Dungeon.hero.sprite.place(Dungeon.hero.pos);

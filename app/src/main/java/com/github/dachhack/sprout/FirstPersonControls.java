@@ -196,6 +196,11 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 	private int celdaAuto = -1;
 	private int cosasAuto = -1;
 
+	/** La casilla a la que apunto el ultimo paso del jugador. Vive en la
+	 *  instancia a proposito: cada nivel construye una nueva, asi que
+	 *  llegar a un piso por la escalera nunca la hereda del anterior. */
+	private int celdaPisada = -1;
+
 	private Group hud;
 	private Image ring;
 	private Image knob;
@@ -269,11 +274,43 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 	 */
 	private boolean recogerDelSuelo() {
 
-		if (!autoRecoger || Dungeon.hero == null || Dungeon.level == null
+		if (Dungeon.hero == null || Dungeon.level == null
 				|| !Dungeon.hero.ready || Dungeon.hero.curAction != null
 				|| GameScene.windowOpen()) {
 			return false;
 		}
+
+		// Montones primero: si habia algo tirado EN la escalera, Hero.handle
+		// mira el monton antes que la escalera, asi que hay que levantarlo
+		// para que el siguiente intento vea la escalera.
+		if (autoRecoger && pisarMonton()) {
+			return true;
+		}
+
+		// Escaleras, y solo si el jugador acaba de pisarlas con un paso
+		// suyo. Mismo mal que el de recoger: al caminar hacia una escalera
+		// se crea la accion de usarla, y Hero.checkVisibleMobs() llama a
+		// interrupt() en cuanto un bicho asoma, lo que borra la accion. Te
+		// quedas parado ENCIMA de la escalera sin haber subido ni bajado.
+		// Leonel: "la mecanica de subir y bajar de los niveles mediante
+		// escaleras me dio problemas".
+		//
+		// El candado de celdaPisada es lo que evita el bucle: llegar a un
+		// piso por una transicion no es un paso, asi que aparecer sobre la
+		// escalera de entrada no te devuelve por donde viniste.
+		int pos = Dungeon.hero.pos;
+		if (pos == celdaPisada
+				&& (pos == Dungeon.level.exit || pos == Dungeon.level.entrance)) {
+			celdaPisada = -1;
+			GameScene.handleCell( pos );
+			return true;
+		}
+
+		return false;
+	}
+
+	/** Levanta el monton que tienes debajo, si lo hay. */
+	private boolean pisarMonton() {
 
 		Heap monton = Dungeon.level.heaps.get( Dungeon.hero.pos );
 		if (monton == null || monton.isEmpty() || monton.type != Heap.Type.HEAP) {
@@ -779,6 +816,7 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 		if (cell < 0) {
 			return false;
 		}
+		celdaPisada = cell;
 		GameScene.handleCell( cell );
 		return true;
 	}
