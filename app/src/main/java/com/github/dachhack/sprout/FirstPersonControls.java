@@ -17,6 +17,7 @@
  */
 package com.github.dachhack.sprout;
 
+import com.github.dachhack.sprout.items.Heap;
 import com.github.dachhack.sprout.levels.Level;
 import com.github.dachhack.sprout.scenes.GameScene;
 import com.watabou.input.Touchscreen;
@@ -190,6 +191,11 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 	/** -1 girar a la izquierda, +1 a la derecha, 0 quieto. */
 	private int giroTecla = 0;
 
+	/** Ultima casilla donde se intento recoger solo, y cuantas cosas habia
+	 *  entonces. Sirve para no repetir un intento que no sirvio. */
+	private int celdaAuto = -1;
+	private int cosasAuto = -1;
+
 	private Group hud;
 	private Image ring;
 	private Image knob;
@@ -238,6 +244,55 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 			}
 			instance = null;
 		}
+	}
+
+	/** Recoger lo que pisas. Apagalo para volver al original. */
+	public static boolean autoRecoger = true;
+
+	/**
+	 * Levanta el monton que tienes debajo de los pies.
+	 *
+	 * Por que hace falta: al caminar hacia un objeto el juego crea la accion
+	 * de recogerlo, pero Hero.checkVisibleMobs() llama a interrupt() en
+	 * cuanto un bicho entra en tu campo de vision, y interrupt() borra la
+	 * accion. Acabas parado ENCIMA de la cosa sin haberla levantado. Eso es
+	 * del Pixel Dungeon original y ahi se nota poco -- ves el aviso y
+	 * vuelves a tocar el objeto. En primera persona se siente roto, porque
+	 * aqui lo natural es caminar sobre las cosas, no tocarlas de lejos, y un
+	 * piso con bichos deambulando interrumpe a cada rato. Leonel: "no
+	 * agarraba la carne de los mobs o cosas".
+	 *
+	 * Solo montones sueltos: un cofre, una tumba o un esqueleto se abren
+	 * queriendo, no por pisarlos. Y nunca lo de un comerciante, que se paga.
+	 *
+	 * @return true si se pidio una recogida este cuadro
+	 */
+	private boolean recogerDelSuelo() {
+
+		if (!autoRecoger || Dungeon.hero == null || Dungeon.level == null
+				|| !Dungeon.hero.ready || Dungeon.hero.curAction != null
+				|| GameScene.windowOpen()) {
+			return false;
+		}
+
+		Heap monton = Dungeon.level.heaps.get( Dungeon.hero.pos );
+		if (monton == null || monton.isEmpty() || monton.type != Heap.Type.HEAP) {
+			return false;
+		}
+
+		// Un intento por llegada. Si el anterior no bajo la cuenta -- la
+		// mochila esta llena -- no insistir hasta que te vayas y vuelvas, o
+		// el registro se llena de "your pack is too full" cuadro tras
+		// cuadro.
+		int cuantas = monton.size();
+		if (Dungeon.hero.pos == celdaAuto && cuantas >= cosasAuto) {
+			return false;
+		}
+		celdaAuto = Dungeon.hero.pos;
+		cosasAuto = cuantas;
+
+		GameScene.handleCell( Dungeon.hero.pos );
+		return true;
 	}
 
 	/** Solo para el diagnostico: que teclas cree el juego que estan abajo. */
@@ -350,6 +405,13 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 		reconcile();
 		layoutStick();
 		giroPorTeclado();
+
+		// Antes de dar el siguiente paso: si acabas de quedar encima de
+		// algo, levantalo. Recoger gasta turno, asi que el paso que venia
+		// se pospone solo -- que es justo lo que uno espera.
+		if (recogerDelSuelo()) {
+			return;
+		}
 
 		// El stick manda cuando hay un pulgar encima; si no, mandan las
 		// teclas. Nunca los dos a la vez, para que soltar el pulgar no

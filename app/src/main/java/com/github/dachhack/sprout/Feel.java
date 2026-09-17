@@ -218,6 +218,10 @@ public class Feel {
 	 *  actually obscure or hiding in it stops meaning anything. */
 	public static float grassHeight = 1.9f;
 
+	/** Recoger lo que pisas. En false se vuelve al original: hay que tocar
+	 *  el objeto en pantalla. Ver FirstPersonControls.recogerDelSuelo. */
+	public static boolean autoRecoger = true;
+
 	/** Height of the stairs marker. Taller than a sign on purpose: it has
 	 *  to be spotted from across the room. */
 	public static float stairsHeight = 2.1f;
@@ -305,6 +309,7 @@ public class Feel {
 		FirstPersonControls.ringFraction       = stickRingFraction;
 		FirstPersonControls.knobFraction       = stickKnobFraction;
 		FirstPersonControls.deadZoneFraction   = stickDeadZoneFraction;
+		FirstPersonControls.autoRecoger        = autoRecoger;
 		FirstPersonControls.activationRadius   = stickActivationRadius;
 		FirstPersonControls.switchMargin       = stickSwitchMargin;
 		FirstPersonControls.restOpacity        = stickRestOpacity;
