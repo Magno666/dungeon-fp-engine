@@ -198,7 +198,7 @@ public class Feel {
 	 *  Narrower feels like a corridor and makes a near wall swallow the
 	 *  screen; wider fish-eyes the tiles. Camera3D holds the portrait
 	 *  correction, this is the number worth turning. */
-	public static float fieldOfView = 65f;
+	public static float fieldOfView = 60f;
 
 	/** Ceiling brightness. It is drawn with the wall tile, so at the
 	 *  floor's setting it clips to flat white and lights the corridor like
@@ -215,11 +215,16 @@ public class Feel {
 	/** How tall a creature with a reference-sized sprite stands. Scaled per
 	 *  mob by its own sprite height, so a boss towers over a rat.
 	 *
-	 *  Subido de 1.15 a 1.5: con el ojo a 1.6 un bicho de 1.15 te llegaba
+	 *  Subido de 1.15 a 1.7: con el ojo a 1.6 un bicho de 1.15 te llegaba
 	 *  al pecho y habia que bajar la vista para verlo entero.
+	 *
+	 *  Llego a 1.7 y no a 1.5 porque abrir el campo de vision encoge todo
+	 *  y se comio la subida entera: medida la rata a una casilla, con
+	 *  campo 50 ocupaba 74 de 361 puntos de pantalla y con campo 65
+	 *  bajaba a 36. O sea que un cambio mio anulaba el que habian pedido.
 	 *  The_Neto06 en r/PixelDungeon: "los monstruos podrian ser un poco
 	 *  mas grandes (que te lleguen a los ojos sin mirar para abajo)". */
-	public static float mobHeight = 1.5f;
+	public static float mobHeight = 1.7f;
 
 	/** Cuanto mas grande que un bicho normal se dibuja un jefe. Varios
 	 *  tienen el sprite tan chaparro como una rata, y de frente eso los
