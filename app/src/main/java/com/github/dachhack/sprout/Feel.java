@@ -320,6 +320,9 @@ public class Feel {
 	public static float mapMarginDp = 5.33f;
 
 	/** Size of the heading arrow on the map, in map tiles. */
+	/** Tamano del punto de cada bicho en el mapa, en casillas. */
+	public static float mapBichoTiles = 0.8f;
+
 	public static float mapMarkerTiles = 1.5f;
 
 	/** Ring drawn around a monster you can shoot, in world units, and how
@@ -405,6 +408,7 @@ public class Feel {
 		Minimap.tilesAcross  = mapTilesAcross;
 		Minimap.marginDp     = mapMarginDp;
 		Minimap.markerTiles  = mapMarkerTiles;
+		Minimap.bichoTiles   = mapBichoTiles;
 
 		Targeting.ringSize = targetRingSize;
 		Targeting.ringLift = targetRingLift;

@@ -17,6 +17,7 @@
  */
 package com.github.dachhack.sprout;
 
+import com.github.dachhack.sprout.actors.mobs.Mob;
 import com.github.dachhack.sprout.levels.Level;
 import com.github.dachhack.sprout.levels.Terrain;
 import com.watabou.noosa.Camera;
@@ -25,6 +26,8 @@ import com.watabou.noosa.Group;
 import com.github.dachhack.sprout.scenes.PixelScene;
 import com.watabou.noosa.Image;
 import com.watabou.utils.PointF;
+
+import java.util.ArrayList;
 
 /**
  * The top-down map, back as a corner window.
@@ -56,6 +59,10 @@ public class Minimap {
 
 	/** Size of the heading arrow, in map tiles. */
 	public static float markerTiles = 1.5f;
+
+	/** Tamano del punto de cada bicho, en casillas. Mas chico que la
+	 *  flecha del heroe: son informacion, no el sujeto. */
+	public static float bichoTiles = 0.8f;
 
 	/** How many dungeon tiles fit across the window. */
 	public static float tilesAcross = 15f;
@@ -142,6 +149,10 @@ public class Minimap {
 	 *  for. Only shown once the cell is known, same rule as everything
 	 *  else on this map. */
 	private static Image downMark, upMark;
+
+	/** Un punto por bicho a la vista. Se reusan: hacer y tirar Images cada
+	 *  cuadro con el mapa abierto es basura para el recolector. */
+	private static final ArrayList<Image> bichos = new ArrayList<Image>();
 
 	/** A copy of the level map with everything unexplored blanked out. */
 	private static int[] masked;
@@ -277,6 +288,78 @@ public class Minimap {
 		// Noosa's rotation is clockwise on screen while yaw counts the other
 		// way -- yaw 0 is north, -90 is east. Hence the negation.
 		marker.angle = -FirstPerson.yaw;
+
+		marcarBichos();
+	}
+
+	/**
+	 * Los bichos a la vista, como puntos en el mapa.
+	 *
+	 * Pedido en reddit: "in 3D you can't see all the enemies and decide the
+	 * optimal killing sequence". Es cierto y no tiene arreglo dentro de la
+	 * vista -- en primera persona solo ves lo que tienes delante -- pero el
+	 * mapa si puede devolver esa lectura.
+	 *
+	 * Solo los que el heroe VE ahora mismo, y por eso no es hacer trampa:
+	 * el campo de vision de Pixel Dungeon es de 360 grados, asi que en la
+	 * vista cenital de siempre estos mismos bichos estaban todos en
+	 * pantalla a la vez. Esto devuelve esa informacion, ni una mas.
+	 */
+	/** Diagnostico: cuantos puntos de bicho se estan pintando. */
+	public static int puntosBicho() {
+		int n = 0;
+		for (Image i : bichos) {
+			if (i != null && i.visible) {
+				n++;
+			}
+		}
+		return n;
+	}
+
+	private static void marcarBichos() {
+
+		if (group == null || Dungeon.level == null) {
+			return;
+		}
+
+		int puesto = 0;
+		for (Mob m : Dungeon.level.mobs) {
+
+			if (m == null || m.pos < 0 || m.pos >= Dungeon.level.map.length
+					|| !Dungeon.visible[m.pos]) {
+				continue;
+			}
+
+			Image punto;
+			if (puesto < bichos.size()) {
+				punto = bichos.get( puesto );
+			} else {
+				punto = new Image( HudTextures.disc() );
+				punto.camera = cam;
+				group.add( punto );
+				bichos.add( punto );
+			}
+			puesto++;
+
+			float size = DungeonTilemap.SIZE * bichoTiles;
+			float sc = size / punto.texture.width;
+			punto.scale.set( sc, sc );
+			PointF at = DungeonTilemap.tileToWorld( m.pos );
+			punto.x = at.x + DungeonTilemap.SIZE / 2f - size / 2f;
+			punto.y = at.y + DungeonTilemap.SIZE / 2f - size / 2f;
+			if (m.ally) {
+				punto.hardlight( 0.45f, 0.80f, 1f );
+			} else {
+				punto.hardlight( 1f, 0.32f, 0.28f );
+			}
+			punto.visible = true;
+		}
+
+		// Los que sobran no se tiran, se apagan: la cuenta sube y baja cada
+		// vez que algo entra o sale de la vista.
+		for (int i = puesto; i < bichos.size(); i++) {
+			bichos.get( i ).visible = false;
+		}
 	}
 
 	/** A dot on one cell, or null if the hero has not seen that cell yet. */
@@ -343,6 +426,7 @@ public class Minimap {
 
 		downMark = null;
 		upMark = null;
+		bichos.clear();
 
 		if (cam != null) {
 			Camera.remove( cam );
