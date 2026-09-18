@@ -24,6 +24,7 @@ import com.github.dachhack.sprout.Assets;
 import com.github.dachhack.sprout.Badges;
 import com.github.dachhack.sprout.Dungeon;
 import com.github.dachhack.sprout.FirstPerson;
+import com.github.dachhack.sprout.Adornos;
 import com.github.dachhack.sprout.DungeonTilemap;
 import com.github.dachhack.sprout.FogOfWar;
 import com.github.dachhack.sprout.ShatteredPixelDungeon;
@@ -267,8 +268,15 @@ public class GameScene extends PixelScene {
 			// CellEmitter.get() pours into this one -- fire, embers, poison.
 			// Same flat coordinates, same problem.
 			emitters.visible = false;
-			for (Gizmo g : adornos) {
-				g.visible = false;
+			// Los adornos si se pueden salvar: Adornos le da a cada uno su
+			// propia camara y la mueve cada cuadro para que sus particulas
+			// caigan sobre la pared de la que salen. Si no logra averiguar
+			// a que casilla va cada uno, se esconden como antes.
+			Adornos.install(adornos);
+			if (!Adornos.colocados()) {
+				for (Gizmo g : adornos) {
+					g.visible = false;
+				}
 			}
 		}
 
@@ -478,6 +486,7 @@ public class GameScene extends PixelScene {
 		// the finished level, and through Char.sprite a chain of textures,
 		// for as long as the process lives.
 		FirstPerson.reset();
+		Adornos.reset();
 		FirstPersonControls.uninstall();
 		Minimap.clear();
 		Targeting.clear();
@@ -507,6 +516,12 @@ public class GameScene extends PixelScene {
 		}
 
 		super.update();
+
+		// Despues de super.update(): los adornos se encienden y se apagan
+		// solos ahi segun Dungeon.visible, y esto solo recoloca y apaga los
+		// que quedan detras del ojo.
+		Adornos.update();
+
 
 		// Keep the first person camera on the hero's cell. No-op when off.
 		FirstPerson.update();
@@ -729,7 +744,10 @@ public class GameScene extends PixelScene {
 		}
 		int n = 0;
 		for (Gizmo g : scene.adornos) {
-			if (g != null && g.visible) {
+			// Con camara propia el adorno ya no se pinta en coordenadas de
+			// mapa: Adornos la desplaza a donde el render 3D pone su
+			// casilla. Los que cuentan son los que siguen sin ella.
+			if (g != null && g.visible && g.camera == null) {
 				n++;
 			}
 		}

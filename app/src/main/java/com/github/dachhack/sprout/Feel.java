@@ -274,6 +274,17 @@ public class Feel {
 	public static float waterWave = 0.025f;
 	public static float waterWaveSpeed = 0.55f;
 
+	// ---- adornos del nivel --------------------------------------------
+	// Las goteras de las tuberias, las antorchas, el humo, las vetas. En
+	// primera persona cada uno lleva su propia camara para caer sobre la
+	// pared de la que sale; ver Adornos.
+
+	/** A que altura del muro cuelgan: 0 el suelo, 1 el techo. */
+	public static float adornosAltura = 0.62f;
+
+	/** A cuantas casillas dejan de dibujarse. */
+	public static float adornosDistancia = 12f;
+
 	/** Height of the stairs marker. Taller than a sign on purpose: it has
 	 *  to be spotted from across the room. */
 	public static float stairsHeight = 2.1f;
@@ -383,6 +394,8 @@ public class Feel {
 		FirstPerson.vertigoSway    = vertigoSway;
 		FirstPerson.waterWave      = waterWave;
 		FirstPerson.waterWaveSpeed = waterWaveSpeed;
+		Adornos.altura            = adornosAltura;
+		Adornos.distanciaMaxima   = adornosDistancia;
 		Billboards.ghostOpacity   = ghostOpacity;
 		Billboards.standOnLoot    = standOnLoot;
 		Billboards.blobMarkHeight = blobMarkHeight;
