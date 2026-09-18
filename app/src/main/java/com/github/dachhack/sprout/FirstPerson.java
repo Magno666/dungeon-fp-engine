@@ -563,18 +563,40 @@ public class FirstPerson {
 			return mob;
 		}
 
-		int[] map = Dungeon.level.map;
-		boolean[] solid = new boolean[map.length];
-		for (int c = 0; c < map.length; c++) {
-			solid[c] = (com.github.dachhack.sprout.levels.Terrain.flags[map[c]]
-				& com.github.dachhack.sprout.levels.Terrain.SOLID) != 0;
-		}
+		boolean[] solid = paraElRayo();
 
 		return cellFromRay( sx, sy, Game.width, Game.height,
 			camera.fovY(), camera.aspect(),
 			camera.eyeX, camera.eyeY, camera.eyeZ,
 			camera.yaw, camera.pitch,
-			width, map.length / width, solid );
+			width, Dungeon.level.map.length / width, solid );
+	}
+
+	/**
+	 * What stops a tap's ray.
+	 *
+	 * Solid was not enough: high grass is passable, so the ray went clean
+	 * through a bush and picked a floor cell behind it. Tapping a bush in
+	 * front of you then walked you the long way round to its far side,
+	 * because the cell you actually selected was back there. Reported from
+	 * the first floor and it was exactly this.
+	 *
+	 * Anything that blocks sight stops the ray now, on top of what already
+	 * did. It has to be the union of the two and not either one: of the six
+	 * sight-blocking terrains only high grass was missing, but solid also
+	 * covers the stairs and statues, which block nothing and still must be
+	 * tappable rather than shot through.
+	 *
+	 * Level keeps both arrays current -- burn a bush or open a door and
+	 * they change with it -- so there is nothing here to cache or stale.
+	 */
+	private static boolean[] paraElRayo() {
+		int n = Dungeon.level.map.length;
+		boolean[] tapa = new boolean[n];
+		for (int c = 0; c < n; c++) {
+			tapa[c] = Level.solid[c] || Level.losBlocking[c];
+		}
+		return tapa;
 	}
 
 	/**
@@ -629,13 +651,20 @@ public class FirstPerson {
 		// picks a cell in the room beyond — the hero would path towards
 		// somewhere they cannot see, and a wand could target through a wall.
 		if (solid != null) {
+			// La casilla donde esta el ojo nunca tapa. Parece obvio y no lo
+			// era: una puerta es SOLID y ademas se puede pisar, asi que
+			// parado en el marco el primer paso del rayo daba con la propia
+			// casilla y CUALQUIER toque devolvia donde ya estabas -- no se
+			// podia caminar tocando. Al sumar lo que tapa la vista le
+			// pasaria lo mismo a la hierba alta, que se pisa mucho mas.
+			int propia = cellAt( eyeX, eyeZ, width, rows );
 			float stepLen = DungeonTilemap3D.TILE / 4f;
 			for (float march = stepLen; march < dist; march += stepLen) {
 				int c = cellAt( eyeX + wx * march, eyeZ + wz * march, width, rows );
 				if (c < 0) {
 					return -1;
 				}
-				if (solid[c]) {
+				if (c != propia && solid[c]) {
 					return c;
 				}
 			}
