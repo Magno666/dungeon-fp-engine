@@ -79,6 +79,10 @@ public class Feel {
 	/** Vertical travel of the head while walking. Coto Vedado walks at
 	 *  0.040. Low on purpose: a lot of this is what makes people put the
 	 *  phone down. */
+	/** Grados que se mece la vista con Vertigo. El juego ya te manda a una
+	 *  casilla al azar; esto es lo que hace que se entienda por que. */
+	public static float vertigoSway = 7f;
+
 	/** Balanceo lateral al caminar. El vertical solo se lee como ascensor;
 	 *  el lateral, a media frecuencia, es el que hace la zancada. 0.022 es
 	 *  el valor de Coto Vedado. */
@@ -376,6 +380,7 @@ public class Feel {
 		Billboards.stairsGlow     = stairsGlow;
 		FirstPerson.stepSuave      = stepSuave;
 		FirstPerson.swayAmplitude  = swayAmplitude;
+		FirstPerson.vertigoSway    = vertigoSway;
 		FirstPerson.waterWave      = waterWave;
 		FirstPerson.waterWaveSpeed = waterWaveSpeed;
 		Billboards.ghostOpacity   = ghostOpacity;

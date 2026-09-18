@@ -17,6 +17,7 @@
  */
 package com.github.dachhack.sprout;
 
+import com.github.dachhack.sprout.actors.buffs.Vertigo;
 import com.github.dachhack.sprout.levels.Level;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
@@ -57,6 +58,12 @@ public class FirstPerson {
 	 *  Va a media frecuencia del cabeceo vertical, que es lo que convierte
 	 *  dos subidas y bajadas en el ocho de una zancada. */
 	public static float swayAmplitude = 0.022f;
+
+	/** Cuantos grados se mece la vista mientras dura el Vertigo. Solo
+	 *  afecta a la camara: la direccion logica no se toca. */
+	public static float vertigoSway = 7f;
+
+	private static float vertigoPhase = 0f;
 
 	public static float headBobAmplitude = 0.040f;
 
@@ -485,10 +492,35 @@ public class FirstPerson {
 		camera.eyeX = camX + rx * sway;
 		camera.eyeZ = camZ + rz * sway;
 		camera.eyeY = eyeHeight + bob;
-		camera.yaw = yaw;
-		camera.pitch = pitch;
+		// Vertigo: el mundo se mece.
+		//
+		// El juego ya manda el paso a una casilla al azar cuando estas
+		// mareado (Char.move), y en vista cenital eso se lee solo: ves a tu
+		// personaje trastabillar a otra baldosa. En primera persona no se
+		// ve nada -- el mundo se desliza hacia donde no querias y parece
+		// que los controles se rompieron. justbleachmyeyes en
+		// r/PixelDungeon: "I got really thrown off when a ghost applied
+		// vertigo and I wasn't moving in the direction I was looking".
+		//
+		// Se mece SOLO la camara, no FirstPerson.yaw: la direccion logica
+		// sigue siendo la tuya, asi que el mareo se ve pero no se suma al
+		// desvio que el juego ya aplica. Dos senos desafinados para que
+		// divague en vez de pulsar a compas, como el titileo de la
+		// antorcha.
+		float mareo = 0f;
+		if (Dungeon.hero != null
+				&& Dungeon.hero.buff( Vertigo.class ) != null) {
+			vertigoPhase += Game.elapsed;
+			mareo = (float)(Math.sin( vertigoPhase * 1.7f )
+				+ 0.7f * Math.sin( vertigoPhase * 2.9f )) / 1.7f;
+		} else {
+			vertigoPhase = 0f;
+		}
 
-		Billboards.update( yaw, camera );
+		camera.yaw = yaw + mareo * vertigoSway;
+		camera.pitch = pitch + mareo * vertigoSway * 0.45f;
+
+		Billboards.update( camera.yaw, camera );
 	}
 
 	/** Rotate towards a heading the short way round. */
