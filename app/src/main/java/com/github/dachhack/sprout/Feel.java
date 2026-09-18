@@ -247,6 +247,10 @@ public class Feel {
 	 *  el objeto en pantalla. Ver FirstPersonControls.recogerDelSuelo. */
 	public static boolean autoRecoger = true;
 
+	/** Grados de giro por cada 100 px de raton capturado. Mucho mas baja
+	 *  que la tactil porque un raton barre media mesa y un pulgar no. */
+	public static float lookSensitivityRaton = 12f;
+
 	/** Cuanto espera una tecla cardinal por si viene su pareja y la hace
 	 *  diagonal, en milisegundos. En 0 se desactiva. */
 	public static float graciaDiagonalMs = 70f;
@@ -350,6 +354,7 @@ public class Feel {
 		FirstPersonControls.deadZoneFraction   = stickDeadZoneFraction;
 		FirstPersonControls.autoRecoger        = autoRecoger;
 		FirstPersonControls.graciaDiagonalMs   = graciaDiagonalMs;
+		FirstPersonControls.lookSensitivityRaton = lookSensitivityRaton;
 		FirstPersonControls.activationRadius   = stickActivationRadius;
 		FirstPersonControls.switchMargin       = stickSwitchMargin;
 		FirstPersonControls.restOpacity        = stickRestOpacity;

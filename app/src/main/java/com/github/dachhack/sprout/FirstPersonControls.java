@@ -368,6 +368,34 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 		return sb.toString();
 	}
 
+	/**
+	 * Sensibilidad del raton capturado, en grados por cada 100 px de
+	 * movimiento.
+	 *
+	 * Mucho mas baja que la tactil (35.5) a proposito: un pulgar recorre
+	 * un par de centimetros de cristal y un raton barre media mesa, asi
+	 * que el mismo numero marearia. 12 sale de Coto Vedado, donde el
+	 * pointer lock esta en 0.0021 rad/px, que es justo esto.
+	 */
+	public static float lookSensitivityRaton = 12f;
+
+	/**
+	 * Mirar con el raton capturado. Los mismos limites que el pulgar:
+	 * nunca gasta turno, el giro da la vuelta entera y solo el cabeceo
+	 * se topa para no quedar de cabeza.
+	 */
+	public static void mirar( float dx, float dy ) {
+		if (!FirstPerson.enabled || GameScene.windowOpen()) {
+			return;
+		}
+		FirstPerson.cancelAim();
+		float porPx = lookSensitivityRaton / 100f;
+		FirstPerson.yaw -= dx * porPx;
+		FirstPerson.yaw = FirstPerson.normalisedYaw();
+		FirstPerson.pitch = Math.max( -pitchLimit,
+			Math.min( pitchLimit, FirstPerson.pitch - dy * porPx ) );
+	}
+
 	/** Codigos que entiende {@link #tecla}. */
 	public static final int TECLA_ADELANTE   = 1;
 	public static final int TECLA_DERECHA    = 2;
