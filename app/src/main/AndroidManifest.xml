@@ -3,6 +3,12 @@
 	android:installLocation="auto">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- Solo para la telemetria anonima: el piso al que llegas, de que
+         mueres y a cuantos cuadros te corre. El juego entero funciona sin
+         red; si se cae el envio, se pierde y no pasa nada. Sin este
+         permiso la llamada falla en SILENCIO, que es como estuvo el primer
+         APK sin que nadie se enterara. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     
 	
 	

@@ -65,6 +65,22 @@ public class ShatteredPixelDungeon extends Game {
 		// English if there is no dictionary for it.
 		Lang.useSystemLanguage();
 
+		// La telemetria del APK, por reflexion a proposito.
+		//
+		// TelemetriaAndroid habla java.net. Nombrarla aqui directamente
+		// obliga a TeaVM a arrastrar todo eso al bundle del navegador --
+		// 84 KB medidos -- para codigo que ahi no corre jamas, porque la
+		// web pone su propio enviador. Por reflexion, TeaVM no ve la
+		// referencia y la descarta entera; en Android resuelve y corre.
+		// minifyEnabled esta en false, asi que nada la renombra.
+		try {
+			Class.forName("com.github.dachhack.sprout.TelemetriaAndroid")
+				.getMethod("instalar").invoke(null);
+		} catch (Throwable e) {
+			// En el navegador no existe y no pasa nada: web.Progreso pone
+			// el suyo en el primer cuadro.
+		}
+
 		/*
 		 * if (android.os.Build.VERSION.SDK_INT >= 19) {
 		 * getWindow().getDecorView().setSystemUiVisibility(
