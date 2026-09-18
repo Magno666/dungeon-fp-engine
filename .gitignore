@@ -11,3 +11,10 @@ local.properties
 # IDE
 .idea/
 *.iml
+
+# La firma de release. La llave vive en /root/claves y la contrasena aqui:
+# si se pierde, no se puede volver a publicar una actualizacion de la app
+# nunca, porque Android solo acepta updates firmados con la MISMA llave.
+firma.properties
+*.jks
+*.keystore
