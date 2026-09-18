@@ -41,6 +41,10 @@ enum Preferences {
 	/** No capturar el raton: el cursor se queda a la vista y para mirar hay
 	 *  que arrastrar con el boton. */
 	public static final String KEY_PUNTERO = "puntero_libre";
+
+	/** Numero al azar de esta instalacion, para juntar sus partidas sin
+	 *  saber de quien son. Ver Telemetria. */
+	public static final String KEY_INSTALACION = "instalacion";
 	public static final String KEY_LAST_CLASS = "last_class";
 	public static final String KEY_CHALLENGES = "challenges";
 	public static final String KEY_QUICKSLOTS = "quickslots";
