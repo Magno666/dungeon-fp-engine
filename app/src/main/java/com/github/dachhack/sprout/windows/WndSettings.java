@@ -39,6 +39,7 @@ public class WndSettings extends Window {
 	private static final String TXT_MUSIC = "Music";
 	private static final String TXT_INVERT_X = "Invert look X";
 	private static final String TXT_INVERT_Y = "Invert look Y";
+	private static final String TXT_ENDEREZAR = "Face where you walk";
 
 	private static final String TXT_SOUND = "Sound FX";
 
@@ -168,6 +169,17 @@ public class WndSettings extends Window {
 		btnInvertY.checked(ShatteredPixelDungeon.invertY());
 		add(btnInvertY);
 
+		CheckBox btnEnderezar = new CheckBox(TXT_ENDEREZAR) {
+			@Override
+			protected void onClick() {
+				super.onClick();
+				ShatteredPixelDungeon.enderezar(checked());
+			}
+		};
+		btnEnderezar.setRect(0, btnInvertY.bottom() + GAP, WIDTH, BTN_HEIGHT);
+		btnEnderezar.checked(ShatteredPixelDungeon.enderezar());
+		add(btnEnderezar);
+
 		if (!inGame) {
 
 			RedButton btnOrientation = new RedButton(orientationText()) {
@@ -177,7 +189,7 @@ public class WndSettings extends Window {
 							.landscape());
 				}
 			};
-			btnOrientation.setRect(0, btnInvertY.bottom() + GAP, WIDTH,
+			btnOrientation.setRect(0, btnEnderezar.bottom() + GAP, WIDTH,
 					BTN_HEIGHT);
 			add(btnOrientation);
 
@@ -193,7 +205,7 @@ public class WndSettings extends Window {
 				}
 			};
 			btnBrightness
-					.setRect(0, btnInvertY.bottom() + GAP, WIDTH, BTN_HEIGHT);
+					.setRect(0, btnEnderezar.bottom() + GAP, WIDTH, BTN_HEIGHT);
 			btnBrightness.checked(ShatteredPixelDungeon.brightness());
 			add(btnBrightness);
 

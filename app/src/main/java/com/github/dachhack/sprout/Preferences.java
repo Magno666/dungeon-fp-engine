@@ -34,6 +34,9 @@ enum Preferences {
 	public static final String KEY_ZOOM = "zoom";
 	public static final String KEY_INVERT_X = "invertx";
 	public static final String KEY_INVERT_Y = "inverty";
+	/** Enderezar la vista hacia donde caminas cuando el camino se pide
+	 *  tocando una casilla. */
+	public static final String KEY_ENDEREZAR = "enderezar_al_caminar";
 	public static final String KEY_LAST_CLASS = "last_class";
 	public static final String KEY_CHALLENGES = "challenges";
 	public static final String KEY_QUICKSLOTS = "quickslots";

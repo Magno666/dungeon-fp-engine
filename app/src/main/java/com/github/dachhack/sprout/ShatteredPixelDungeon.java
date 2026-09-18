@@ -99,6 +99,7 @@ public class ShatteredPixelDungeon extends Game {
 		// aplicar hasta que vuelvas a tocar la casilla -- que parece que
 		// el ajuste no funciona.
 		FirstPersonControls.invertirX = invertX();
+		FirstPerson.enderezarAlCaminar = enderezar();
 		FirstPersonControls.invertirY = invertY();
 
 		Sample.INSTANCE.load(Assets.SND_CLICK, Assets.SND_BADGE,
@@ -245,6 +246,22 @@ public class ShatteredPixelDungeon extends Game {
 
 	public static boolean invertY() {
 		return Preferences.INSTANCE.getBoolean(Preferences.KEY_INVERT_Y, false);
+	}
+
+	/**
+	 * Enderezar la vista hacia donde caminas al tocar una casilla.
+	 *
+	 * Encendido de salida: tocas una casilla lejana, el heroe recorre el
+	 * camino solo y sin esto acabas bajando el pasillo de lado. Solo afecta
+	 * al caminar por toque -- el stick nunca te quita la camara.
+	 */
+	public static void enderezar(boolean value) {
+		Preferences.INSTANCE.put(Preferences.KEY_ENDEREZAR, value);
+		FirstPerson.enderezarAlCaminar = value;
+	}
+
+	public static boolean enderezar() {
+		return Preferences.INSTANCE.getBoolean(Preferences.KEY_ENDEREZAR, true);
 	}
 
 	public static void zoom(int value) {

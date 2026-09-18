@@ -749,6 +749,7 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 				? Minimap.cellAt( touch.current.x, touch.current.y ) : -1;
 			Minimap.toggle();
 			if (cell >= 0) {
+				FirstPerson.caminoPorToque();
 				GameScene.handleCell( cell );
 			}
 			return;
@@ -790,6 +791,7 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 			if (!lookMoved) {
 				int cell = FirstPerson.screenToCell( touch.current.x, touch.current.y );
 				if (cell >= 0) {
+					FirstPerson.caminoPorToque();
 					GameScene.handleCell( cell );
 				}
 			}
@@ -892,6 +894,9 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 			return false;
 		}
 		celdaPisada = cell;
+		// Un paso del stick o del teclado no endereza nada: quien se mueve
+		// asi ya esta apuntando la vista con el pulgar derecho.
+		FirstPerson.caminoPorMando();
 		GameScene.handleCell( cell );
 		return true;
 	}

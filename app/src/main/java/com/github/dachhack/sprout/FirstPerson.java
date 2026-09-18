@@ -174,6 +174,9 @@ public class FirstPerson {
 
 	/** Let go the moment the player looks around: their thumb wins. */
 	public static void cancelAim() {
+		// Si el jugador mueve la vista, manda el: se suelta tambien el
+		// enderezado del camino.
+		caminoPedido = false;
 		aiming = false;
 	}
 
@@ -208,6 +211,35 @@ public class FirstPerson {
 	 * player aims the view themselves, and this only fights them.
 	 */
 	public static boolean headingFollowsMovement = false;
+
+	/**
+	 * Enderezar la vista hacia donde caminas, pero SOLO cuando el camino lo
+	 * pediste tocando una casilla.
+	 *
+	 * Pedido en reddit: "if I click on the floor the camera should
+	 * automatically align perpendicular to the walls in the direction I am
+	 * going". Al tocar una casilla lejana el heroe recorre el camino solo y
+	 * la camara se queda donde la dejaste, asi que acabas bajando el pasillo
+	 * de lado o de espaldas.
+	 *
+	 * No es lo mismo que headingFollowsMovement, que gira con CUALQUIER
+	 * paso: eso le quitaria la camara de las manos a quien se mueve con el
+	 * stick, y mirar tiene que seguir siendo libre. La diferencia esta en
+	 * quien pidio el movimiento, no en que hubo movimiento.
+	 */
+	public static boolean enderezarAlCaminar = true;
+
+	private static boolean caminoPedido = false;
+
+	/** El jugador toco una casilla para ir hasta ella. */
+	public static void caminoPorToque() {
+		caminoPedido = true;
+	}
+
+	/** El paso lo dio el stick o el teclado: la vista no se toca. */
+	public static void caminoPorMando() {
+		caminoPedido = false;
+	}
 
 	/**
 	 * Seconds to slide from one cell to the next. The logic moves the hero
@@ -378,7 +410,13 @@ public class FirstPerson {
 		// so the heading is derived here from the step just taken. Walking
 		// turns you to look where you went, which is enough to explore with
 		// before there are dedicated turn controls.
-		if (headingFollowsMovement) {
+		// El camino pedido termina cuando el heroe llega: si no, la vista se
+		// quedaria enganchada al ultimo rumbo y pelearia con el mirar libre.
+		if (caminoPedido && Dungeon.hero.curAction == null) {
+			caminoPedido = false;
+		}
+
+		if (headingFollowsMovement || (enderezarAlCaminar && caminoPedido)) {
 			if (lastPos >= 0 && pos != lastPos) {
 				int dx = (pos % width) - (lastPos % width);
 				int dz = (pos / width) - (lastPos / width);
