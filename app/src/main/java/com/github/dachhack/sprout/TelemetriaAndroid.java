@@ -47,6 +47,7 @@ public final class TelemetriaAndroid {
 	private static int mandados;
 
 	public static void instalar() {
+		Telemetria.plataforma = "android";
 		Telemetria.dispositivo = aparato();
 		Telemetria.enviador = new Telemetria.Enviador() {
 			@Override

@@ -57,6 +57,16 @@ public final class Telemetria {
 	 *  navegador en la web. Nunca algo que identifique a la persona. */
 	public static String dispositivo = "";
 
+	/**
+	 * De donde sale el reporte: "web", "android" o "pc".
+	 *
+	 * Va en TODOS los eventos y no solo en el de rendimiento. Sin esto no
+	 * hay forma de contestar "los que bajaron el APK, lo estan jugando?"
+	 * -- que es la primera pregunta en cuanto hay un APK repartido, y la
+	 * respuesta estaba a la vista y aun asi no se podia dar.
+	 */
+	public static String plataforma = "web";
+
 	private static String instalacion;
 
 	/** El numero de esta instalacion. Se inventa la primera vez. */
@@ -177,6 +187,7 @@ public final class Telemetria {
 		enviador.mandar("{\"evento\":\"" + escapar(evento)
 			+ "\",\"piso\":" + piso
 			+ ",\"causa\":\"" + escapar(causa)
+			+ "\",\"plataforma\":\"" + escapar(plataforma)
 			+ "\",\"instalacion\":\"" + escapar(instalacion()) + "\"}");
 	}
 
@@ -186,6 +197,7 @@ public final class Telemetria {
 			+ ",\"fps\":" + fps
 			+ ",\"peor\":" + peor
 			+ ",\"pantalla\":\"" + Game.width + "x" + Game.height + "\""
+			+ ",\"plataforma\":\"" + escapar(plataforma) + "\""
 			+ ",\"dispositivo\":\"" + escapar(dispositivo)
 			+ "\",\"instalacion\":\"" + escapar(instalacion()) + "\"}");
 	}
