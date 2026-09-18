@@ -410,21 +410,35 @@ public class FirstPerson {
 		// so the heading is derived here from the step just taken. Walking
 		// turns you to look where you went, which is enough to explore with
 		// before there are dedicated turn controls.
-		// El camino pedido termina cuando el heroe llega: si no, la vista se
-		// quedaria enganchada al ultimo rumbo y pelearia con el mirar libre.
-		if (caminoPedido && Dungeon.hero.curAction == null) {
-			caminoPedido = false;
-		}
-
-		if (headingFollowsMovement || (enderezarAlCaminar && caminoPedido)) {
-			if (lastPos >= 0 && pos != lastPos) {
-				int dx = (pos % width) - (lastPos % width);
-				int dz = (pos / width) - (lastPos / width);
-				if (dx != 0 || dz != 0) {
-					targetYaw = (float)Math.toDegrees( Math.atan2( -dx, -dz ) );
+		if (lastPos >= 0 && pos != lastPos) {
+			int dx = (pos % width) - (lastPos % width);
+			int dz = (pos / width) - (lastPos / width);
+			if (dx != 0 || dz != 0) {
+				float rumbo = (float)Math.toDegrees( Math.atan2( -dx, -dz ) );
+				if (headingFollowsMovement) {
+					targetYaw = rumbo;
+				}
+				if (enderezarAlCaminar && caminoPedido) {
+					// Se apunta igual que cuando el heroe ataca algo, y no
+					// con el seguimiento por cuadro de arriba: aquel deja de
+					// girar en cuanto el heroe llega, asi que un camino de
+					// una sola casilla se quedaba a mitad -- medido en vivo,
+					// 27 grados de los 90 que tocaban. El apuntado termina
+					// el giro pase lo que pase con el camino.
+					aimYaw = rumbo;
+					aiming = true;
 				}
 			}
+		}
+		if (headingFollowsMovement) {
 			yaw = approach( yaw, targetYaw, turnSpeed * Game.elapsed );
+		}
+
+		// El camino pedido termina cuando el heroe llega. Va DESPUES de
+		// mirar el paso: si no, el ultimo paso de un camino corto llega en
+		// el mismo cuadro en que se acaba la accion y se quedaria sin girar.
+		if (caminoPedido && Dungeon.hero.curAction == null) {
+			caminoPedido = false;
 		}
 		if (aiming) {
 			yaw = approach( yaw, aimYaw, aimTurnSpeed * Game.elapsed );
