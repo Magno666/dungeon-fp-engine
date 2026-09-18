@@ -106,6 +106,10 @@ public class GameScene extends PixelScene {
 	private DungeonTilemap tiles;
 	private FogOfWar fog;
 	private boolean firstPersonHidesFlatWorld = false;
+
+	/** The level's own decorations, which are loose children of the scene
+	 *  rather than a group. See addVisuals below. */
+	private ArrayList<Gizmo> adornos = new ArrayList<Gizmo>();
 	private HeroSprite hero;
 
 	private GameLog log;
@@ -174,7 +178,19 @@ public class GameScene extends PixelScene {
 		}
 		firstPersonHidesFlatWorld = FirstPerson.enabled;
 
+		// Every level type hangs decorations straight off the scene -- the
+		// dripping pipes of the sewers, the prison torches, the city smoke,
+		// the ore veins, the halls streams. They sit in flat map coordinates
+		// like every other 2D layer, but because they are loose children and
+		// not a named group, they were the one thing the first person switch
+		// below never got to hide: their particles went through the
+		// perspective camera and landed all over the screen, unrelated to
+		// the wall they belong to. Reported from the sewers, but it was all
+		// nine level types. Remembered here so they can be dealt with.
+		int antesDeAdornos = members.size();
 		Dungeon.level.addVisuals(this);
+		adornos = new ArrayList<Gizmo>(
+			members.subList(antesDeAdornos, members.size()));
 
 		plants = new Group();
 		add(plants);
@@ -248,6 +264,12 @@ public class GameScene extends PixelScene {
 			// right after they are built, below.
 			emoicons.visible = false;
 			effects.visible = false;
+			// CellEmitter.get() pours into this one -- fire, embers, poison.
+			// Same flat coordinates, same problem.
+			emitters.visible = false;
+			for (Gizmo g : adornos) {
+				g.visible = false;
+			}
 		}
 
 		brightness(ShatteredPixelDungeon.brightness());
@@ -684,6 +706,37 @@ public class GameScene extends PixelScene {
 
 	public static SpellSprite spellSprite() {
 		return (SpellSprite) scene.spells.recycle(SpellSprite.class);
+	}
+
+	/**
+	 * Diagnostico: cuantas capas de particulas siguen dibujandose en
+	 * coordenadas de mapa. En primera persona tiene que dar 0 -- las que
+	 * queden pintan a traves de la camara en perspectiva y sus particulas
+	 * acaban en cualquier punto de la pantalla, sin relacion con la pared
+	 * a la que pertenecen. Devuelve -1 si no hay escena.
+	 */
+	/** Cuantas capas planas de particulas tiene el nivel en total, se
+	 *  esten dibujando o no. Junto a emisoresPlanosVisibles() dice de
+	 *  cuantas se trata: un nivel de alcantarillas trae una por cada
+	 *  tuberia, y llegan a ser veintitantas. */
+	public static int emisoresPlanos() {
+		return scene == null ? -1 : scene.adornos.size() + 1;
+	}
+
+	public static int emisoresPlanosVisibles() {
+		if (scene == null) {
+			return -1;
+		}
+		int n = 0;
+		for (Gizmo g : scene.adornos) {
+			if (g != null && g.visible) {
+				n++;
+			}
+		}
+		if (scene.emitters != null && scene.emitters.visible) {
+			n++;
+		}
+		return n;
 	}
 
 	public static Emitter emitter() {
