@@ -94,6 +94,13 @@ public class ShatteredPixelDungeon extends Game {
 		Music.INSTANCE.enable(music());
 		Sample.INSTANCE.enable(soundFx());
 
+		// Los ejes invertidos se guardan como preferencia, pero el campo
+		// que los usa arranca en false. Sin esto quedan guardados y sin
+		// aplicar hasta que vuelvas a tocar la casilla -- que parece que
+		// el ajuste no funciona.
+		FirstPersonControls.invertirX = invertX();
+		FirstPersonControls.invertirY = invertY();
+
 		Sample.INSTANCE.load(Assets.SND_CLICK, Assets.SND_BADGE,
 				Assets.SND_GOLD,
 
@@ -212,6 +219,32 @@ public class ShatteredPixelDungeon extends Game {
 
 	public static boolean scaleUp() {
 		return Preferences.INSTANCE.getBoolean(Preferences.KEY_SCALE_UP, true);
+	}
+
+	/**
+	 * Invertir los ejes de la camara. Pedido por SeaOfBullshit en
+	 * r/PixelDungeon, y es lo normal: mucha gente vuela y mira con el eje
+	 * al reves y no lo puede evitar.
+	 *
+	 * Se guarda con las demas preferencias, asi que se pone una vez y se
+	 * queda. Tenerlo que activar en cada partida seria peor que no tenerlo.
+	 */
+	public static void invertX(boolean value) {
+		Preferences.INSTANCE.put(Preferences.KEY_INVERT_X, value);
+		FirstPersonControls.invertirX = value;
+	}
+
+	public static boolean invertX() {
+		return Preferences.INSTANCE.getBoolean(Preferences.KEY_INVERT_X, false);
+	}
+
+	public static void invertY(boolean value) {
+		Preferences.INSTANCE.put(Preferences.KEY_INVERT_Y, value);
+		FirstPersonControls.invertirY = value;
+	}
+
+	public static boolean invertY() {
+		return Preferences.INSTANCE.getBoolean(Preferences.KEY_INVERT_Y, false);
 	}
 
 	public static void zoom(int value) {

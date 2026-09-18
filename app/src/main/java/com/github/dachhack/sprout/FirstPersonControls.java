@@ -379,6 +379,12 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 	 */
 	public static float lookSensitivityRaton = 12f;
 
+	/** Ejes invertidos. Se ponen desde los ajustes y se guardan; aqui solo
+	 *  se leen. Valen para el pulgar y para el raton por igual: quien mira
+	 *  al reves lo hace en los dos. */
+	public static boolean invertirX = false;
+	public static boolean invertirY = false;
+
 	/**
 	 * Mirar con el raton capturado. Los mismos limites que el pulgar:
 	 * nunca gasta turno, el giro da la vuelta entera y solo el cabeceo
@@ -390,10 +396,11 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 		}
 		FirstPerson.cancelAim();
 		float porPx = lookSensitivityRaton / 100f;
-		FirstPerson.yaw -= dx * porPx;
+		FirstPerson.yaw -= (invertirX ? -dx : dx) * porPx;
 		FirstPerson.yaw = FirstPerson.normalisedYaw();
 		FirstPerson.pitch = Math.max( -pitchLimit,
-			Math.min( pitchLimit, FirstPerson.pitch - dy * porPx ) );
+			Math.min( pitchLimit,
+				FirstPerson.pitch - (invertirY ? -dy : dy) * porPx ) );
 	}
 
 	/** Codigos que entiende {@link #tecla}. */
@@ -715,10 +722,11 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 			// Looking never costs a turn and is never blocked. Yaw runs all
 			// the way round; only pitch is stopped from tipping over.
 			float perPx = lookSensitivity / 100f;
-			FirstPerson.yaw -= dx * perPx;
+			FirstPerson.yaw -= (invertirX ? -dx : dx) * perPx;
 			FirstPerson.yaw = FirstPerson.normalisedYaw();
 			FirstPerson.pitch = Math.max( -75f,
-				Math.min( 75f, FirstPerson.pitch - dy * perPx ) );
+				Math.min( 75f,
+					FirstPerson.pitch - (invertirY ? -dy : dy) * perPx ) );
 		}
 	}
 

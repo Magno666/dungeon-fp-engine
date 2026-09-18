@@ -37,6 +37,8 @@ public class WndSettings extends Window {
 	private static final String TXT_IMMERSIVE = "Immersive mode";
 
 	private static final String TXT_MUSIC = "Music";
+	private static final String TXT_INVERT_X = "Invert look X";
+	private static final String TXT_INVERT_Y = "Invert look Y";
 
 	private static final String TXT_SOUND = "Sound FX";
 
@@ -141,6 +143,31 @@ public class WndSettings extends Window {
 		btnSound.checked(ShatteredPixelDungeon.soundFx());
 		add(btnSound);
 
+		// Ejes de la camara. Pedido en r/PixelDungeon, y es de las cosas
+		// que no se pueden "acostumbrar": quien mira con el eje al reves lo
+		// hace siempre. Valen igual para el pulgar y para el raton.
+		CheckBox btnInvertX = new CheckBox(TXT_INVERT_X) {
+			@Override
+			protected void onClick() {
+				super.onClick();
+				ShatteredPixelDungeon.invertX(checked());
+			}
+		};
+		btnInvertX.setRect(0, btnSound.bottom() + GAP, WIDTH, BTN_HEIGHT);
+		btnInvertX.checked(ShatteredPixelDungeon.invertX());
+		add(btnInvertX);
+
+		CheckBox btnInvertY = new CheckBox(TXT_INVERT_Y) {
+			@Override
+			protected void onClick() {
+				super.onClick();
+				ShatteredPixelDungeon.invertY(checked());
+			}
+		};
+		btnInvertY.setRect(0, btnInvertX.bottom() + GAP, WIDTH, BTN_HEIGHT);
+		btnInvertY.checked(ShatteredPixelDungeon.invertY());
+		add(btnInvertY);
+
 		if (!inGame) {
 
 			RedButton btnOrientation = new RedButton(orientationText()) {
@@ -150,7 +177,7 @@ public class WndSettings extends Window {
 							.landscape());
 				}
 			};
-			btnOrientation.setRect(0, btnSound.bottom() + GAP, WIDTH,
+			btnOrientation.setRect(0, btnInvertY.bottom() + GAP, WIDTH,
 					BTN_HEIGHT);
 			add(btnOrientation);
 
@@ -166,7 +193,7 @@ public class WndSettings extends Window {
 				}
 			};
 			btnBrightness
-					.setRect(0, btnSound.bottom() + GAP, WIDTH, BTN_HEIGHT);
+					.setRect(0, btnInvertY.bottom() + GAP, WIDTH, BTN_HEIGHT);
 			btnBrightness.checked(ShatteredPixelDungeon.brightness());
 			add(btnBrightness);
 
