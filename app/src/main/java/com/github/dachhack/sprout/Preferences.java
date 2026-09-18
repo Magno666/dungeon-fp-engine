@@ -37,6 +37,10 @@ enum Preferences {
 	/** Enderezar la vista hacia donde caminas cuando el camino se pide
 	 *  tocando una casilla. */
 	public static final String KEY_ENDEREZAR = "enderezar_al_caminar";
+
+	/** No capturar el raton: el cursor se queda a la vista y para mirar hay
+	 *  que arrastrar con el boton. */
+	public static final String KEY_PUNTERO = "puntero_libre";
 	public static final String KEY_LAST_CLASS = "last_class";
 	public static final String KEY_CHALLENGES = "challenges";
 	public static final String KEY_QUICKSLOTS = "quickslots";

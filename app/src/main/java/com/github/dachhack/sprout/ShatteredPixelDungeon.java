@@ -100,6 +100,7 @@ public class ShatteredPixelDungeon extends Game {
 		// el ajuste no funciona.
 		FirstPersonControls.invertirX = invertX();
 		FirstPerson.enderezarAlCaminar = enderezar();
+		FirstPersonControls.punteroLibre = punteroLibre();
 		FirstPersonControls.invertirY = invertY();
 
 		Sample.INSTANCE.load(Assets.SND_CLICK, Assets.SND_BADGE,
@@ -262,6 +263,23 @@ public class ShatteredPixelDungeon extends Game {
 
 	public static boolean enderezar() {
 		return Preferences.INSTANCE.getBoolean(Preferences.KEY_ENDEREZAR, true);
+	}
+
+	/**
+	 * No capturar el raton.
+	 *
+	 * Apagado de salida: capturarlo es lo correcto para mirar en primera
+	 * persona. Pero con el puntero preso el cursor desaparece y hay que
+	 * darle a Esc para tocar la barra o la mochila, y a quien juega en
+	 * computadora eso le estorba. Pedido en la caja de comentarios.
+	 */
+	public static void punteroLibre(boolean value) {
+		Preferences.INSTANCE.put(Preferences.KEY_PUNTERO, value);
+		FirstPersonControls.punteroLibre = value;
+	}
+
+	public static boolean punteroLibre() {
+		return Preferences.INSTANCE.getBoolean(Preferences.KEY_PUNTERO, false);
 	}
 
 	public static void zoom(int value) {

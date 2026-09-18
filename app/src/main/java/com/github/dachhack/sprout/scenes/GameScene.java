@@ -826,6 +826,21 @@ public class GameScene extends PixelScene {
 		return false;
 	}
 
+	/** Cierra las ventanas abiertas. La tecla de la mochila la usa para
+	 *  que el mismo atajo abra y cierre, que es lo que espera cualquiera. */
+	public static void cerrarVentanas() {
+		if (scene == null) {
+			return;
+		}
+		// Copia: hide() saca el gizmo de members y recorrer la lista
+		// mientras se modifica se salta ventanas.
+		for (Gizmo g : scene.members.toArray(new Gizmo[0])) {
+			if (g instanceof Window && g.exists) {
+				((Window) g).hide();
+			}
+		}
+	}
+
 	public static void afterObserve() {
 		if (scene != null) {
 			Minimap.refresh();

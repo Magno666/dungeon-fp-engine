@@ -20,6 +20,7 @@ package com.github.dachhack.sprout;
 import com.github.dachhack.sprout.items.Heap;
 import com.github.dachhack.sprout.levels.Level;
 import com.github.dachhack.sprout.scenes.GameScene;
+import com.github.dachhack.sprout.windows.WndBag;
 import com.watabou.input.Touchscreen;
 import com.watabou.input.Touchscreen.Touch;
 import com.watabou.noosa.Game;
@@ -410,6 +411,19 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 	public static final int TECLA_IZQUIERDA  = 4;
 	public static final int TECLA_GIRA_IZQ   = 5;
 	public static final int TECLA_GIRA_DER   = 6;
+	// Pedidas en la caja de comentarios de la pagina: "it needs more
+	// hotkeys (for the inventory, search)". En el teclado no hay forma de
+	// abrir la mochila sin soltar el raton e ir a la barra.
+	//
+	// Buscar NO puede ser S, que es caminar hacia atras. F de find.
+	public static final int TECLA_MOCHILA    = 7;
+	public static final int TECLA_BUSCAR     = 8;
+	public static final int TECLA_ESPERAR    = 9;
+
+	/** Con esto encendido el raton no se captura: el cursor se queda a la
+	 *  vista y para mirar hay que arrastrar con el boton, como antes de que
+	 *  existiera la captura. Pedido desde la pagina. */
+	public static boolean punteroLibre = false;
 
 	/**
 	 * Una tecla de movimiento se bajo o se solto. El teclado es la unica
@@ -433,7 +447,50 @@ public class FirstPersonControls implements Signal.Listener<Touch> {
 			instance.giroTecla = abajo ? 1
 				: (instance.giroTecla == 1 ? 0 : instance.giroTecla);
 			break;
+		// Las de accion van al soltar y no al pulsar: mantenerlas apretadas
+		// no debe repetir la accion, que con esperar te dormiria el turno
+		// veinte veces seguidas.
+		case TECLA_MOCHILA:
+			if (!abajo) { accionMochila(); }
+			break;
+		case TECLA_BUSCAR:
+			if (!abajo) { accionBuscar(); }
+			break;
+		case TECLA_ESPERAR:
+			if (!abajo) { accionEsperar(); }
+			break;
 		}
+	}
+
+	/** Lo mismo que el boton de la mochila en la barra. Si ya hay una
+	 *  ventana abierta la tecla la cierra, que es lo que espera cualquiera
+	 *  que use un atajo para abrir algo. */
+	private static void accionMochila() {
+		if (GameScene.windowOpen()) {
+			GameScene.cerrarVentanas();
+			return;
+		}
+		if (Dungeon.hero == null || !Dungeon.hero.isAlive()) {
+			return;
+		}
+		GameScene.show(new WndBag(Dungeon.hero.belongings.backpack,
+			null, WndBag.Mode.ALL, null));
+	}
+
+	private static void accionBuscar() {
+		if (GameScene.windowOpen() || Dungeon.hero == null
+				|| !Dungeon.hero.isAlive() || !Dungeon.hero.ready) {
+			return;
+		}
+		Dungeon.hero.search(true);
+	}
+
+	private static void accionEsperar() {
+		if (GameScene.windowOpen() || Dungeon.hero == null
+				|| !Dungeon.hero.isAlive() || !Dungeon.hero.ready) {
+			return;
+		}
+		Dungeon.hero.rest(false);
 	}
 
 	/**
