@@ -385,6 +385,9 @@ public final class Arena {
      */
     private static void darObjetos(Hero heroe, String objetos, int mejora) {
 
+        java.util.List<com.github.dachhack.sprout.items.rings.Ring> anillos =
+            new java.util.ArrayList<com.github.dachhack.sprout.items.rings.Ring>();
+
         if (objetos == null || objetos.length() == 0) return;
 
         com.github.dachhack.sprout.items.KindOfWeapon arma = null;
@@ -409,6 +412,8 @@ public final class Arena {
             } else if (armadura == null
                     && it instanceof com.github.dachhack.sprout.items.armor.Armor) {
                 armadura = (com.github.dachhack.sprout.items.armor.Armor) it;
+            } else if (it instanceof com.github.dachhack.sprout.items.rings.Ring) {
+                anillos.add((com.github.dachhack.sprout.items.rings.Ring) it);
             }
         }
 
@@ -427,6 +432,24 @@ public final class Arena {
                 heroe.belongings.armor.doUnequip(heroe, true);
             }
             armadura.doEquip(heroe);
+        }
+
+        // LOS ANILLOS TAMBIEN SE PONEN.
+        //
+        // Antes acababan en la mochila y ahi se quedaban: pedias Ring of
+        // Haste +25 y peleabas a velocidad normal. Un anillo sin poner no
+        // hace absolutamente nada, asi que la mitad de la pantalla de
+        // equipo era decorativa sin decirlo. Medido: el heroe entraba a la
+        // arena con speed()=1.0 llevandolo en la mochila.
+        //
+        // Solo caben dos: son las manos que tiene. Si se piden mas, se
+        // ponen los dos primeros y el resto queda en la mochila, que es lo
+        // mismo que hace el juego normal.
+        for (com.github.dachhack.sprout.items.rings.Ring anillo : anillos) {
+            if (heroe.belongings.misc1 != null && heroe.belongings.misc2 != null) {
+                break;
+            }
+            anillo.doEquip(heroe);
         }
     }
 

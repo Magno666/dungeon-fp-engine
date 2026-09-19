@@ -174,6 +174,18 @@ public abstract class Actor implements Bundlable {
 		}
 	}
 
+	/** Diagnostico: el reloj del mundo. Solo se lee. */
+	public static float reloj() {
+		return now;
+	}
+
+	/** Diagnostico: quien tiene el turno, o null si nadie. Para cuando la
+	 *  partida se queda procesando turnos sin devolver el control: sin esto
+	 *  no hay forma de saber quien se lo quedo. */
+	public static Actor enTurno() {
+		return current;
+	}
+
 	public static void process() {
 
 		if (current != null) {
