@@ -440,5 +440,16 @@ public class Minimap {
 		marker = null;
 		masked = null;
 		uploaded = false;
+
+		// lastParent guarda el grupo del terreno de la escena, y por ahi
+		// cuelga el nivel entero: el tilemap, sus texturas, todo. Sin
+		// soltarlo, cada piso que bajas deja el anterior vivo en memoria.
+		//
+		// Y no es solo memoria: toggle() aplaza el cambio a pendingToggle y
+		// lo atiende en el siguiente update(). Si la escena muere en medio,
+		// ese toggle instalaria el minimapa dentro de un grupo ya
+		// destruido.
+		lastParent = null;
+		pendingToggle = false;
 	}
 }

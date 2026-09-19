@@ -1036,5 +1036,28 @@ public class FirstPerson {
 		yaw = 0f;
 		targetYaw = 0f;
 		placed = false;
+
+		// El apuntado TIENE que apagarse aqui.
+		//
+		// aimYaw guarda el angulo hacia una casilla DEL PISO ANTERIOR. Sin
+		// esto, yaw se pone a cero y en el primer cuadro del piso nuevo
+		// update() lo empieza a girar hacia ese angulo viejo: llegas y la
+		// camara se mueve sola hacia una direccion que ya no significa
+		// nada. Y pasa justo cuando es mas probable -- tocas la escalera,
+		// la vista empieza a girar hacia ella, y la transicion ocurre a
+		// media vuelta.
+		aiming = false;
+		aimYaw = 0f;
+
+		// pitch se reiniciaba solo... nunca. yaw si. Asi que se llegaba al
+		// piso nuevo mirando al norte pero con la inclinacion de donde
+		// fuera que estuvieras mirando antes.
+		pitch = -10f;
+
+		// Fases de las animaciones: no rompen nada, pero arrastrarlas hace
+		// que el cabeceo y el parpadeo de la antorcha empiecen a mitad.
+		bobPhase = 0f;
+		vertigoPhase = 0f;
+		flickerPhase = 0f;
 	}
 }
