@@ -191,8 +191,16 @@ public class FirstPerson {
 	}
 
 	/** Build marker, printed to the game log so a screenshot says which
-	 *  version it came from. */
-	public static final String BUILD = "FP build v33";
+	 *  version it came from.
+	 *
+	 *  It used to be a hand-written string, and it went stale: the jar said
+	 *  0.4.7-fp34 while every screenshot still read "FP build v33" -- the
+	 *  exact failure this marker exists to prevent. Game.version is set on
+	 *  all three platforms (the manifest on Android, Version.java on
+	 *  desktop and web), so read it instead of writing it twice. */
+	public static String build() {
+		return "FP build " + (Game.version == null ? "?" : Game.version);
+	}
 
 	/** Degrees. 0 looks north (-Z), increasing turns west. */
 	public static float yaw = 0f;

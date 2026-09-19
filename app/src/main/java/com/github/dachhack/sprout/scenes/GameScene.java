@@ -363,7 +363,7 @@ public class GameScene extends PixelScene {
 		// build marker has to be announced here, not up where the first
 		// person view is installed.
 		if (FirstPerson.enabled) {
-			GLog.i(FirstPerson.BUILD);
+			GLog.i(FirstPerson.build());
 		}
 
 		if (Dungeon.depth < Statistics.deepestFloor)
