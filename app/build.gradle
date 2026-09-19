@@ -18,8 +18,8 @@ android {
         // Every first person build gets its own code, or Android decides
         // the install is "already up to date" and silently keeps the old
         // one. Eight builds shipped with 190 before this was spotted.
-        versionCode 235
-        versionName "0.4.5-fp33"
+        versionCode 236
+        versionName "0.4.6-fp33"
     }
 
     compileOptions {

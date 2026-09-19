@@ -22,6 +22,8 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
 
 import com.github.dachhack.sprout.Assets;
+import com.github.dachhack.sprout.Actualizacion;
+import com.github.dachhack.sprout.AvisoActualizacion;
 import com.github.dachhack.sprout.ShatteredPixelDungeon;
 import com.github.dachhack.sprout.effects.BannerSprites;
 import com.github.dachhack.sprout.effects.Fireball;
@@ -37,6 +39,19 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
 
 public class TitleScene extends PixelScene {
+
+	private float anchoAviso, abajoAviso;
+	private AvisoActualizacion aviso;
+
+	@Override
+	public void update() {
+		super.update();
+		if (aviso == null && Actualizacion.hayNueva() && anchoAviso > 0) {
+			aviso = new AvisoActualizacion(anchoAviso, abajoAviso);
+			add(aviso);
+		}
+	}
+
 
 	private static final String TXT_PLAY = "Play";
 	private static final String TXT_HIGHSCORES = "Rankings";
@@ -165,6 +180,13 @@ public class TitleScene extends PixelScene {
 		version.y = h - version.height() - source.height();
 
 		add(version);
+
+		// Aviso de version nueva. La respuesta del servidor puede llegar
+		// despues de pintar esto, asi que el sitio se recuerda y el aviso
+		// se anade en update() cuando haya.
+		Actualizacion.buscar();
+		anchoAviso = w;
+		abajoAviso = h - version.height() - source.height();
 
 		PrefsButton btnPrefs = new PrefsButton();
 		btnPrefs.setPos(0, 0);

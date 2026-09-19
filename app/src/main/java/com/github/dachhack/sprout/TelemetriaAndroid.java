@@ -47,8 +47,21 @@ public final class TelemetriaAndroid {
 	private static int mandados;
 
 	public static void instalar() {
-		Telemetria.plataforma = "android";
+		instalar("android");
+	}
+
+	/** El escritorio reusa esto: tambien habla java.net y no tenia sentido
+	 *  escribir el mismo hilo dos veces. */
+	public static void instalar(String plataforma) {
+		Telemetria.plataforma = plataforma;
 		Telemetria.dispositivo = aparato();
+		Actualizacion.cual = plataforma;
+		Actualizacion.buscador = new Actualizacion.Buscador() {
+			@Override
+			public String leer(String url) {
+				return TelemetriaAndroid.leer(url);
+			}
+		};
 		Telemetria.enviador = new Telemetria.Enviador() {
 			@Override
 			public void mandar(final String json) {
@@ -64,6 +77,39 @@ public final class TelemetriaAndroid {
 				}, "telemetria").start();
 			}
 		};
+		// Se arranca YA, no cuando se pinta el titulo: la consulta va en su
+		// propio hilo y tarda lo que tarde la red. Preguntarla al construir
+		// la pantalla y mirar la respuesta en la linea siguiente era mirar
+		// antes de que contestara -- el aviso no salia nunca.
+		Actualizacion.buscar();
+	}
+
+	/** Leer una URL, para la consulta de version. Mismo trato que el
+	 *  envio: tiempos cortos y en silencio si falla. */
+	public static String leer(String url) {
+		HttpURLConnection c = null;
+		try {
+			c = (HttpURLConnection) new URL(url).openConnection();
+			c.setConnectTimeout(6000);
+			c.setReadTimeout(6000);
+			java.io.InputStream in = c.getInputStream();
+			java.io.ByteArrayOutputStream bs = new java.io.ByteArrayOutputStream();
+			byte[] buf = new byte[4096];
+			int n;
+			// Tope duro: el servidor es mio, pero si algun dia no lo es,
+			// esto no puede tragarse un fichero de un giga.
+			while ((n = in.read(buf)) > 0 && bs.size() < 64 * 1024) {
+				bs.write(buf, 0, n);
+			}
+			in.close();
+			return bs.toString("UTF-8");
+		} catch (Exception e) {
+			return null;
+		} finally {
+			if (c != null) {
+				c.disconnect();
+			}
+		}
 	}
 
 	private static void enviar(String json) {
